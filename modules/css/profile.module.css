@@ -1,0 +1,347 @@
+/* .profile-sidebar ul{
+    margin: 0;
+    padding: 0;
+}
+.profile-sidebar  li{
+    padding: 14px 16px;
+}
+.profile-sidebar li:hover{
+    background-color: var(--blue1);
+    border-radius: 8px;
+    cursor: pointer;
+}
+.profile-sidebar  li.active{
+    background: var(--blue1);
+    border-radius: 8px;
+}
+.top-header-section{
+    background: var(--grey6);
+    border: 1px solid var(--grey5);
+    border-radius: 16px;
+    display: grid;
+    padding: 20px;
+    grid-template-columns: repeat(4,1fr);
+    margin-bottom: 48px;
+}
+.profile-photo img{
+    width:64px;
+    height: 64px;
+    border-radius: 50%; 
+} 
+.section1{
+    border-right: 2px solid var(--grey5);
+}
+.section2{
+    padding:0 20px;
+    border-right: 2px solid var(--grey5);
+}
+.section3{
+    padding:0 0 0 20px;
+}    
+.progress-bar{
+    width:100%;
+    background: #D6E7FD;
+    border-radius: 100px;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+}
+.fill{
+    background-color: var(--primary);
+    border-radius: 100px;
+    height:12px;
+}
+.personal-detail-section{
+    border-left:1px solid var(--grey5); 
+    padding-left: 60px;
+    box-sizing: border-box;
+}
+.personal{
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--grey4);
+}
+.personal-detail-section label{
+    font-weight: 600;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
+    line-height: 20px;
+    color: #2E2E37;
+    margin-bottom: 4px;
+    margin-top: 20px;
+}
+.personal-detail-section input{
+    padding: 11px 16px;
+    font-weight: 400;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
+    color: var(--secondary);
+    background: #EEEEF7;
+    border-radius: 8px;
+    outline: none;
+    border: none;
+    width:100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+.personal-detail-section input:focus-visible{
+    outline: none;
+    border: none;
+}
+.personal-detail-section input::placeholder{
+    font-weight: 400;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
+    color: var(--secondary);
+}
+.personal-detail-section textarea{
+    font-weight: 400;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
+    color: var(--secondary);
+    width:100%;
+    background: #EEEEF7;
+    padding: 11px 16px;
+    outline: none;
+    border: none;
+    border-radius: 8px;
+}
+.personal-detail-section textarea:focus-visible{
+    outline: none;
+    border: none;
+}
+.radio-buttons input[type="radio"]{
+    padding: 0;
+    outline: none;
+    border: none;
+    width:auto;
+    box-sizing: border-box;
+}
+.radio-buttons label{
+    font-weight: 400;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
+    line-height: 20px;
+    color: var(--secondary);
+    margin-top: 5px;
+    margin-left: 8px;
+}
+.profile-picture-upload{
+    background: var(--grey6);
+    border: 1px solid var(--grey5);
+    border-radius: 8px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+} */
+
+.profile-sidebar{
+    position: sticky;
+    left: 40px;
+    top: 210px;
+}
+.profile-sidebar ul{
+    margin: 0;
+    padding: 0;
+}
+.profile-sidebar  li{
+    padding: 14px 16px;
+}
+.profile-sidebar li:hover{
+    background-color: var(--blue1);
+    border-radius: 8px;
+    cursor: pointer;
+}
+.profile-sidebar  li.active{
+    background: var(--blue1);
+    border-radius: 8px;
+}
+.top-header-section{
+    background: var(--grey6);
+    border: 1px solid var(--grey5);
+    border-radius: 16px;
+    display: grid;
+    padding: 20px;
+    grid-template-columns: repeat(4,1fr);
+    margin-bottom: 48px;
+    position: sticky;
+    top:40px;
+    z-index:99;
+}
+
+.profile-photo img{
+    width:64px;
+    height: 64px;
+    border-radius: 50%; 
+} 
+.section1{
+    border-right: 2px solid var(--grey5);
+}
+.section2{
+    padding:0 20px;
+    border-right: 2px solid var(--grey5);
+}
+.section3{
+    padding:0 0 0 20px;
+}    
+.progress-bar{
+    width:100%;
+    background: #D6E7FD;
+    border-radius: 100px;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+}
+.fill{
+    background-color: var(--primary);
+    border-radius: 100px;
+    height:12px;
+}
+.personal-detail-section{
+    border-left:1px solid var(--grey5); 
+    padding-left: 60px;
+    box-sizing: border-box;
+}
+.personal{
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--grey4);
+}
+.personal label,.personal-detail-section label{
+    font-weight: 600;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
+    line-height: 20px;
+    color: #2E2E37;
+    margin-bottom: 4px;
+    margin-top: 20px;
+}
+.personal input,.personal-detail-section input{
+    padding: 11px 16px;
+    font-weight: 400;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
+    color: var(--secondary);
+    background: #EEEEF7;
+    border-radius: 8px;
+    outline: none;
+    border: none;
+    width:100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+.personal input:focus-visible,.personal-detail-section input:focus-visible{
+    outline: none;
+    border: none;
+}
+.personal input::placeholder,.personal-detail-section input::placeholder{
+    font-weight: 400;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
+    color: var(--secondary);
+}
+.personal-detail-section textarea{
+    font-weight: 400;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
+    color: var(--secondary);
+    width:100%;
+    background: #EEEEF7;
+    padding: 11px 16px;
+    outline: none;
+    border: none;
+    border-radius: 8px;
+}
+.personal-detail-section textarea:focus-visible{
+    outline: none;
+    border: none;
+}
+.radio-buttons input[type="radio"]{
+    padding: 0;
+    outline: none;
+    border: none;
+    width:auto;
+    box-sizing: border-box;
+}
+.radio-buttons label{
+    font-weight: 400;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
+    line-height: 20px;
+    color: var(--secondary);
+    margin-top: 5px;
+    margin-left: 8px;
+}
+.profile-picture-upload{
+    background: var(--grey6);
+    border: 1px solid var(--grey5);
+    border-radius: 8px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+}
+.add-service{
+    padding: 15px 14px;
+}
+.personal-detail-section .add-service input{
+    padding: 0;
+    font-weight: 400;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
+    color: var(--secondary);
+    background: none;
+    outline: none;
+    border: none;
+    width:100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-left: 12px;
+}
+.fees{
+    background: #EEEEF7;
+    border-radius: 8px;
+    height: 42.9px;
+    padding: 0 20px;
+}
+.fees input{
+    padding: 0;
+    margin-bottom: 0;
+    font-weight: 400;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
+    color: #2E2E37;
+    background: transparent;
+    outline: none;
+    border: none;
+    width:100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    border-radius: 0;
+    border-left: 1px solid #B8C3CD;
+    padding-left: 10px;
+    margin-left: 10px;
+}
+.fees input:focus-visible{
+    outline: none;
+    border: none;
+    border-left: 1px solid #B8C3CD;
+}
+.wrapper input[type="radio"]{
+    margin: 0;
+    width:auto;
+}
+.timing-message{
+    background: #EBF7ED;
+    border-radius: 8px;
+    padding: 10px;
+}

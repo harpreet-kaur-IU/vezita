@@ -1,0 +1,153 @@
+.wrapper{
+    padding:39px 60px 0px 40px;
+}
+.tabs-wrapper{
+    padding: 24px 0px 0px 0px;
+    gap:36px;
+}
+.save-btn{
+    gap:12px;
+    width: 200px;
+    height: 48px;   
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+    background: transparent;
+}
+
+.save-btn img{
+    width: 20px;
+    height: 20px;
+    border-radius: 100px;
+}
+.active{
+    padding-bottom: 4px;
+    color: var(--secondary);
+    border-bottom: 3px solid var(--primary);
+}
+
+/* personal details */
+
+.personal-details-wrapper{
+    margin-top: 29px;
+    margin-bottom: 100px;
+}
+.personal-details-wrapper img{
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+    margin-bottom: 8px;
+}
+.name-field{
+    margin-top: 20px;
+    gap:4px;
+}
+.name-field input{
+    background: var(--grey6);
+    border-radius: 8px;
+    border:none;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    padding: 11px 16px;
+}
+.name-field input:focus{
+    outline: none;
+}
+.gender-radio-btn-wrapper{
+    margin-top: 20px;
+}
+.gender-radio-btns{
+    margin-top: 12px;
+    gap: 18px;
+}
+.gender-radio-btns input{
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    width: 20px;
+    height: 20px;
+}
+.gender-radio-btn-1{
+    gap:10px;
+}
+.gender-radio-btn-2{
+    gap:10px;
+}
+.contact-field{
+    margin-top: 20px;
+    gap:4px;
+}
+.contact-dropdown{
+    width: 92px;
+    background: var(--grey6);
+    border-radius: 8px;
+    border:none;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    padding: 11px 16px;
+}
+.contact-dropdown:focus{
+    outline: none;
+}
+.contact-input{
+    background: var(--grey6);
+    border-radius: 8px;
+    border:none;
+    font-size: clamp(0.875rem, 0.8500rem + 0.1250vw, 1rem);
+    padding: 11px 16px;
+    margin-left: 10px;
+}
+.contact-input:focus{
+    outline:none;
+}
+.date-of-birth-drp{
+    gap:10px;
+}
+
+/* Badge details */
+
+.badeges-wrapper{
+    margin-top: 14px;
+    gap:10px;
+}
+.badges-item{
+    background: #EEEEF7;
+    border-radius: 8px;
+    padding: 5px 16px;
+    gap:7px;
+}
+.badges-item img{
+    width: 12px;
+    height: 12px;
+}
+
+/* Reports details */
+
+.reports-details-wrapper{
+    margin-top: 8px;
+    padding: 16px;
+    border: 2px dashed #EADCFC;
+    border-radius: 8px;
+    background: #F6F6FB;
+}
+
+/* Medical details */
+.add-wrapper{
+    border-radius: 8px;
+    gap:5px;
+    padding: 9px 16px;
+}
+.add-wrapper h6{
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 14px;
+}
+.medical-details-wrapper{
+    margin-top:20px;
+}
+
+@media screen and (max-width:1024px) {
+    .medical-details-wrapper{
+        width: 80%;
+    }
+}
+@media screen and (max-width:768px) {
+    .medical-details-wrapper{
+        width: 100%;
+    }
+}

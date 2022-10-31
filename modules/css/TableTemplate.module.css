@@ -1,0 +1,307 @@
+/* .table-template-wrapper{
+    padding: 0px clamp(0.625rem, 0.2500rem + 1.8750vw, 2.5rem) 28px clamp(0.625rem, 0.2500rem + 1.8750vw, 2.5rem);
+    gap:28px;
+} */
+.wrapper{
+    padding: 0px 40px 40px 40px;
+    gap:28px;
+}
+.booking-table-scroll-section{
+    margin-top:16px;
+}
+.booking-table-wrapper{
+    border: 1px solid #DFDFEE;
+    border-radius: 4px;
+    width:100%;
+    overflow-x: scroll;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    background: var(--white);
+}
+.booking-table-header-row{
+    background: var(--grey5);
+    padding:15px;
+    display: grid;
+    grid-template-columns: 240px 150px 150px 390px;
+    word-break: break-all;
+}
+.booking-table-column{
+    display: grid;
+    grid-template-columns: 240px 150px 150px 390px;
+    word-break: break-all;
+    padding:18px 12px;
+}
+.status-btn{
+    color: var(--white);
+    background: var(--red);
+    border-radius: 100px;
+    padding: 10px 18px 10px 20px;
+}
+.status-btn img{
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+.status-btn-green{
+    color: var(--white);
+    background: var(--green4);
+    border-radius: 100px;
+    padding: 10px 18px 10px 20px;
+    margin-left: 6px;
+}
+.status-btn-green img{
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+.status-decline-text{
+    color: var(--red);
+}
+.status-accept-text{
+    color: var(--green4);
+}
+.status-noshow-text{
+    color: var(--orange);
+}
+/* .booking-table-column{
+    border-right: 1px solid #DFDFEE;
+} */
+.patient-details-column img{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+}
+.column-arrow img{
+    background-color: var(--primary);
+    border-radius: 100px;
+    padding: 6px;
+    width: 24px;
+    height: 24px;
+}
+.booking-table-column-data{
+    background-color: var(--grey7);
+}
+
+/* Prescribe button */
+.prescription-btn button{
+    border: 1px solid #82829B;
+    border-radius: 20px;
+    padding: 6px 20px 6px 20px;
+    gap:9px;
+    background: transparent;
+}
+.prescription-btn-green button{
+    color: var(--green4);
+    border: 1px solid var(--green4);
+    border-radius: 20px;
+    padding: 6px 20px 6px 20px;
+    gap:9px;
+    background: transparent;
+}
+.prescription-btn-green button h6{
+    color: var(--green4);
+}
+
+/* template */
+.template-wrapper{
+    padding: 20px;
+    margin-top: 16px;
+    height: 388px;
+}
+.template-heading{
+    text-align: center;
+}
+.template-search-input{
+    margin-top: 16px;
+    margin-bottom: 16px;
+    position: relative;
+    background: #EEEEF7;
+    border: 1px solid #DFDFEE;
+    border-radius: 8px;
+    padding: 12px 0px;
+}
+.template-search-input input{
+    margin-left: 40px;
+    background: transparent;
+    border: none;
+}
+.template-search-input input:focus{
+    outline: none;
+}
+.template-search-input img{
+    position: absolute;
+    top: 13px;
+    left: 13px;
+}
+.template-search-input input::placeholder{
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #82829B;
+}
+.template-search-suggestions{
+    margin-top: 12px;
+    padding: 16px;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+}
+.template-search-suggestions img{
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+/* prescription details */
+.add-template-wrapper{
+    gap:40px;
+}
+.add-template-wrapper button{
+    background: #19B46E;
+    border-radius: 100px;
+    padding: 8px 28px 8px 28px;
+    border: none;
+    color: #ffffff;
+}
+.template-name-wrapper{
+    width: 765px;
+    gap:4px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid #DFDFEE;
+}
+.template-name-wrapper input{
+    padding: 0px 0px 0px 16px;
+    height: 44px;
+    background: #EEEEF7;
+    border-radius: 8px;
+    border: none;
+    color: var(--grey3);
+}
+.template-name-wrapper input:focus{
+    outline: none;
+}
+.template-name-wrapper input::placeholder{
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    color: #82829B;
+}
+.add-btn-wrapper{
+    gap:8px;
+}
+
+/* Drug details */
+.drug-detail-wrapper{
+    margin-top: 28px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #DFDFEE;
+}
+.drug-detail-left{
+    gap:4px;
+}
+.drug-detail-left input{
+    padding: 0px 16px;
+    height: 44px;
+    background: var(--grey6);
+    border-radius: 8px;
+    border: none;
+    color: var(--grey3);
+}
+.drug-detail-left input{
+    outline: none;
+}
+.drug-detail-left-instruction{
+    margin-top: 32px;
+    gap:4px;
+}
+.drug-detail-left-instruction input{
+    background: var(--grey6);
+    border-radius: 8px;
+    border: none;
+    padding: 12px 16px 56px 16px;
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--grey3);
+}
+.drug-detail-left-instruction input:focus{
+    outline: none;
+}
+.instruction-radio-btn-details{
+    gap: 42px;
+    margin-top: 13px;
+}
+.instruction-radio-btn{
+    gap:8px;
+}
+
+/* time-and-dosage */
+.time-and-dosage-wrapper{
+    margin-top: 33px;
+}
+.time-and-dosage-check-box-details{
+    margin-top: 13px;
+    gap:clamp(0.3125rem, -6.0814rem + 7.3074vw, 2.6875rem);
+}
+.time-and-dosage-check-box{
+    gap:11px;
+}
+.doasge-dropdown-wrapper{
+    margin-top: 13px;
+}
+
+/* Duration details */
+.duration-wrapper{
+    margin-top: 32px;
+}
+.duration-input-dropdown-wrapper{
+    gap:12px;
+}
+.duration-input-dropdown-wrapper input{
+    background: #EEEEF7;
+    border-radius: 8px;
+    border:none;
+    padding-left: 16px;
+}
+.duration-input-dropdown-wrapper input:focus{
+    outline: none;
+}
+
+/* Delete Icon */
+
+.delete-icon-wrapper{
+    border-radius: 100px;
+    width: 48px;
+    height: 48px;
+    background: #FFEAE8;
+}
+.delete-icon-wrapper img{
+    padding: 13px 15px;
+}
+/* scroller style */
+.booking-table-wrapper::-webkit-scrollbar {
+    width:3px;
+    height:5px;
+}
+.booking-table-wrapper::-webkit-scrollbar-track {
+    background-color:var(--blue1);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+.booking-table-wrapper::-webkit-scrollbar-thumb {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color:var(--blue1);
+}
+.booking-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+    border-radius: 0;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+} 
+@media screen and (min-width:1399.98px) {
+    .time-and-dosage-check-box-details{
+        gap:clamp(0.3125rem, -6.0814rem + 7.3074vw, 2.6875rem)
+    }
+}

@@ -1,0 +1,32 @@
+.wrapper{
+    padding:28px 60px 0px 40px;
+}
+.revenue-graph-wrapper{
+    margin-bottom: 40px;
+    gap:40px;
+    
+}
+.revenue-graph-col{
+    padding: 28px 32px 25px 20px;
+    background: var(--grey7);
+    border-radius: 12px;
+}
+.revenue-content-col{
+    padding: 28px 20px;
+    background: var(--grey7);
+    border-radius: 12px;
+}
+.sorting-wrapper{
+    gap:8px;
+}
+.revenue-content-col-1{
+    gap:8px;
+}
+.revenue-content-col-2{
+    margin-top: 16px;
+    padding: 12px 0px 16px 0px;
+    border-bottom: 1px solid #DFDFEE;
+}
+.revenue-content-col-3{
+    padding: 12px 0px 16px 0px;
+}

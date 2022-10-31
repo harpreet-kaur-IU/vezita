@@ -1,0 +1,18 @@
+.stepper-wrapper{
+    margin-top: 30px;
+    width:100%;
+}
+.stepper{
+    width:52px;
+    height: 52px;
+    border-radius: 500%;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 28px;
+    color: var(--secondary);
+
+}
+.stepper svg{
+    width:18px;
+    height: 13.5px;
+}

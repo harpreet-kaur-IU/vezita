@@ -1,0 +1,34 @@
+
+.dashboard-tabs{
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    gap:28px;
+}
+.slots{
+    background: rgba(255, 134, 81, 0.1);
+    padding: 22px 20px;
+}
+.requested{
+    background: rgba(25, 180, 110, 0.1);
+    padding: 22px 20px;
+}
+.hide-patients{
+    background: rgba(217, 31, 17, 0.1);
+    padding: 22px 20px;
+}
+.show-patients{
+    background: rgba(48, 133, 244, 0.1);
+    padding: 22px 20px;
+}
+.revenue{
+    background: rgba(245, 197, 24, 0.1);
+    padding: 22px 20px;
+}
+.revenue-graph{
+    width:53%;
+    max-width: 53%;
+}
+.meeting-calls{
+    width:44%;
+    max-width: 44%;
+}

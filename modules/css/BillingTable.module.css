@@ -1,0 +1,100 @@
+
+.booking-table-scroll-section{
+    margin-top:12px;
+}
+.booking-table-wrapper{
+    border: 1px solid #DFDFEE;
+    border-radius: 4px;
+    width:100%;
+    overflow-x: scroll;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    background: var(--white);
+}
+.booking-table-header-row{
+    background: var(--grey5);
+    padding:15px;
+    display: grid;
+    grid-template-columns: 285.5px 285.5px 285.5px 285.5px 240px 140px;
+    word-break: break-all;
+}
+.booking-table-column{
+    display: grid;
+    grid-template-columns: 285.5px 285.5px 285.5px 285.5px 240px 140px;
+    word-break: break-all;
+    padding:18px 12px;
+}
+.status-btn{
+    color: var(--white);
+    background: var(--red);
+    border-radius: 100px;
+    padding: 10px 18px 10px 20px;
+}
+.status-btn img{
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+.status-btn-green{
+    color: var(--white);
+    background: var(--green4);
+    border-radius: 100px;
+    padding: 10px 18px 10px 20px;
+    margin-left: 6px;
+}
+.status-btn-green img{
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+.status-decline-text{
+    color: var(--red);
+}
+.status-accept-text{
+    color: var(--green4);
+}
+.status-noshow-text{
+    color: var(--orange);
+}
+/* .booking-table-column{
+    border-right: 1px solid #DFDFEE;
+} */
+.patient-details-column img{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+}
+.column-arrow img{
+    background-color: var(--primary);
+    border-radius: 100px;
+    padding: 6px;
+    width: 24px;
+    height: 24px;
+}
+.booking-table-column-data{
+    background-color: var(--grey7);
+}
+/* scroller style */
+.booking-table-wrapper::-webkit-scrollbar {
+    width:3px;
+    height:5px;
+}
+.booking-table-wrapper::-webkit-scrollbar-track {
+    background-color:var(--blue1);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+.booking-table-wrapper::-webkit-scrollbar-thumb {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color:var(--blue1);
+}
+.booking-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+    border-radius: 0;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+} 

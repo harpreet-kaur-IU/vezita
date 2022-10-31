@@ -1,0 +1,31 @@
+.banner-wrapper{
+    padding: 40px 40px 0px 40px;
+}
+.upload-banner{
+   
+    background-color: var(--grey6);
+    border-radius: 8px;
+    padding: 39px 0px 39px 0px;
+    margin-top: 4px;
+    gap: 7px;
+    position: relative;
+}
+.upload-banner input{
+    position: absolute;
+    opacity: 0;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.note-wrapper{
+    margin-top: 27px;
+    border: 1px solid var(--green2);
+    background-color: var(--green1);
+    padding: 10px;
+    border-radius: 6px;
+}
+.note-wrapper span{
+    color: var(--green5);
+    letter-spacing: -0.01em;
+}
