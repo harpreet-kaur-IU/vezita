@@ -1,16 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './css/AllPatientsTable.module.css'
 import Link from 'next/link'
 
 const AllPatientTable = () => {
     const[status,setStatus] = useState('0');
-
+    const[patient,setPatient] = useState("")
     const declineHandler = () =>{
         setStatus('decline');
     }
     const acceptHandler = () =>{
         setStatus('accept');
     }
+    useEffect(()=>{
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+          
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            const parsedResult = JSON.parse(result)
+            setPatient(parsedResult.docterPatient[0])
+            console.log(parsedResult.docterPatient[0])
+        })
+        .catch(error => console.log('error', error));
+    },[])
   return (
     <div className={`${styles["booking-table-scroll-section"]}`}>
         <div className={`${styles["booking-table-wrapper"]}`}>
@@ -36,8 +51,8 @@ const AllPatientTable = () => {
             </div>
             <div className={`${styles["booking-table-column"]} d-flex d-align-center`}>
                 <span className={`d-flex d-align-center ${styles["patient-details-column"]}`}>
-                    <img src='title-img.png'></img>
-                    <h5 className='l-22 f-400'>Cameron Williamson</h5>
+                    <img src={patient && patient.patient.avatar}></img>
+                    <h5 className='l-22 f-400'>{patient && patient.patient.name}</h5>
                 </span>
                 <span className='d-flex'>
                     <h5 className='l-22 f-400'>Stroke treatment</h5>
@@ -55,7 +70,7 @@ const AllPatientTable = () => {
                     <Link href="/addnewpatient"><img src='arrow.png'></img></Link>
                 </span>
             </div>
-            <div className={`${styles["booking-table-column"]} ${styles["booking-table-column-data"]} d-flex d-align-center`}>
+            {/* <div className={`${styles["booking-table-column"]} ${styles["booking-table-column-data"]} d-flex d-align-center`}>
                 <span className={`d-flex d-align-center ${styles["patient-details-column"]}`}>
                     <img src='title-img.png'></img>
                     <h5 className='l-22 f-400'>Cameron Williamson</h5>
@@ -113,7 +128,7 @@ const AllPatientTable = () => {
                 <span className={`cursor-pointer d-flex d-justify-center ${styles["column-arrow"]}`}>
                     <Link href="/addnewpatient"><img src='arrow.png'></img></Link>
                 </span>
-            </div>
+            </div> */}
         </div>
     </div>
   )

@@ -10,45 +10,24 @@ import CreateReports from '../icons/createReports'
 import Finance from '../icons/finance'
 import Message from '../icons/message'
 import Patients from '../icons/patients'
+import MenuItem from './MenuItem'
 const MenuBar = () => {
   return (
     <>
       <ul className={`d-flex d-flex-column p-0 m-0 list-style-none ${style["menu-bar-wrapper"]}`}>
-        <li className={`f-400 l-22 h5 d-flex d-align-center ${style["menu-item-wrapper"]}`}>
+        {/* <li className={`f-400 l-22 h5 d-flex d-align-center ${style["menu-item-wrapper"]}`}>
           <Dashboard></Dashboard>
           <Link href='/dashboard'>Dashboard</Link>
-        </li>
-        <li className={`f-400 l-22 h5 d-flex d-align-center ${style["menu-item-wrapper"]}`}>
-          <Reports></Reports>
-          <Link href='/reports'>Reports</Link>
-        </li>
-        <li className={`f-400 l-22 h5 d-flex d-align-center ${style["menu-item-wrapper"]} ${style["active"]}`}>
-          <Bookings></Bookings>
-          <Link href='/allBookings'>Bookings</Link>
-        </li>
-        <li className={`f-400 l-22 h5 d-flex d-align-center ${style["menu-item-wrapper"]}`}>
-          <Patients></Patients>
-          <Link href='/newpatient'>My Patients</Link>
-        </li>
-        <li className={`f-400 l-22 h5 d-flex d-align-center ${style["menu-item-wrapper"]}`}>
-          <Calendar></Calendar>
-          <Link href='/mycalendar'>My Calendar</Link>
-        </li>
-        <li className={`f-400 l-22 h5 d-flex d-align-center ${style["menu-item-wrapper"]}`}>
-          <CreateReports></CreateReports>
-          <Link href='/medicalreport'>Create Medical Reports</Link>
-        </li>
-        <li className={`f-400 l-22 h5 d-flex d-align-center ${style["menu-item-wrapper"]} `}>
-          <Message></Message>
-          <Link href='/'>Messages</Link>
-        </li>
-        <li className={`f-400 l-22 h5 d-flex d-align-center ${style["menu-item-wrapper"]}`}>
-          <Finance></Finance>
-          <Link href='/finances'>Finances</Link>
-        </li><li className={`f-400 l-22 h5 d-flex d-align-center ${style["menu-item-wrapper"]}`}>
-          <Banner></Banner>
-          <Link href='/banner'>Banners</Link>
-        </li>
+        </li> */}
+        <MenuItem title="Dashboard" path="/dashboard" multipath="0"></MenuItem>
+        <MenuItem title="Reports" path="/reports" multipath="0"></MenuItem>
+        <MenuItem title="Bookings" path="/allBookings" multipath="0"></MenuItem>
+        <MenuItem title="My Patients" path="/newpatient" multipath="0"></MenuItem>
+        <MenuItem title="My Calendar" path="/mycalendar" multipath="0"></MenuItem>
+        <MenuItem title="Create Medical Reports" path="/medicalreport" multipath="0"></MenuItem>
+        <MenuItem title="Messages" path="/" multipath="0"></MenuItem>
+        <MenuItem title="Finances" path="/finances" multipath="0"></MenuItem>
+        {/* <MenuItem title="Banners" path="/banner" multipath="0"></MenuItem> */}
       </ul>
 
       <div className={`${style["help-wrapper"]}`}>

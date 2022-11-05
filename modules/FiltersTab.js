@@ -5,7 +5,10 @@ const FiltersTab = () => {
     <div className={`d-flex d-align-center d-justify-space-between ${styles["filters-wrapper"]}`}>
         <div className='d-flex d-align-center'>
             <div className={`d-flex ${styles["autobooking-wrapper"]}`}>
-                <img src='info-fill-icon.png'></img>
+                <div className={`${styles["tooltip"]}`}>
+                    <img src='info-fill-icon.png'></img>
+                    <h6 className={`${styles["tooltiptext"]}`}>text</h6>
+                </div>
                 <h4 className='f-400 l-26'>Autobooking:</h4>
                 <div className='d-flex d-justify-center'>
                 <label className={`${styles["rectangle"]}`}>

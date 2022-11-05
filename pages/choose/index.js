@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react'
-import Base from '../layout/base'
-import BookingDetailsChoose from '../modules/BookingDetailsChoose'
+import Base from '../../layout/base'
+import BookingDetailsChoose from '../../modules/BookingDetailsChoose'
 
-export default function dashboard (){
+const index = () => {
   return (
     <Fragment>
         <Base>
@@ -11,3 +11,5 @@ export default function dashboard (){
     </Fragment>
   )
 }
+
+export default index

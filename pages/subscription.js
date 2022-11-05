@@ -1,4 +1,4 @@
-import React,{useRef,useState} from 'react'
+import React,{useEffect, useRef,useState} from 'react'
 import styles from '../modules/css/subscription.module.css'
 import BillPlan from '../modules/BillPlan';
 import PlanSummary from '../modules/PlanSummary';
@@ -6,6 +6,9 @@ export default function Subscription() {
     const billTab = useRef();
     const [outerTab, setOuterTab] = useState(0);
     const [tab,setTab] = useState("Bill Yearly")
+    const [type,setType] = useState("")
+    const [price,setPrice] = useState("")
+     
     const tabHandler = (e) => {
       const ele = billTab.current.querySelectorAll("h5");
       ele.forEach(element =>{
@@ -14,7 +17,12 @@ export default function Subscription() {
       e.currentTarget.classList.add(styles.active);
       setTab(e.target.outerText)
     }
-    const outerTabHandler = () => {
+    const outerTabHandler = (val,price) => {
+      setOuterTab(prev => !prev)
+      setType(val)
+      setPrice(price)
+    }
+    const planType = ()=>{
       setOuterTab(prev => !prev)
     }
   return (
@@ -25,17 +33,17 @@ export default function Subscription() {
         <>
           <h2 className='col-12 f-600 text-grey-2 l-32 mt-10 d-flex d-justify-center'>Pick your plan</h2>
           <div ref={billTab} className={`${styles["tab-wrapper"]} mt-5 d-flex d-align-center  d-justify-center`}>
-              <h5 className='f-500 l-22 text-grey-3 cursor-pointer' onClick={tabHandler}>Bill Monthly</h5>
-              <h5 className={`f-500 l-22 text-grey-3 ml-1 cursor-pointer ${styles["active"]}`} onClick={tabHandler}>Bill Yearly</h5>
+            <h5 className='f-500 l-22 text-grey-3 cursor-pointer' onClick={tabHandler}>Bill Monthly</h5>
+            <h5 className={`f-500 l-22 text-grey-3 ml-1 cursor-pointer ${styles["active"]}`} onClick={tabHandler}>Bill Yearly</h5>
           </div>
-          {tab == "Bill Yearly" && <BillPlan type="1" handler={outerTabHandler}></BillPlan>}
+          {tab == "Bill Yearly" && <BillPlan type="1"  handler={outerTabHandler}></BillPlan>}
           {tab == "Bill Monthly" && <BillPlan type="0" handler={outerTabHandler}></BillPlan>}
         </>}
       </div>
       <div className='col-5 offset-35 d-flex d-justify-center d-flex-wrap'>
           {outerTab == 1 && 
           <>
-            <PlanSummary handler={outerTabHandler}></PlanSummary>
+            <PlanSummary planType={type} planPrice={price} handler={planType}></PlanSummary>
             </>
           }
       </div>

@@ -45,18 +45,9 @@ export default function Login() {
                 fetch(`${process.env.NEXT_PUBLIC_BASE_URL}user/login`, requestOptions)
                 .then(response => response.json())
                 .then(result =>{
-                    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}user/generate-token/${authUser.user.multiFactor.user.uid}`,{
-                        method: 'POST',
-                        redirect: 'follow'
-                    })
-                    .then(response => response.text())
-                    .then(res => {
-                        var results = JSON.parse(res)
-                        setVezitaOnBoardCookie(results.token);
-                        router.push("/doctorsetup")
-                    })
-                    .catch(error => console.log('error', error));
+                    setVezitaOnBoardCookie(authUser.user.multiFactor.user.accessToken);
                     setLoading(false)
+                    router.push("/doctorsetup")
                 })
                 .catch(error => console.log('error', error));
             }else{

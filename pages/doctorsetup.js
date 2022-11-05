@@ -14,11 +14,41 @@ import {
     geocodeByPlaceId,
     getLatLng,
   } from 'react-places-autocomplete';
+import { GoogleMap,useJsApiLoader  } from '@react-google-maps/api';
+const containerStyle = {
+    width: '500px',
+    height: '160px'
+  };
+  
+  const center = {
+    lat: -3.745,
+    lng: -38.523
+  };
+  
 export default function DoctorSetup() {
+    const [map, setMap] = useState(null)
+    const {isLoaded } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: "AIzaSyBGTPA5a9Z0p_9WMrmgaJDsQMggDn0-XY0"
+    })
+    
+    const onLoad = React.useCallback(function callback(map) {
+        const bounds = new window.google.maps.LatLngBounds(center);
+        map.fitBounds(bounds);
+        setMap(map)
+    }, [])
+
+    const onUnmount = React.useCallback(function callback(map) {
+        setMap(null)
+    }, [])
+
+
     const [tab, setTab] = useState(0);
     const router = useRouter();
     const JWTToken = getVezitaOnBoardFromCookie();
     const [skip,setSkip] = useState(false)
+    const [estId,setEstId] = useState("")
+    
     //tab1 state
     const [specialization,setSpecialization] = useState("");
     const [city,setCity] = useState("")
@@ -62,8 +92,19 @@ export default function DoctorSetup() {
     const [clinicProof,setClinicProof] = useState("")
     const [isClinic,setIsClinic] = useState(false)
 
+    //tab11 state
+    const [contact,setContact] = useState()
+    const [address,setAddress] = useState()
+
+    //tab12
+    const dayArray = [];
+
+    //tab13 state
+    const [fees,setFees] = useState("")
+    const [hour,setHour] = useState("")
+
     const continueHandler = () =>{
-        router.push("/doctordashboard");
+        router.push("/subscription");
     }
     const nextHandler = () =>{
         setTab(prev => prev+1)
@@ -139,22 +180,22 @@ export default function DoctorSetup() {
     }
     const estCityHandler = (e) =>{
         setEstCity(e.currentTarget.id)
-        geocodeByAddress(e.currentTarget.id)
-        .then(results => getLatLng(results[0]))
-        .then(({ lat, lng }) =>{
-            setLong(lng),
-            setLat(lat)
-        });
+        // geocodeByAddress(e.currentTarget.id)
+        // .then(results => getLatLng(results[0]))
+        // .then(({ lat, lng }) =>{
+        //     setLong(lng),
+        //     setLat(lat)
+        // });
     }
 
     //tab6 handler
     const idHandler = (e) =>{
-        setIdProof(e.target.files[0])
+        setIdProof(e.target.files[0].name)
         SetIdUploaded(true)
     }
     //tab7 handler 
     const medRegHandler = (e) =>{
-        setMedReg(e.target.files[0])
+        setMedReg(e.target.files[0].name)
         SetMedUploaded(true)
     }
     //tab8 Handler
@@ -162,9 +203,47 @@ export default function DoctorSetup() {
         setEstProof(e.currentTarget.value)
     }
     const clinicProofHandler = (e) =>{
-        setClinicProof(e.target.files[0])
+        setClinicProof(e.target.files[0].name)
         setIsClinic(true)
     }
+
+    //tab11 Handler
+    const getLatLang = (e) =>{
+        const lat = e.latLng.lat()
+        const long = e.latLng.lng()
+        setLat(lat)
+        setLong(long)
+    }
+
+    const addressHandler = (e) =>{
+        setAddress(e.target.value)
+    }
+    const contactHandler = (e) =>{
+        setContact(e.target.value)
+    }
+
+    //Tab 12 Handler
+    const dayHandler = (day,val) =>{
+        if(val){
+            dayArray.push(day)
+        }
+        else{
+            for(var i = 0;i<dayArray.length;i++){
+                if(dayArray[i] === day){
+                    dayArray.splice(i,1);
+                }
+            }
+        }
+    }
+
+    //tab13 handler
+    const feesHandler = (e) =>{
+        setFees(e.target.value)
+    }
+    const hourHandler = (e) =>{
+        setHour(e.target.value)
+    }
+
     useEffect(()=>{
         var requestOptions = {
             method: 'GET',
@@ -196,6 +275,7 @@ export default function DoctorSetup() {
         .then(result =>{
             const parsedResult =  JSON.parse(result)
             console.log(parsedResult)
+
             setDoctorId(parsedResult.docter._id)
             if(parsedResult.docter.fullName){
                 setTab(2)
@@ -208,6 +288,7 @@ export default function DoctorSetup() {
             }
             if(parsedResult.docter.establishment[0].establishmentName){
                 setTab(6)
+                setEstId(parsedResult.docter.establishment[0]._id)
             }
         })
         .catch(error => console.log('error', error));
@@ -318,11 +399,6 @@ export default function DoctorSetup() {
         var raw = JSON.stringify({
             "establishmentName": estName,
             "establishmentType":establishment,
-            "location": {
-                "type": "Point",
-                "coordinates": [long,lat],
-                "address": estCity
-            },
         });
         var requestOptions = {
             method: 'POST',
@@ -340,18 +416,190 @@ export default function DoctorSetup() {
     //Identity Proof
     const idProofForm = (e) =>{
         e.preventDefault()
-        setTab(8)
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "documentType": "identity",
+            "document": idProof
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}document`, requestOptions)
+        .then(response => response.text())
+        .then(result => {setTab(8)})
+        .catch(error => console.log('error', error));
     }
+
     //Medical Reg Proof
     const medicalHandler = (e) =>{
         e.preventDefault()
-        setTab(9)
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "documentType": "medical",
+            "document": medReg
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}document`, requestOptions)
+        .then(response => response.text())
+        .then(result => {setTab(9)})
+        .catch(error => console.log('error', error));
     }
 
     //Establishment Proof
     const estProofForm = (e) =>{
         e.preventDefault()
         setTab(10)
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "documentType": "establishment",
+            "document": clinicProof
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}document`, requestOptions)
+        .then(response => response.text())
+        .then(result => {setTab(10)})
+        .catch(error => console.log('error', error));
+    }
+
+    //Location and Timing
+    const locationForm = (e) =>{
+        e.preventDefault();
+        console.log("ghgh")
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "contactNumber": contact,
+            "location": {
+                "type": "Point",
+                "coordinates": [
+                    long,
+                    lat
+                ],
+                "address":address
+            },
+        });
+
+        var requestOptions = {
+            method: 'PATCH',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}establishment/update/${estId}`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            console.log(result)
+            setTab(12)
+        })
+        .catch(error => console.log('error', error));
+    }
+
+    //session form
+    const sessionForm = (e) =>{
+        e.preventDefault();
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "consultationDay":dayArray
+        });
+
+        var requestOptions = {
+            method: 'PATCH',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}establishment/update/${estId}`, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
+
+        var raw2 = JSON.stringify([
+            {
+                "startTime": "2022-09-05T04:30:00.000+00:00",
+                "endTime": "2022-09-05T05:00:00.000+00:00",
+            },
+            {
+                "startTime": "2022-09-05T04:30:00.000+00:00",
+                "endTime": "2022-09-05T05:00:00.000+00:00",
+            },
+            {
+                "startTime": "2022-09-05T04:30:00.000+00:00",
+                "endTime": "2022-09-05T05:00:00.000+00:00",
+            },
+        ]);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw2,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}slot`, requestOptions)
+        .then(response => response.text())
+        .then(result =>  setTab(13))
+        .catch(error => console.log('error', error));
+    }
+
+    //consult form
+    const consultForm = (e) =>{
+        e.preventDefault()
+        console.log(fees,hour)
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "consultationFee": fees
+        });
+
+        var requestOptions = {
+            method: 'PATCH',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}establishment/update/${estId}`, requestOptions)
+        .then(response => response.text())
+        .then(result => setTab(14))
+        .catch(error => console.log('error', error));
     }
   return (
     <div className='col-12 d-flex d-flex-wrap '>
@@ -648,12 +896,11 @@ export default function DoctorSetup() {
                                     {isMedUploaded?<h6 className='f-400 l-20 text-grey-3'>File Uploaded Sucessfully</h6>:<h6 className='f-400 l-20 text-grey-3'>Upload (PDF, JPG, PNG)</h6>}
                                 </div>
                             </div>
+                            <div className='d-flex mt-7 gap-2'>
+                                {/* <button className='col-6 btn btn-outline-grey' onClick={prevHandler}>Previous</button> */}
+                                <button className='col-6 btn btn-primary'>Next</button>
+                            </div>
                         </form>
-                       
-                        <div className='d-flex mt-7 gap-2'>
-                            {/* <button className='col-6 btn btn-outline-grey' onClick={prevHandler}>Previous</button> */}
-                            <button className='col-6 btn btn-primary' onClick={nextHandler}>Next</button>
-                        </div>
                     </>
                     }
                     {tab == 9 && 
@@ -761,60 +1008,76 @@ export default function DoctorSetup() {
                         <Stepper title="3" active="0"></Stepper>
                         <h1 className='f-600 l-40 mt-40 text-secondary col-12 mb-7'>Location & Timings</h1>
                         <label className='d-flex'>Contact</label>
-                        <div className='d-flex col-12 gap-2'>
-                            <div className='col-3'>
-                                <DropDown placeholder="+212"></DropDown>
+                        <form onSubmit={locationForm}>
+                            <div className='d-flex col-12 gap-2'>
+                                <div className='col-3'>
+                                    <DropDown placeholder="+212"></DropDown>
+                                </div>
+                                <div className='col-9'>
+                                    <input value={contact} onChange={contactHandler} type="tel" placeholder='Contact Number'/>
+                                </div>
                             </div>
-                            <div className='col-9'>
-                                <input type="tel" placeholder='Jane Doe'/>
+                            <label className='d-flex'>Your Clinic Address</label>
+                            <input value={address} onChange={addressHandler} type="text" placeholder='4517 Washington Ave. Manchester, Kentucky 39495'/>
+                            <h6 className='f-500 mt-5 mb-1 l-20 text-grey-3'>Drop a pin to link your Clinic address</h6>
+                            <div className={`col-12 ${styles["map-location-img"]}`}>
+                            <GoogleMap
+                                onClick={getLatLang}
+                                mapContainerStyle={containerStyle}
+                                center={center}
+                                zoom={10}
+                                onLoad={onLoad}
+                                onUnmount={onUnmount}
+                            ></GoogleMap>
                             </div>
-                        </div>
-                        <label className='d-flex'>Your Clinic Address</label>
-                        <input type="text" placeholder='4517 Washington Ave. Manchester, Kentucky 39495'/>
-                        <h6 className='f-500 mt-5 mb-1 l-20 text-grey-3'>Drop a pin to link your Clinic address</h6>
-                        <img className={`col-12 ${styles["map-location-img"]}`} src="map.png"/>
-                        <div className='d-flex mt-7 gap-2'>
-                            <button className='col-6 btn btn-outline-grey' onClick={prevHandler}>Previous</button>
-                            <button className='col-6 btn btn-primary' onClick={nextHandler}>Next</button>
-                        </div>
+                            <div className='d-flex mt-7 gap-2'>
+                                {/* <button className='col-6 btn btn-outline-grey' onClick={prevHandler}>Previous</button> */}
+                                <button className='col-6 btn btn-primary'>Next</button>
+                            </div>
+                        </form>
                     </>}
                     {tab == 12 && 
                     <>
                         <Stepper title="3" active="1"></Stepper>
                         <h1 className='f-600 l-40 mt-60 text-secondary col-12 mb-7'>Location & Timings</h1>
                         <label className='d-flex'>Days</label>
-                        <div className={`${styles["days-wrapper"]} col-12`}>
-                            <DaySelector title="Mo"/>
-                            <DaySelector title="Tu"/>
-                            <DaySelector title="We"/>
-                            <DaySelector title="Th"/>
-                            <DaySelector title="Fr"/>
-                            <DaySelector title="Sa"/>
-                            <DaySelector title="Su"/>
-                        </div>
-                        <label className='d-flex'>Session 1</label>
-                        <div className={`${styles["timing"]} mt-1 d-flex d-align-center gap-3`}>
-                            <DropDownDate placeholder="From"/>
-                            <img src="arrow.png"/>
-                            <DropDownDate placeholder="To"/>
-                        </div>
-                        <label className='d-flex'>Session 2</label>
-                        <div className={`${styles["timing"]} mt-1 d-flex d-align-center gap-3`}>
-                            <DropDownDate placeholder="From"/>
-                            <img src="arrow.png"/>
-                            <DropDownDate placeholder="To"/>
-                        </div>
-                        <div className='d-flex d-align-center mt-6'>
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19.375 10C19.375 10.2984 19.2565 10.5845 19.0455 10.7955C18.8345 11.0065 18.5484 11.125 18.25 11.125H11.125V18.25C11.125 18.5484 11.0065 18.8345 10.7955 19.0455C10.5845 19.2565 10.2984 19.375 10 19.375C9.70163 19.375 9.41548 19.2565 9.2045 19.0455C8.99353 18.8345 8.875 18.5484 8.875 18.25V11.125H1.75C1.45163 11.125 1.16548 11.0065 0.954505 10.7955C0.743526 10.5845 0.625 10.2984 0.625 10C0.625 9.70163 0.743526 9.41548 0.954505 9.2045C1.16548 8.99353 1.45163 8.875 1.75 8.875H8.875V1.75C8.875 1.45163 8.99353 1.16548 9.2045 0.954505C9.41548 0.743526 9.70163 0.625 10 0.625C10.2984 0.625 10.5845 0.743526 10.7955 0.954505C11.0065 1.16548 11.125 1.45163 11.125 1.75V8.875H18.25C18.5484 8.875 18.8345 8.99353 19.0455 9.2045C19.2565 9.41548 19.375 9.70163 19.375 10Z" fill="#3085F4"/>
-                            </svg>
-                            <h5 className='ml-2 f-600 l-20 text-primary'> ADD TIMING</h5>
-                        </div>
-                        
-                        <div className='d-flex mt-7 gap-2'>
-                            <button className='col-6 btn btn-outline-grey' onClick={prevHandler}>Previous</button>
-                            <button className='col-6 btn btn-primary' onClick={nextHandler}>Next</button>
-                        </div>
+                        <form onSubmit={sessionForm}>
+                            <div className={`${styles["days-wrapper"]} col-12`}>
+                                <DaySelector handler={dayHandler} title="Mon"/>
+                                <DaySelector handler={dayHandler} title="Tue"/>
+                                <DaySelector handler={dayHandler} title="Wed"/>
+                                <DaySelector handler={dayHandler} title="Thu"/>
+                                <DaySelector handler={dayHandler} title="Fri"/>
+                                <DaySelector handler={dayHandler} title="Sat"/>
+                                <DaySelector handler={dayHandler} title="Sun"/>
+                            </div>
+
+                            <label className='d-flex'>Session 1</label>
+                            <div className={`${styles["timing"]} mt-1 d-flex d-align-center gap-3`}>
+                                <DropDownDate placeholder="From"/>
+                                {/* <img src="arrow.png"/> */}
+                                <DropDownDate placeholder="To"/>
+                            </div>
+
+                            <label className='d-flex'>Session 2</label>
+                            <div className={`${styles["timing"]} mt-1 d-flex d-align-center gap-3`}>
+                                <DropDownDate placeholder="From"/>
+                                {/* <img src="arrow.png"/> */}
+                                <DropDownDate placeholder="To"/>
+                            </div>
+
+                            <div className='d-flex d-align-center mt-6'>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19.375 10C19.375 10.2984 19.2565 10.5845 19.0455 10.7955C18.8345 11.0065 18.5484 11.125 18.25 11.125H11.125V18.25C11.125 18.5484 11.0065 18.8345 10.7955 19.0455C10.5845 19.2565 10.2984 19.375 10 19.375C9.70163 19.375 9.41548 19.2565 9.2045 19.0455C8.99353 18.8345 8.875 18.5484 8.875 18.25V11.125H1.75C1.45163 11.125 1.16548 11.0065 0.954505 10.7955C0.743526 10.5845 0.625 10.2984 0.625 10C0.625 9.70163 0.743526 9.41548 0.954505 9.2045C1.16548 8.99353 1.45163 8.875 1.75 8.875H8.875V1.75C8.875 1.45163 8.99353 1.16548 9.2045 0.954505C9.41548 0.743526 9.70163 0.625 10 0.625C10.2984 0.625 10.5845 0.743526 10.7955 0.954505C11.0065 1.16548 11.125 1.45163 11.125 1.75V8.875H18.25C18.5484 8.875 18.8345 8.99353 19.0455 9.2045C19.2565 9.41548 19.375 9.70163 19.375 10Z" fill="#3085F4"/>
+                                </svg>
+                                <h5 className='ml-2 f-600 l-20 text-primary'>ADD TIMING</h5>
+                            </div>
+                            
+                            <div className='d-flex mt-7 gap-2'>
+                                {/* <button className='col-6 btn btn-outline-grey'>Previous</button> */}
+                                <button className='col-6 btn btn-primary'>Next</button>
+                            </div>
+                        </form>
                     </>
                     }
                     {tab == 13 && 
@@ -822,24 +1085,26 @@ export default function DoctorSetup() {
                         <Stepper title="3" active="2"></Stepper>
                         <h1 className='f-600 l-40 mt-60 text-secondary col-12 mb-7'>Location & Timings</h1>
                         <label className='d-flex'>Consultation Fees</label>
-                        <div className={`${styles["background-wrapper"]} d-flex d-align-center`}>
-                            <h5 className='f-400 l-22 text-secondary' for="same">USD</h5>
-                            <input type="number" placeholder='30' />
-                            
-                        </div>
-                        <label className='d-flex'>Doctors'hours</label>
-                        <div className={`${styles["background-wrapper"]} d-flex`}>
-                            <input type="radio" id="same" name="hours" value="same"/>
-                            <h5 className='f-500  text-secondary ml-3 mb-0' for="same">Same as establishment hours</h5>
-                        </div>
-                        <div className={`${styles["background-wrapper"]} d-flex mt-4`}>
-                            <input type="radio" id="differ" name="hours" value="differ"/>
-                            <h5 className='f-500  text-secondary ml-3 mb-0' for="differ">Different hours</h5>
-                        </div>
-                        <div className='d-flex mt-7 gap-2'>
-                            <button className='col-6 btn btn-outline-grey' onClick={prevHandler}>Previous</button>
-                            <button className='col-6 btn btn-primary' onClick={nextHandler}>Next</button>
-                        </div>
+                        <form onSubmit={consultForm}>
+                            <div className={`${styles["background-wrapper"]} d-flex d-align-center`}>
+                                <h5 className='f-400 l-22 text-secondary' for="same">USD</h5>
+                                <input value={fees} onChange={feesHandler} type="number" placeholder='30' />
+                                
+                            </div>
+                            <label className='d-flex'>Doctors'hours</label>
+                            <div className={`${styles["background-wrapper"]} d-flex`}>
+                                <input onClick={hourHandler} type="radio" id="same" name="hours" value="same"/>
+                                <h5 className='f-500  text-secondary ml-3 mb-0' for="same">Same as establishment hours</h5>
+                            </div>
+                            <div className={`${styles["background-wrapper"]} d-flex mt-4`}>
+                                <input onClick={hourHandler} type="radio" id="differ" name="hours" value="differ"/>
+                                <h5 className='f-500  text-secondary ml-3 mb-0' for="differ">Different hours</h5>
+                            </div>
+                            <div className='d-flex mt-7 gap-2'>
+                                {/* <button className='col-6 btn btn-outline-grey' onClick={prevHandler}>Previous</button> */}
+                                <button className='col-6 btn btn-primary'>Next</button>
+                            </div>
+                        </form>
                     </>
                     }
                     {tab == 14 && 
@@ -856,7 +1121,7 @@ export default function DoctorSetup() {
                                         <path d="M10.5 0.25C8.57164 0.25 6.68657 0.821828 5.08319 1.89317C3.47982 2.96451 2.23013 4.48726 1.49218 6.26884C0.754225 8.05042 0.561142 10.0108 0.937348 11.9021C1.31355 13.7934 2.24215 15.5307 3.60571 16.8943C4.96928 18.2579 6.70656 19.1865 8.59787 19.5627C10.4892 19.9389 12.4496 19.7458 14.2312 19.0078C16.0127 18.2699 17.5355 17.0202 18.6068 15.4168C19.6782 13.8134 20.25 11.9284 20.25 10C20.245 7.41566 19.2162 4.93859 17.3888 3.11118C15.5614 1.28378 13.0843 0.254956 10.5 0.25ZM15.1406 8.29375L9.64688 13.5438C9.50485 13.6774 9.31687 13.7512 9.12188 13.75C9.02657 13.7514 8.93194 13.7338 8.84344 13.6984C8.75494 13.663 8.67433 13.6105 8.60625 13.5438L5.85938 10.9188C5.78319 10.8523 5.72123 10.7711 5.67722 10.6801C5.63321 10.589 5.60806 10.49 5.60328 10.389C5.5985 10.2881 5.61419 10.1871 5.64941 10.0924C5.68463 9.99758 5.73865 9.9109 5.80822 9.83754C5.8778 9.76417 5.96149 9.70563 6.05426 9.66543C6.14703 9.62523 6.24698 9.6042 6.34809 9.60362C6.44919 9.60303 6.54938 9.62289 6.64261 9.66201C6.73585 9.70113 6.82021 9.7587 6.89063 9.83125L9.12188 11.9594L14.1094 7.20625C14.2552 7.07902 14.4446 7.01309 14.6379 7.02223C14.8312 7.03138 15.0135 7.1149 15.1467 7.25533C15.2798 7.39576 15.3536 7.58222 15.3524 7.77575C15.3513 7.96928 15.2754 8.15488 15.1406 8.29375Z" fill="#19B46E"/>
                                     </svg>
                                 </span>
-                                <h5 className='f-600 l-22 text-green-4 ml-6 cursor-pointer' onClick={detailChangeHandler}>CHANGE</h5>
+                                {/* <h5 className='f-600 l-22 text-green-4 ml-6 cursor-pointer' onClick={detailChangeHandler}>CHANGE</h5> */}
                             </div>
                         </div>
                         <div className={`mt-4 ${styles["wrapper-with-bottom-border"]}`}>
@@ -869,7 +1134,7 @@ export default function DoctorSetup() {
                                         <path d="M10.5 0.25C8.57164 0.25 6.68657 0.821828 5.08319 1.89317C3.47982 2.96451 2.23013 4.48726 1.49218 6.26884C0.754225 8.05042 0.561142 10.0108 0.937348 11.9021C1.31355 13.7934 2.24215 15.5307 3.60571 16.8943C4.96928 18.2579 6.70656 19.1865 8.59787 19.5627C10.4892 19.9389 12.4496 19.7458 14.2312 19.0078C16.0127 18.2699 17.5355 17.0202 18.6068 15.4168C19.6782 13.8134 20.25 11.9284 20.25 10C20.245 7.41566 19.2162 4.93859 17.3888 3.11118C15.5614 1.28378 13.0843 0.254956 10.5 0.25ZM15.1406 8.29375L9.64688 13.5438C9.50485 13.6774 9.31687 13.7512 9.12188 13.75C9.02657 13.7514 8.93194 13.7338 8.84344 13.6984C8.75494 13.663 8.67433 13.6105 8.60625 13.5438L5.85938 10.9188C5.78319 10.8523 5.72123 10.7711 5.67722 10.6801C5.63321 10.589 5.60806 10.49 5.60328 10.389C5.5985 10.2881 5.61419 10.1871 5.64941 10.0924C5.68463 9.99758 5.73865 9.9109 5.80822 9.83754C5.8778 9.76417 5.96149 9.70563 6.05426 9.66543C6.14703 9.62523 6.24698 9.6042 6.34809 9.60362C6.44919 9.60303 6.54938 9.62289 6.64261 9.66201C6.73585 9.70113 6.82021 9.7587 6.89063 9.83125L9.12188 11.9594L14.1094 7.20625C14.2552 7.07902 14.4446 7.01309 14.6379 7.02223C14.8312 7.03138 15.0135 7.1149 15.1467 7.25533C15.2798 7.39576 15.3536 7.58222 15.3524 7.77575C15.3513 7.96928 15.2754 8.15488 15.1406 8.29375Z" fill="#19B46E"/>
                                     </svg>
                                 </span>
-                                <h5 className='f-600 l-22 text-green-4 ml-6 cursor-pointer' onClick={verificationChangeHandler}>CHANGE</h5>
+                                {/* <h5 className='f-600 l-22 text-green-4 ml-6 cursor-pointer' onClick={verificationChangeHandler}>CHANGE</h5> */}
                             </div>
                         </div>
                         <div className='mt-4'>
@@ -882,11 +1147,10 @@ export default function DoctorSetup() {
                                         <path d="M10.5 0.25C8.57164 0.25 6.68657 0.821828 5.08319 1.89317C3.47982 2.96451 2.23013 4.48726 1.49218 6.26884C0.754225 8.05042 0.561142 10.0108 0.937348 11.9021C1.31355 13.7934 2.24215 15.5307 3.60571 16.8943C4.96928 18.2579 6.70656 19.1865 8.59787 19.5627C10.4892 19.9389 12.4496 19.7458 14.2312 19.0078C16.0127 18.2699 17.5355 17.0202 18.6068 15.4168C19.6782 13.8134 20.25 11.9284 20.25 10C20.245 7.41566 19.2162 4.93859 17.3888 3.11118C15.5614 1.28378 13.0843 0.254956 10.5 0.25ZM15.1406 8.29375L9.64688 13.5438C9.50485 13.6774 9.31687 13.7512 9.12188 13.75C9.02657 13.7514 8.93194 13.7338 8.84344 13.6984C8.75494 13.663 8.67433 13.6105 8.60625 13.5438L5.85938 10.9188C5.78319 10.8523 5.72123 10.7711 5.67722 10.6801C5.63321 10.589 5.60806 10.49 5.60328 10.389C5.5985 10.2881 5.61419 10.1871 5.64941 10.0924C5.68463 9.99758 5.73865 9.9109 5.80822 9.83754C5.8778 9.76417 5.96149 9.70563 6.05426 9.66543C6.14703 9.62523 6.24698 9.6042 6.34809 9.60362C6.44919 9.60303 6.54938 9.62289 6.64261 9.66201C6.73585 9.70113 6.82021 9.7587 6.89063 9.83125L9.12188 11.9594L14.1094 7.20625C14.2552 7.07902 14.4446 7.01309 14.6379 7.02223C14.8312 7.03138 15.0135 7.1149 15.1467 7.25533C15.2798 7.39576 15.3536 7.58222 15.3524 7.77575C15.3513 7.96928 15.2754 8.15488 15.1406 8.29375Z" fill="#19B46E"/>
                                     </svg>
                                 </span>
-                                <h5 className='f-600 l-22 text-green-4 ml-6 cursor-pointer' onClick={getPatientsChangeHandler}>CHANGE</h5>
+                                {/* <h5 className='f-600 l-22 text-green-4 ml-6 cursor-pointer' onClick={getPatientsChangeHandler}>CHANGE</h5> */}
                             </div>
                         </div>
                         <button onClick={continueHandler} className='btn btn-primary mt-5'>Continue</button>
-
                     </>}
                 </div>
             </div>

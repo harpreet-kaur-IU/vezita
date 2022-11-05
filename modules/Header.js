@@ -3,10 +3,11 @@ import styles from './css/SideBar.module.css'
 import Close from '../icons/close'
 import Menu from '../icons/menu'
 import { useRouter } from 'next/router'
-
+import useFirebaseAuth from '../auth/useFirebaseAuth'
 const Header = (props) => {
   const [dropdown,setDropdown] = useState(false)
   const router = useRouter();
+  const {signOut} = useFirebaseAuth()
 
   const profileHandler = () =>{
     router.push("/profile")
@@ -15,6 +16,7 @@ const Header = (props) => {
   const dropdownHandler = () =>{
     setDropdown(prev => !prev)
   }
+  
   const sideBarHandler = (e) => {
     e.currentTarget.classList.toggle(styles["open"]);
     console.log("Sidebar = "+styles["sidebar-wrapper"]);
@@ -22,6 +24,10 @@ const Header = (props) => {
     document.querySelector(`#sidebar-wrapper`).classList.toggle(styles["sidebar-wrapper"])
   }
 
+  const logoutHandler = () =>{
+    signOut()
+    .catch((error)=>console.log("error while logout"+error))
+  }
   return (
     <div className="p-relative header-wrapper">
       <div className={`p-relative d-flex d-align-center d-justify-space-between `}>
@@ -84,6 +90,13 @@ const Header = (props) => {
               <span className='h5'>Notifications</span> 
             </div>
             <img src='arrow-right.png'></img>
+          </div>
+          <div onClick={logoutHandler} className={`d-flex d-align-center d-justify-space-between ${styles["edit-profile-wrapper"]}`}>
+            <div className={`d-flex d-align-center ${styles["user-icon-text"]}`}>
+              <img src='noti-bell-icon.png'></img>
+              <span className='h5'>Logout</span> 
+            </div>
+            {/* <img src='arrow-right.png'></img> */}
           </div>
         </div>
       }

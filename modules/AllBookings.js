@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './css/AllBookings.module.css'
 import BookingTable from './BookingTable'
 import FiltersTab from './FiltersTab';
@@ -9,6 +9,7 @@ const AllBookings = () => {
     const handleClick = (e) =>{
         setActiveTab(e.target.id);
     }
+
   return (
     <>
         <Header title="Bookings"></Header>
@@ -26,13 +27,13 @@ const AllBookings = () => {
             </div>
             <FiltersTab></FiltersTab>
             {activeTab === "tab1" && 
-                <BookingTable></BookingTable>
+                <BookingTable title="All"></BookingTable>
             }
             {activeTab === "tab2" && 
-                <BookingTable></BookingTable>
+                <BookingTable title="Today"></BookingTable>
             }
             {activeTab === "tab3" && 
-                <BookingTable></BookingTable>
+                <BookingTable title="Upcomings"></BookingTable>
             }
         </div>
     </>

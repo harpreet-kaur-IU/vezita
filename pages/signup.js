@@ -136,16 +136,20 @@ export default function Signup() {
                     <form onSubmit={formSubmit} className={`col-12 mt-10 d-flex d-flex-column ${styles["login-setup"]}`}>
                         <label>Email</label>
                         <input type="email" placeholder='Enter your email' value={email} onChange={emailHandler} required/>
+                        
                         <label>Password</label>
                         <input type="password" placeholder='Enter your password' value={password} onChange={passwordHandler} required/>
+                        
                         <label>Confirm Password</label>
                         <input type="password" placeholder='Confirm password' value={confirmPassword} onChange={confirmPasswordHandler} onBlur={checkPasswordHandler} required/>
+                        
                         {passMatch && <span className='mt-1 text-red'>Password and Confirm Password should be same</span>}
                         <div onClick={policyAcceptedHandler} className='d-flex d-align-center mt-5'>
                             {policyAccepted && <input type="checkbox" ref={policy} checked onChange={e => {}}></input>}
                             {!policyAccepted && <input type='checkbox' ref={policy} onChange={e => {}}></input>}
                             <h6 className='ml-3 f-600 l-20 text-grey-3'>By signing up you agree to our <span className='text-secondary'>Terms of Service</span> and <span className='text-secondary'>Privacy Policy.</span></h6>
                         </div>
+                        
                         {policyerror && <span className='h5 f-600 mt-1 text-red'>*Please check the policy checkbox</span>}
                         <button className='btn btn-primary mt-7'>Signup</button>
                         <h4 className='f-600 l-26 text-secondary mt-100'>Already have an account? <Link href="/" className='text-primary'>Login</Link></h4>
