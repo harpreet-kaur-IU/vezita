@@ -22,11 +22,8 @@
     background-color: var(--grey6);
     border: 1px solid rgba(130, 130, 155, 0.2);
     border-radius: 16px;
-    width: 80px;
+    padding:6px 16px;
     gap: 11px;
-}
-.tags-wrapper h6{
-    padding: 6px 0px 6px 16px;
 }
 .search-input{
     margin-top: 20px;

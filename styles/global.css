@@ -373,6 +373,9 @@ body {
 }
 
 /* Overflow Ends */
+.gap-1{
+  gap:8px;
+}
 .gap-2{
   gap:16px;
 }
@@ -412,4 +415,8 @@ body {
 
 .header-wrapper{
   margin: 40px 40px 0px 40px;
+}
+
+.underline-none{
+    text-decoration: none;
 }

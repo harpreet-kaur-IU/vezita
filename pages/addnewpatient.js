@@ -6,7 +6,7 @@ export default function home(){
   return (
     <Fragment>
         <Base>
-            <AddNewPatient></AddNewPatient>
+          <AddNewPatient></AddNewPatient>
         </Base>
     </Fragment>
   )

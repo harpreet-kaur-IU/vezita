@@ -35,6 +35,7 @@ const BookingTable = (props) => {
             .catch(error => console.log('error', error));
         }
     },[])
+    
   return (
     <div className={`${styles["booking-table-scroll-section"]}`}>
         <div className={`${styles["booking-table-wrapper"]}`}>

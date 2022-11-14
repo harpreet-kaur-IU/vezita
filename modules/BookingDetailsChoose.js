@@ -205,7 +205,7 @@ const BookingDetailsChoose = () => {
                             <h5 className='text-secondary col-6 f-400 l-22'>
                                 {medicalData && medicalData.allergies.map(index=>(
                                     <span>{index},</span>
-                            ))}
+                                ))}
                             </h5>
                         </div>
                         <div className={`d-flex col-12 ${styles["more-details-row"]}`}>
@@ -239,7 +239,7 @@ const BookingDetailsChoose = () => {
                 <div className={`bg-grey7 ${styles["right-col-1"]}`}>
                     <h3 className='f-500 l-28 text-secondary'>Previous appointments <span className='text-primary'>(4)</span></h3>
                     <div className={`${styles["previous-appointments-list"]}`}>
-                       {appointment && appointment.map((index=>(
+                        {appointment && appointment.map((index=>(
                             <div className={`d-flex ${styles["previousa-appoi-single-item"]}`}>
                                 {index.slot.sessionType.map((item,index1)=>(
                                     index1 === 0 ?

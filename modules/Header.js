@@ -26,16 +26,19 @@ const Header = (props) => {
 
   const logoutHandler = () =>{
     signOut()
+    // .then(response => response.text())
+    .then(result =>{
+      router.push("/")
+    })
     .catch((error)=>console.log("error while logout"+error))
   }
   return (
     <div className="p-relative header-wrapper">
       <div className={`p-relative d-flex d-align-center d-justify-space-between `}>
         <div role="button" onClick={sideBarHandler} className={`${styles["bar-cross"]}`}>
-            <Menu></Menu>
-            <Close></Close>
+          <Menu></Menu>
+          <Close></Close>
         </div>
-        
       </div>
       <div className={`p-relative d-flex d-align-center d-justify-space-between ${styles["haeder-height"]}`}>
         <h2 className={`l-32 f-600 ${styles["header-wrapper-heading"]}`}>{props.title}</h2>
@@ -59,7 +62,6 @@ const Header = (props) => {
               <span className='text-grey-3 h5 f-400 l-22'>Doctor</span>
             </div>
           </div>
-
           <div className={`d-flex d-align-center d-justify-space-between ${styles["availability-wrapper"]}`}>
             <span className='text-secondary h5 f-500 l-22'>Availability</span>
             <div className='d-flex d-justify-center'>
@@ -91,7 +93,7 @@ const Header = (props) => {
             </div>
             <img src='arrow-right.png'></img>
           </div>
-          <div onClick={logoutHandler} className={`d-flex d-align-center d-justify-space-between ${styles["edit-profile-wrapper"]}`}>
+          <div onClick={logoutHandler} className={`cursor-pointer d-flex d-align-center d-justify-space-between ${styles["edit-profile-wrapper"]}`}>
             <div className={`d-flex d-align-center ${styles["user-icon-text"]}`}>
               <img src='noti-bell-icon.png'></img>
               <span className='h5'>Logout</span> 

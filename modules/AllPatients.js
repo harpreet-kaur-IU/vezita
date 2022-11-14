@@ -11,13 +11,13 @@ const AllPatients = () => {
         setActiveTab(e.target.id);
     }
     const addHandler = () =>{
-        router.push("/patientdetails")
+        router.push("/addnewpatient")
     }
   return (
     <>
         <Header title="My Patients"></Header>
         <div className={`${styles["wrapper"]}`}>
-            <div className={`d-flex d-align-center d-justify-space-between `}>
+            <div className={`d-flex d-align-center d-justify-space-between`}>
                 <div className={`d-flex ${styles["tabs-wrapper"]}`}>
                     <h3 onClick={handleClick} id="tab1" className={`cursor-pointer l-28 f-500 text-grey-3 ${activeTab === "tab1" ? styles["active"] : ""} `}>All</h3>
                     <h3 onClick={handleClick} id="tab2" className={`cursor-pointer l-28 f-500 text-grey-3 ${activeTab === "tab2" ? styles["active"] : ""}`} >Regular</h3>
@@ -26,7 +26,7 @@ const AllPatients = () => {
                 </div>
                 <div className={`cursor-pointer d-flex d-align-center d-justify-center ${styles["add-booking"]}`}>
                     <img src='plus-white.png'></img>
-                    <h5 onClick={addHandler} className='f-500 l-22 text-white'>Add new booking</h5>
+                    <h5 onClick={addHandler} className='f-500 l-22 text-white'>Add new Patient</h5>
                 </div>
             </div>
             <FiltersTab></FiltersTab>

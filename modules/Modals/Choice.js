@@ -1,19 +1,183 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from '../css/Choice.module.css'
 import styles2 from '../css/AddDetails.module.css'
 import DynamicDropdown from '../DynamicDropdown'
 const Choice = (props) => {
     const[add,setAdd] = useState(false)
     const[fieldName,setName] = useState(props.name)
+    const[data,setData] = useState("")
+    const[list,setList] = useState([])
+    
+    const[suggestion,setSuggestion] = useState("")
+    const[dropdown,setDropdown] = useState("")
+
+    const[reportType,setReportType] = useState("")
+    const[disease,setDisease] = useState("")
+    const[reportFile,setReportFile] = useState("")
+
+    const reportRef = useRef();
+    //value states
+    const [blood,setBlood] = useState("")
+
+    //handlers
+    const bloodHandler = (e) =>{
+        setBlood(e.target.value)
+    }
+
     const addDetails = () =>{
         setAdd(true)
     }
-     useEffect(()=>{
-        // setName(props.name)
-     },[])
+
+    //reports Handler
+    const reportTypeHandler = (e) =>{
+        setReportType(e.target.value)
+    }
+
+    const diseaseHandler = (e) =>{
+        setDisease(e.target.value)
+    }
+
+    const reportFileHandler  = (e) =>{
+        setReportFile(e.target.files[0])
+    }
+
+    const inputHandler = (e) =>{
+        if(!list.includes(e.currentTarget.id)){
+            list.push(e.currentTarget.id)
+        }
+        
+        setData(e.currentTarget.id)
+    }
+    // useEffect(()=>{
+    //     setTimeout(() => {
+    //         console.log(list)
+    //     }, 1000);
+    // },[list])
+
+    const removeHandler = (e) =>{
+        const id = e.currentTarget.id;
+        for(var i = 0;i<list.length;i++){
+            if(i == id){
+               list.splice(i,1)
+            }
+        }
+    }
+
+    const formSubmit = (e) =>{
+        e.preventDefault()
+        if(fieldName == "Blood Group"){
+            props.values("Blood Group",blood)
+            props.handler()
+        }
+        else if(fieldName == "Allergies"){
+            props.values("Allergies",list)
+            props.handler()
+        }
+        else if(fieldName == "Current medications"){
+            props.values("Current medications",list)
+            props.handler()
+        }
+        else if(fieldName == "Past medications"){
+            props.values("Past medications",list)
+            props.handler()
+        }
+        else if(fieldName == "Chronic diseases"){
+            props.values("Chronic diseases",list)
+            props.handler()
+        }
+        else if(fieldName == "Injuries"){
+            props.values("Injuries",list)
+            props.handler()
+        }
+        else if(fieldName == "Reports"){
+            props.reports(reportType,disease,reportFile)
+            props.handler()
+        }
+    }
+    const searchHandler = (e) =>{
+        setData(e.target.value)
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        
+        if(e.target.value.length>2 && fieldName == "Allergies"){
+            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}medical-data/allergy?search=${e.target.value}`, requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                const parsedResult = JSON.parse(result)
+                setSuggestion(parsedResult.allergyData)
+                setDropdown(true)
+            })
+            .catch(error => console.log('error', error));
+        }
+        else if(e.target.value.length>2 && fieldName == "Current medications"){
+            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}medical-data/current-medication?search=${e.target.value}`, requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                const parsedResult = JSON.parse(result)
+                setSuggestion(parsedResult.currentMedication)
+                setDropdown(true)
+            })
+            .catch(error => console.log('error', error));
+        }
+        else if(e.target.value.length>2 && fieldName == "Past medications"){
+            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}medical-data/past-medication?search=${e.target.value}`, requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                const parsedResult = JSON.parse(result)
+                setSuggestion(parsedResult.pastMedication)
+                setDropdown(true)
+            })
+            .catch(error => console.log('error', error));
+        }
+        else if(e.target.value.length>2 && fieldName == "Chronic diseases"){
+            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}medical-data/chronic-disease?search=${e.target.value}`, requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                const parsedResult = JSON.parse(result)
+                setSuggestion(parsedResult.chronicDisease)
+                setDropdown(true)
+            })
+            .catch(error => console.log('error', error));
+        }
+        else if(e.target.value.length>2 && fieldName == "Injuries"){
+            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}medical-data/injury?search=${e.target.value}`, requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                const parsedResult = JSON.parse(result)
+                setSuggestion(parsedResult.injury)
+                setDropdown(true)
+            })
+            .catch(error => console.log('error', error));
+        }
+        else if(e.target.value.length>2 && fieldName == "Surgeries"){
+        
+            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}medical-data/surgery?search=${e.target.value}`, requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                const parsedResult = JSON.parse(result)
+                setSuggestion(parsedResult.surgery)
+                setDropdown(true)
+            })
+            .catch(error => console.log('error', error));
+        }
+    }
   return (
     <>
-
+        {/* Add Allergies */}
+        {add === false && fieldName == "Blood Group" &&
+            <div className={`d-flex d-flex-column ${styles2["wrapper"]}`}>
+                <form onSubmit={formSubmit}>
+                    <div className={`d-flex d-justify-space-between`}>
+                        <h2 className='f-600 l-32'>Add Blood Group</h2>
+                        <button className={`cursor-pointer ${styles2["save-btn"]}`}>Save</button>
+                    </div>
+                    <input onChange={bloodHandler} value={blood} className={`${styles2["search-input"]}`} placeholder='Add your Blood Group'></input>
+                </form>
+            </div>
+        }
         {/* Add Allergies */}
         {add === false && fieldName == "Allergies" &&
             <div className={`d-flex d-flex-column ${styles["wrapper"]}`}>
@@ -90,25 +254,6 @@ const Choice = (props) => {
             </div>
         }
 
-        {/* Chronic diseases */}
-        {add === false && fieldName == "Chronic diseases" &&
-            <div className={`d-flex d-flex-column ${styles["wrapper"]}`}>
-                <div className='d-flex d-justify-space-between'>
-                    <h2>Do you have any Chronic disease History?</h2>
-                    {/* <button onClick={props.handler} className={`cursor-pointer d-flex d-align-center d-justify-center ${styles["cancel-btn"]}`}><img src='cross.png'></img></button> */}
-                </div>
-
-                <div onClick={props.handler} className={`${styles["radio-button-no-wrapper"]}`}>
-                    <input type="radio" name='Chronic diseases'></input>
-                    <h5 className='l-22 f-500'>No</h5>
-                </div>
-                <div onClick={addDetails} className={`${styles["radio-button-no-wrapper"]}`}>
-                    <input type="radio" name='Chronic diseases'></input>
-                    <h5 className='l-22 f-500'>Yes,I have</h5>
-                </div>
-            </div>
-        }
-
         {/* Injuries */}
         {add === false && fieldName == "Injuries" &&
             <div className={`d-flex d-flex-column ${styles["wrapper"]}`}>
@@ -150,55 +295,76 @@ const Choice = (props) => {
         {/* Reports */}
         {add === false && fieldName == "Reports" &&
             <div className={`d-flex d-flex-column ${styles["upload-wrapper"]}`}>
-                <div className={`d-flex d-justify-space-between`}>
-                    <h2 className='f-600 l-32'>Upload Report</h2>
-                    <button onClick={props.handler} className={`cursor-pointer ${styles2["save-btn"]}`}>Save</button>
-                </div>
-                <div className={`d-flex d-flex-column `}>
-                    <div className={`d-flex d-flex-column ${styles["report-content"]}`}>
-                        <span className='h6 f-600 l-20'>Report type</span>
-                        <DynamicDropdown></DynamicDropdown>
+                <form onSubmit={formSubmit}>
+                    <div className={`d-flex d-justify-space-between`}>
+                        <h2 className='f-600 l-32'>Upload Report</h2>
+                        <button className={`cursor-pointer ${styles2["save-btn"]}`}>Save</button>
                     </div>
-                    <div className={`col-12 d-flex d-flex-column ${styles["report-content"]}`}>
-                        <span className='h6 f-600 l-20'>Diagonsed for</span>
-                        <input className='l-22 f-400' type="text" placeholder='Disease Name'></input>
-                    </div>
-                    <div className={`col-12 d-flex d-flex-column ${styles["report-content-upload"]}`}>
-                        <span className='h6 f-600 l-20'>Supported formats: JPG, PNG, PDF, DOC</span>
-                        <div className={`d-flex d-align-center d-justify-center ${styles["report-upload-wrapper"]}`}>
-                            <input className='l-22 f-400' type="file"></input>
-                            <img src='file-upload.png'></img>
-                            <span className='h6'>Upload banner</span>
+                    <div className={`d-flex d-flex-column `}>
+                    
+                        <div className={`d-flex d-flex-column ${styles["report-content"]}`}>
+                            <span className='h6 f-600 l-20'>Report type</span>
+                            <input value={reportType} onChange={reportTypeHandler} className='l-22 f-400' type="text" placeholder='Report Type' required></input>
                         </div>
+                        <div className={`col-12 d-flex d-flex-column ${styles["report-content"]}`}>
+                            <span className='h6 f-600 l-20'>Diagonsed for</span>
+                            <input value={disease} onChange={diseaseHandler} className='l-22 f-400' type="text" placeholder='Disease Name' required></input>
+                        </div>
+                        <div className={`col-12 d-flex d-flex-column ${styles["report-content-upload"]}`}>
+                            <span className='h6 f-600 l-20'>Supported formats: JPG, PNG, PDF, DOC</span>
+                            <div className={`d-flex d-align-center d-justify-center ${styles["report-upload-wrapper"]}`}>
+                                <input 
+                                    className='l-22 f-400'
+                                    type='file'
+                                    ref={reportRef}
+                                    multiple={false}
+                                    onChange={reportFileHandler}
+                                    required
+                                ></input>
+                                <img src='file-upload.png'></img>
+                                {reportFile ?<span className='h6'>File Uploaded Sucessfully</span> : <span className='h6'>Upload banner</span>}
+                            </div>
+                        </div>
+                        
                     </div>
-                </div>
+                </form>
             </div>
         }
         {add === true &&
             <div className={`d-flex d-flex-column ${styles2["wrapper"]}`}>
-                <div className={`d-flex d-justify-space-between`}>
-                    <h2 className='f-600 l-32'>Add an allergy</h2>
-                    <button onClick={props.handler} className={`cursor-pointer ${styles2["save-btn"]}`}>Save</button>
-                </div>
-                <div className={`d-flex ${styles2["tags"]}`}>
-                    <div className={`d-flex d-align-center ${styles2["tags-wrapper"]}`}>
-                        <h6 className='f-500 l-20'>Fish</h6>
-                        <img className='cursor-pointer' src='cross-grey.png'></img>
+                <form onSubmit={formSubmit}>
+                    <div className={`d-flex d-justify-space-between`}>
+                        <h2 className='f-600 l-32'>Add an {fieldName}</h2>
+                        <button className={`cursor-pointer ${styles2["save-btn"]}`}>Save</button>
                     </div>
-                    <div className={`d-flex d-align-center ${styles2["tags-wrapper"]}`}>
-                        <h6 className='f-500 l-20'>Eggs</h6>
-                        <img className='cursor-pointer' src='cross-grey.png'></img>
+                    <div className={`d-flex d-flex-wrap ${styles2["tags"]}`}>
+                        {list && list.map((item,index)=>(
+                            <div className={`d-flex d-align-center ${styles2["tags-wrapper"]}`}>
+                                <h6 className='f-500 l-20'>{item}</h6>
+                                <img id={index} onClick={removeHandler} className='cursor-pointer' src='cross-grey.png'></img>
+                            </div>
+                        ))}
+                        {/* <div className={`d-flex d-align-center ${styles2["tags-wrapper"]}`}>
+                            <h6 className='f-500 l-20'>Eggs</h6>
+                            <img className='cursor-pointer' src='cross-grey.png'></img>
+                        </div> */}
                     </div>
-                </div>
-                <input className={`${styles2["search-input"]}`} placeholder='Add your allergy'></input>
-                <div className={`${styles2["suggestions-div"]}`}>
-                    <h6 className='f-600 l-20 text-grey-3'>SUGGESTIONS</h6>
-                    <ul className={`${styles2["suggestion-items"]}`}>
-                        <li><h5 className='text-secondary l-22 f-500'>Lactose</h5></li>
-                        <li><h5 className='text-secondary l-22 f-500'>Soy</h5></li>
-                        <li><h5 className='text-secondary l-22 f-500'>Gluten</h5></li>
-                    </ul>
-                </div>
+                    <div className='d-flex col-12'>
+                        <input value={data} onChange={searchHandler} className={`col-12 ${styles2["search-input"]}`} placeholder={`Add your ${fieldName}`}></input>
+                    </div>
+                    <div className={`${styles2["suggestions-div"]}`}>
+                        {dropdown && 
+                            <>
+                                <h6 className='f-600 l-20 text-grey-3'>SUGGESTIONS</h6>
+                                <ul className={`${styles2["suggestion-items"]}`}>
+                                    {suggestion && suggestion.map((item)=>(
+                                        <li><h5 id={item.name} onClick={inputHandler} className='cursor-pointer text-secondary l-22 f-500'>{item.name}</h5></li>
+                                    ))}
+                                </ul>
+                            </>
+                        }
+                    </div>
+                </form>
             </div>
         }
      </>

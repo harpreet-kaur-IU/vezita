@@ -140,7 +140,21 @@
 .medical-details-wrapper{
     margin-top:20px;
 }
-
+.personal-detail-img{
+    background: var(--white);
+    border: 2px dashed var(--grey5);
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+}
+.personal-detail-img input{
+    position: absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    opacity:0;
+}
 @media screen and (max-width:1024px) {
     .medical-details-wrapper{
         width: 80%;
