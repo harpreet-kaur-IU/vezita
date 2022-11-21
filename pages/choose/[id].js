@@ -5,9 +5,9 @@ import BookingDetailsChoose from '../../modules/BookingDetailsChoose'
 const main = () => {
   return (
     <Fragment>
-        <Base>
-            <BookingDetailsChoose></BookingDetailsChoose>
-        </Base>
+      <Base>
+        <BookingDetailsChoose></BookingDetailsChoose>
+      </Base>
     </Fragment>
   )
 }

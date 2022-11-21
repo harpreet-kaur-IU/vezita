@@ -76,7 +76,10 @@
 .ml-5{
     margin-left:clamp(0.78125rem, 0.6875rem + 0.4688vw, 1.25rem);
 }
-
+ 
+.mr-1{
+    margin-right: clamp(0.156rem, 0.1372rem + 0.0940vw, 0.25rem);
+}
 
 
 .pr-1{

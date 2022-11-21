@@ -242,7 +242,6 @@
 }
 .time-and-dosage-check-box-details{
     margin-top: 13px;
-    gap:clamp(0.3125rem, -6.0814rem + 7.3074vw, 2.6875rem);
 }
 .time-and-dosage-check-box{
     gap:11px;
@@ -250,7 +249,18 @@
 .doasge-dropdown-wrapper{
     margin-top: 13px;
 }
-
+.doasge-dropdown-wrapper input{
+    padding: 0px 16px;
+    height: 44px;
+    background: var(--grey6);
+    border-radius: 8px;
+    border: none;
+    color: var(--grey3);
+    width:clamp(3.125rem, 2.4038rem + 3.2051vw, 6.25rem);
+}
+.doasge-dropdown-wrapper input:focus{
+    outline: none;
+}
 /* Duration details */
 .duration-wrapper{
     margin-top: 32px;
@@ -300,8 +310,8 @@
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
 } 
-@media screen and (min-width:1399.98px) {
+/* @media screen and (min-width:1399.98px) {
     .time-and-dosage-check-box-details{
         gap:clamp(0.3125rem, -6.0814rem + 7.3074vw, 2.6875rem)
-    }
-}
+    } */
+/* } */

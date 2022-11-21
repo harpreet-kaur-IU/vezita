@@ -1,5 +1,5 @@
+import React, { useEffect,useState,useRef } from 'react';
 import {useRouter} from 'next/router';
-import React, { useState,useRef } from 'react';
 import styles from './css/AddNewPatient.module.css';
 import DynamicDropdown from './DynamicDropdown';
 import Header from './Header';
@@ -7,13 +7,15 @@ import Modal from './Modals/Modal';
 import Choice from './Modals/Choice';
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies';
 import useFirebaseAuth from '../auth/useFirebaseAuth';
+import DropDown from './DropDown';
+import CountryCode from './CountryCode.json';
 const AddNewPatient = () => {
     const JWTToken = getVezitaOnBoardFromCookie();
     const[add,setAdd] = useState(false);
     const[fieldId,setFieldId] = useState("");
     const [activeTab, setActiveTab] = useState("tab1");
     const router = useRouter();
-    const {createUserWithEmailAndPassword,signOut} = useFirebaseAuth(); 
+    const {createUserWithEmailAndPassword,signOutOnBoard} = useFirebaseAuth(); 
     //states
     const avatarRef = useRef();
     const[avatar,setAvatar] = useState("")
@@ -29,7 +31,12 @@ const AddNewPatient = () => {
     const[emergencyName,setEmergencyName] = useState("")
     const[emergencyNumber,setEmergencyNumber] = useState("")
     const[location,setLocation] = useState("")
-
+    const [countryCodeList,setCountryCodeList] = useState([])
+    const[countryCode1,setCountryCode1] = useState("")
+    const[countryCode2,setCountryCode2] = useState("")
+    const[day,setDay] = useState("")
+    const[month,setMonth] = useState("")
+    const[year,setYear] = useState("")
     //medical data states
     const[blood,setBlood] = useState("");
     const[allergies,setAllergies] = useState([]);
@@ -54,6 +61,11 @@ const AddNewPatient = () => {
     //doctor id
     const[doctorId,setDoctorId] = useState("")
 
+    useEffect(()=>{
+        for(var i = 0;i<CountryCode.length;i++){
+            setCountryCodeList(CountryCode)
+        }
+    },[])
     const avatarHandler = (e) =>{
         setAvatar(e.target.files[0])
     }
@@ -93,7 +105,21 @@ const AddNewPatient = () => {
     const locationHandler = (e) =>{
         setLocation(e.target.value)
     }
-    
+    const countryCodeHandler = (val) =>{
+        setCountryCode1(val)
+    }
+    const countryCodeHandler1 = (val) =>{
+        setCountryCode2(val)
+    }
+    const dayHandler = () =>{
+        setDay(e.target.value)
+    }
+    const monthHandler = () =>{
+        setMonth(e.target.value)
+    }
+    const yearHandler = () =>{
+        setYear(e.target.value)
+    }
     //other states
     const AddDetails = (e) =>{
         setAdd(!add);
@@ -105,6 +131,7 @@ const AddNewPatient = () => {
     const handleClick = (e) =>{
         setActiveTab(e.target.id);
     }
+
     const navigateHandler = () =>{
         router.push("/patientdetails")
     }
@@ -133,70 +160,203 @@ const AddNewPatient = () => {
             setSurgeries(val)
         }
     }
+
     const reportsHandler = (type,disease,file) =>{
         reportType.push(type)
         diseaseName.push(disease)
         reportFile.push(file)
     }
-    const saveReport = () =>{
-        for(var i=0;i<reportType.length;i++){
-            var myHeaders = new Headers();
-            myHeaders.append("token",JWTToken);
-            myHeaders.append("Content-Type", "application/json");
-    
-            var raw = JSON.stringify({
-                "reportType": reportType[i],
-                "diagonsedFor": diseaseName[i],
-                "reportFile": reportFile[i],
-                "patient": patientId,
-                "user": userId,
-                "docter": doctorId
-            });
-    
-            var requestOptions = {
-                method: 'POST',
-                headers: myHeaders,
-                body: raw,
-                redirect: 'follow'
-            };
-    
-            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter-report-of-patient`, requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                var parse = JSON.parse(result)
-                setReports(parse.docterReport)
-            })
-            .catch(error => console.log('error', error));
-        }
-    }
-    const getDoctor = () =>{
-        var myHeaders = new Headers();
-        myHeaders.append("token",JWTToken);
 
+//form submit
+const formSubmit = (e) =>{
+    e.preventDefault();
+    
+    createUserWithEmailAndPassword(email,password)
+    .then(authUser =>{
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type","application/json");
+        
+        var raw = JSON.stringify({
+            "name":name,
+            "email":email,
+            "password":password
+        });
+            
         var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+        
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}user/register`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            authUser.user.sendEmailVerification()
+            userOnBoard(authUser)
+            signOutOnBoard()
+        })
+        .catch(error => console.log('error', error));            
+    })
+    .catch(error => {
+        if(error.message == 'Firebase: The email address is already in use by another account. (auth/email-already-in-use).'){
+            toast.error("Email Already Exists",{
+                toastId:"2"
+            });
+        }
+    })
+}
+
+//user OnBoard API, (userID from here)
+const userOnBoard = (authUser) =>{
+    var myHeaders = new Headers();
+    myHeaders.append("token",authUser.user.multiFactor.user.accessToken);
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+        "role": "docter",
+        "email":email
+    });
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}user/onboarding`, requestOptions)
+    .then(response => response.text())
+    .then(result => {
+        var parse = JSON.parse(result)
+        setUserId(parse.user._id)
+        console.log(parse.user._id)
+        if(parse.user._id){
+            getDoctor(parse.user._id);
+        }else{
+            console.log("error occured while calling getDoctor")
+        }
+    })
+    .catch(error => console.log('error', error));
+}
+
+//getDoctor Details (doctorID from here)
+const getDoctor = (userID) =>{
+    var myHeaders = new Headers();
+    myHeaders.append("token",JWTToken);
+
+    var requestOptions = {
         method: 'GET',
         headers: myHeaders,
         redirect: 'follow'
-        };
+    };
 
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-            var parse = JSON.parse(result)
-            setDoctorId(parse.docter._id);
-            addNewPatient();
-        })
-        .catch(error => console.log('error', error));
-    }
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
+    .then(response => response.text())
+    .then(result => {
+        var parse = JSON.parse(result)
+        setDoctorId(parse.docter._id);
+        if(parse.docter._id){
+            addNewPatient(userID,parse.docter._id);
+        }else{
+            console.log("error occured while calling addNewPatient")
+        }
+        
+    })
+    .catch(error => console.log('error', error));
+}
 
-    const userOnBoard = (authUser) =>{
+//add new patient API (patientID from here)
+const addNewPatient = (userID,doctorID) =>{
+    var myHeaders = new Headers();
+    myHeaders.append("token",JWTToken);
+    myHeaders.append("Content-Type", "application/json");
+
+    var personalData = JSON.stringify({
+        "user":userID,
+        "name":name,
+        "phone":contact,
+        "email":email,
+        "relation":relation,
+        "gender":gender,
+        "dob":year+"-"+month+"-"+day,
+        "martialStatus":martial,
+        "height":height,
+        "weight":weight,
+        "emergencyNumber":emergencyNumber,
+        "emergencyContactName":emergencyName,
+        "location":location,
+        "avatar":""
+    })
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body:personalData,
+        redirect: 'follow'
+    };
+
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}patient/add`, requestOptions)
+    .then(response => response.text())
+    .then(result => {
+        const parsedResult = JSON.parse(result)
+        setPatientId(parsedResult.patient._id)
+        if(parsedResult.patient._id){
+            addPatientMedicalData(parsedResult.patient._id,userID,doctorID)
+        }else{
+            console.log("error occured while calling addPatientMedicalData")
+        }
+    })
+    .catch(error => console.log('error', error));
+}
+
+//add Patients Medical Data
+const addPatientMedicalData = (patientID,userID,doctorID) =>{
+    var myHeaders = new Headers();
+    myHeaders.append("token",JWTToken);
+    myHeaders.append("Content-Type", "application/json");
+
+    var medicalData = JSON.stringify({
+        "patientId":patientID,
+        "bloodGroup":blood,
+        "allergies":allergies,
+        "medications":currentMed,
+        "pastMedications":passtMed,
+        "chronicDisease":chronic,
+        "injuries":injuries,
+        "surgeries":surgeries
+    })
+
+    var requestOptions = {
+        method: 'PUT',
+        headers: myHeaders,
+        body:medicalData,
+        redirect: 'follow'
+    };
+
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}patient/add-patientMedical`, requestOptions)
+    .then(response => response.text())
+    .then(result => {
+        saveReport(patientID,userID,doctorID)
+        console.log(result)
+    })
+    .catch(error => console.log('error', error));
+}
+
+//save Reports
+const saveReport = (patientID,userID,doctorID) =>{
+    for(var i=0;i<reportType.length;i++){
         var myHeaders = new Headers();
-        myHeaders.append("token",authUser.user.multiFactor.user.accessToken);
+        myHeaders.append("token",JWTToken);
         myHeaders.append("Content-Type", "application/json");
 
         var raw = JSON.stringify({
-            "role": "docter",
-            "email":email
+            "reportType": reportType[i],
+            "diagonsedFor": diseaseName[i],
+            "reportFile": "",
+            "patient": patientID,
+            "user": userID,
+            "docter": doctorID
         });
 
         var requestOptions = {
@@ -206,125 +366,23 @@ const AddNewPatient = () => {
             redirect: 'follow'
         };
 
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}user/onboarding`, requestOptions)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter-report-of-patient`, requestOptions)
         .then(response => response.text())
         .then(result => {
-            var parse = JSON.parse(result)
-            setUserId(parse.user._id)
-            console.log(parse.user._id)
-            getDoctor();
-        })
-        .catch(error => console.log('error', error));
-    }
-
-    const addNewPatient = () =>{
-        var myHeaders = new Headers();
-        myHeaders.append("token",JWTToken);
-
-        var personalData = JSON.stringify({
-            "user":userId,
-            "name":name,
-            "phone":contact,
-            "email":email,
-            "relation":relation,
-            "gender":gender,
-            "dob":"2022-06-13",
-            "martialStatus":martial,
-            "height":height,
-            "weight":weight,
-            "emergencyNumber":emergencyNumber,
-            "emergencyContactName":emergencyName,
-            "location":location,
-            "avatar":avatar
-        })
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body:personalData,
-            redirect: 'follow'
-        };
-
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}patient/add`, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-            const parsedResult = JSON.parse(result)
-            setPatientId(parsedResult.patient._id)
-            addPatientMedicalData()
-        })
-        .catch(error => console.log('error', error));
-    }
-
-    const addPatientMedicalData = () =>{
-        var myHeaders = new Headers();
-        myHeaders.append("token",JWTToken);
-
-        var medicalData = JSON.stringify({
-            "patientId":patientId,
-            "bloodGroup":blood,
-            "allergies":allergies,
-            "medications":currentMed,
-            "pastMedications":passtMed,
-            "chronicDisease":chronic,
-            "injuries":injuries,
-            "surgeries":surgeries
-        })
-
-        var requestOptions = {
-            method: 'POST',
-            body:medicalData,
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}patient/add`, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-            saveReport()
             console.log(result)
         })
         .catch(error => console.log('error', error));
     }
+}
 
-    const formSubmit = (e) =>{
-        e.preventDefault();
-        
-        createUserWithEmailAndPassword(email,password)
-        .then(authUser =>{
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type","application/json");
-            
-            var raw = JSON.stringify({
-                "name":name,
-                "email":email,
-                "password":password
-            });
-                
-            var requestOptions = {
-                method: 'POST',
-                headers: myHeaders,
-                body: raw,
-                redirect: 'follow'
-            };
-            
-            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}user/register`, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                authUser.user.sendEmailVerification()
-                userOnBoard(authUser)
-                signOut()
-                //add patient function call
-            })
-            .catch(error => console.log('error', error));            
-        })
-        .catch(error => {
-            if(error.message == 'Firebase: The email address is already in use by another account. (auth/email-already-in-use).'){
-                toast.error("Email Already Exists",{
-                    toastId:"2"
-                });
-            }
-        })
+const removeHandler = (e) =>{
+    if(e.target.name == "allergy"){
+        const listing = [...allergies]
+        const id = e.currentTarget.id;
+        listing.splice(id,1)
+        setAllergies(listing)
     }
+}
   return (
     <>
         <Header title="Add a new patient"></Header>
@@ -352,7 +410,7 @@ const AddNewPatient = () => {
                             </input>
                         </div>
                         <div className='d-flex col-12'>
-                            <div className='col-5 '>
+                            <div className='col-5'>
                                 <div className={`d-flex d-flex-column ${styles["name-field"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Name</h6>
                                     <input value={name} onChange={nameHandler} className='text-secondary l-22 f-400' type="text" required></input>
@@ -372,7 +430,7 @@ const AddNewPatient = () => {
                                 <div className={`d-flex d-flex-column ${styles["contact-field"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Contact</h6>
                                     <div className='d-flex'>
-                                        <DynamicDropdown width="92px"></DynamicDropdown>
+                                        <DropDown handler={countryCodeHandler} data={countryCodeList} placeholder="+91"></DropDown>
                                         <input value={contact} onChange={contactHandler} className={`col-12 text-secondary l-22 f-400 ${styles["contact-input"]}`} type="text" required></input>
                                     </div>
                                 </div>
@@ -393,10 +451,17 @@ const AddNewPatient = () => {
                                 <div className={`d-flex d-flex-column ${styles["contact-field"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Date of Birth</h6>
                                     <div className={`d-flex ${styles["date-of-birth-drp"]}`}>
+                                        {/* <DynamicDropdown width="200px"></DynamicDropdown>
                                         <DynamicDropdown width="200px"></DynamicDropdown>
-                                        <DynamicDropdown width="200px"></DynamicDropdown>
-                                        <DynamicDropdown width="200px"></DynamicDropdown>
+                                        <DynamicDropdown width="200px"></DynamicDropdown> */}
+                                        
                                     </div>
+                                    
+                                </div>
+                                <div className={`d-flex ${styles["name-field"]}`}>
+                                    <input value={day} onChange={dayHandler} className='col-4 text-secondary l-22 f-400' type="text" required></input>
+                                    <input value={month} onChange={monthHandler} className='col-4 text-secondary l-22 f-400' type="text" required></input>
+                                    <input value={year} onChange={yearHandler} className='col-4 text-secondary l-22 f-400' type="text" required></input>
                                 </div>
                             </div>
 
@@ -429,7 +494,7 @@ const AddNewPatient = () => {
                                 <div className={`d-flex d-flex-column ${styles["contact-field"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Emergency Contact number</h6>
                                     <div className='d-flex'>
-                                        <DynamicDropdown width="92px"></DynamicDropdown>
+                                        <DropDown handler={countryCodeHandler1} data={countryCodeList} placeholder="+91"></DropDown>
                                         <input value={emergencyNumber} onChange={emergencyNumberHandler} className={`col-12 text-secondary l-22 f-400 ${styles["contact-input"]}`} type="text"></input>
                                     </div>
                                 </div>
@@ -459,10 +524,10 @@ const AddNewPatient = () => {
                                 </div>
                             </div>
                             <div className={`d-flex ${styles["badeges-wrapper"]}`}>
-                                {allergies && allergies.map((item)=>(
+                                {allergies && allergies.map((item,index)=>(
                                     <div className={`d-flex d-align-center d-justify-center ${styles["badges-item"]}`}>
                                         <span className='text-grey-2 l-22 f-400 h6'>{item}</span>
-                                        <img className='cursor-pointer' src='cross-grey.png'></img>
+                                        <img name="allergy" id={index} onClick={removeHandler} className='cursor-pointer' src='cross-grey.png'></img>
                                     </div>
                                 ))}
                             </div>

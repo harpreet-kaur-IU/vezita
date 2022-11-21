@@ -59,6 +59,7 @@
     line-height: clamp(1.25rem, 1.2250rem + 0.1250vw, 1.375rem);
     cursor: pointer;
     border-bottom: 1px solid #eee;
+    padding: 8px;
 }
 .drop-down ul li:last-child{
     border-bottom: none;
@@ -149,6 +150,7 @@
     user-select: none;
     max-width: 100%;
     box-sizing: border-box;
+    padding: 0px 10px;
 }
 .drop-down-date.open{
     border-bottom-left-radius: 0;

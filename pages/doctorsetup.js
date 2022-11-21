@@ -1,19 +1,12 @@
 import React,{useEffect, useRef, useState} from 'react';
 import styles from '../modules/css/doctorSignup.module.css';
 import DropDown from '../modules/DropDown';
-import FileUploader from '../modules/FileUploader';
 import DaySelector from '../modules/DaySelector';
 import DropDownDate from '../modules/DropDownDate';
 import Stepper from '../modules/Stepper';
 import { useRouter } from 'next/router';
-import { ST } from 'next/dist/shared/lib/utils';
 import PlacesAutocomplete from 'react-places-autocomplete';
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies';
-import {
-    geocodeByAddress,
-    geocodeByPlaceId,
-    getLatLng,
-  } from 'react-places-autocomplete';
 import { GoogleMap,useJsApiLoader  } from '@react-google-maps/api';
 const containerStyle = {
     width: '500px',
@@ -107,8 +100,9 @@ export default function DoctorSetup() {
         router.push("/subscription");
     }
     const nextHandler = () =>{
-        setTab(prev => prev+1)
+        // setTab(prev => prev+1)
         // formSubmit();
+        getProfile()
     }
     const prevHandler = () =>{
         setTab(prev => prev-1)
@@ -274,13 +268,11 @@ export default function DoctorSetup() {
         .then(response => response.text())
         .then(result =>{
             const parsedResult =  JSON.parse(result)
-            console.log(parsedResult)
-
             setDoctorId(parsedResult.docter._id)
             if(parsedResult.docter.fullName){
                 setTab(2)
             }
-            if(parsedResult.docter["medical-registration-details"][0].councilName){
+            if(parsedResult.docter.medicalRegistrationDetails[0].councilName){
                setTab(3)
             }
             if(parsedResult.docter.education[0].degree){
@@ -290,7 +282,34 @@ export default function DoctorSetup() {
                 setTab(6)
                 setEstId(parsedResult.docter.establishment[0]._id)
             }
+            if(parsedResult.docter.establishment[0].contactNumber){
+                setTab(12)
+            }
+            if(parsedResult.docter.establishment[0].consultationDay[0]){
+                setTab(13)
+            }
+            if(parsedResult.docter.establishment[0].consultationFee){
+                setTab(14)
+            }
+            // getDocument(parsedResult.docter._id);
         })
+        .catch(error => console.log('error', error));
+    }
+
+    //get document Handler 
+    const getDocument = (docterID) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}document/${docterID}`, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
         .catch(error => console.log('error', error));
     }
 
@@ -350,7 +369,9 @@ export default function DoctorSetup() {
 
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}registration`, requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => {
+            setTab(2)
+        })
         .catch(error => console.log('error', error));
     }
 
@@ -1043,13 +1064,13 @@ export default function DoctorSetup() {
                         <label className='d-flex'>Days</label>
                         <form onSubmit={sessionForm}>
                             <div className={`${styles["days-wrapper"]} col-12`}>
-                                <DaySelector handler={dayHandler} title="Mon"/>
-                                <DaySelector handler={dayHandler} title="Tue"/>
-                                <DaySelector handler={dayHandler} title="Wed"/>
-                                <DaySelector handler={dayHandler} title="Thu"/>
-                                <DaySelector handler={dayHandler} title="Fri"/>
-                                <DaySelector handler={dayHandler} title="Sat"/>
-                                <DaySelector handler={dayHandler} title="Sun"/>
+                                <DaySelector isActive="false" handler={dayHandler} title="Mon"/>
+                                <DaySelector isActive="false" handler={dayHandler} title="Tue"/>
+                                <DaySelector isActive="false" handler={dayHandler} title="Wed"/>
+                                <DaySelector isActive="false" handler={dayHandler} title="Thu"/>
+                                <DaySelector isActive="false" handler={dayHandler} title="Fri"/>
+                                <DaySelector isActive="false" handler={dayHandler} title="Sat"/>
+                                <DaySelector isActive="false" handler={dayHandler} title="Sun"/>
                             </div>
 
                             <label className='d-flex'>Session 1</label>
@@ -1089,7 +1110,6 @@ export default function DoctorSetup() {
                             <div className={`${styles["background-wrapper"]} d-flex d-align-center`}>
                                 <h5 className='f-400 l-22 text-secondary' for="same">USD</h5>
                                 <input value={fees} onChange={feesHandler} type="number" placeholder='30' />
-                                
                             </div>
                             <label className='d-flex'>Doctors'hours</label>
                             <div className={`${styles["background-wrapper"]} d-flex`}>

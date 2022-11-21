@@ -15,9 +15,13 @@ export default function useFirebaseAuth(){
     const signOut = () => 
         firebase.auth().signOut().then(clear);
 
+    const signOutOnBoard = () =>{
+        firebase.auth().signOut();
+    }
     return {
         signInWithEmailAndPassword,
         createUserWithEmailAndPassword,
-        signOut
+        signOut,
+        signOutOnBoard
     };
 }

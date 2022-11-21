@@ -15,6 +15,9 @@ const Choice = (props) => {
     const[disease,setDisease] = useState("")
     const[reportFile,setReportFile] = useState("")
 
+
+
+    const[allergy,setAllergy] = useState([])
     const reportRef = useRef();
     //value states
     const [blood,setBlood] = useState("")
@@ -55,13 +58,16 @@ const Choice = (props) => {
     // },[list])
 
     const removeHandler = (e) =>{
+        const listing = [...list]
         const id = e.currentTarget.id;
-        for(var i = 0;i<list.length;i++){
-            if(i == id){
-               list.splice(i,1)
-            }
-        }
+        listing.splice(id,1)
+        setList(listing)
     }
+    useEffect(()=>{
+        if(fieldName == "Allergies"){
+            console.log(allergy)
+        }
+    },[add])
 
     const formSubmit = (e) =>{
         e.preventDefault()
@@ -71,6 +77,7 @@ const Choice = (props) => {
         }
         else if(fieldName == "Allergies"){
             props.values("Allergies",list)
+            setAllergy(list)
             props.handler()
         }
         else if(fieldName == "Current medications"){

@@ -255,10 +255,14 @@
     outline: none;
     border: none;
     border-radius: 8px;
+    font-family: 'Inter', sans-serif;
 }
 .personal-detail-section textarea:focus-visible{
     outline: none;
     border: none;
+}
+.personal-detail-section textarea::placeholder{
+    color: var(--secondary);
 }
 .radio-buttons input[type="radio"]{
     padding: 0;
@@ -344,4 +348,55 @@
     background: #EBF7ED;
     border-radius: 8px;
     padding: 10px;
+}
+.timing{
+    border: 1px solid #DFDFEE;
+    height: clamp(1.875rem, 1.6154rem + 1.1538vw, 3rem);
+}
+.profile-picture-upload img{
+    overflow: hidden;
+    object-fit: contain;
+}
+.remove-btn{
+    width: 50px;
+}
+.suggestions-div{
+    position: absolute;
+    top: 141px;
+    width: 50%;
+    padding: 0px 15px;
+    background: #FFFFFF;
+    box-shadow: 0px -1px 0px #eeeef6, 0px 0px 20px rgb(0 0 0 / 8%);
+    /* border-radius: 12px; */
+}
+.suggestion-items{
+    list-style: none;
+    padding: 0;
+    margin: 22px 0px 0px 0px;
+}
+.suggestion-items li{
+    list-style: none;
+    padding: 14px 0px;
+    border-bottom: 1px solid var(--grey6);
+}
+.city-suggestion-list{
+    background-color: var(--grey6);
+    margin-top: 10px;
+}
+.city-suggestion-list h6{
+    padding: 10px;
+}
+.document-upload-section{
+    border: 2px dashed #DFDFEE;
+    border-radius: 8px;
+    padding: 0px 32px;
+    height: 150px;
+}
+.file-uploader-input{
+    position: absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    opacity:0;
 }

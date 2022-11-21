@@ -265,7 +265,7 @@ const BookingDetailsChoose = () => {
                                     </h5>
                                 </div>
                             </div>
-                       )))}
+                        )))}
                         {/* <div className={`d-flex ${styles["previousa-appoi-single-item"]}`}>
                             <div className={`d-flex d-align-center bg-teal-2 ${styles["appointment-icons-wrapper"]}`}>
                                 <img src="video-appointment.png"></img>

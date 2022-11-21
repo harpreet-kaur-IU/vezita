@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../modules/css/dropdown.module.css";
 
 export default function DynamicDropdown(props){
+    const [value, setValue] = useState();
+    useEffect(()=>{
+        if(props.placeholder)
+            setValue(props.placeholder)
+        else
+            setValue("select")
+    },[props.placeholder])
 
-    const [value, setValue] = useState(props.placeholder);
+
     const handler = (e) => {
         e.currentTarget.classList.toggle(styles["open"]);
     }
 
     const selectHandler = (e) => {
         setValue(e.currentTarget.getAttribute("value"));
+        props.handler(e.currentTarget.getAttribute("value"),props.index)
     }
 
     return (
@@ -32,9 +40,6 @@ export default function DynamicDropdown(props){
             }
 
             {props.data && <ul>
-                <li value={props.placeholder} onClick={selectHandler}>
-                    {props.placeholder}
-                </li>
                 {props.data.map((item,index) => { 
                     return (
                         <li value={item.title} onClick={selectHandler} key={index}>

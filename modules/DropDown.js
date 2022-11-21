@@ -32,18 +32,16 @@ export default function DropDown(props){
             </ul>
             }
 
-            {props.data && <ul>
-                {/* <li value={props.placeholder} onClick={selectHandler}>
-                    {props.placeholder}
-                </li> */}
-                {props.data.map((item,index) => { 
-                    return (
-                        <li id={item.id} value={item.name} onClick={selectHandler} key={index}>
-                            {item.name}
-                        </li>
-                    )
-                })}
-            </ul>
+            {props.data && 
+                <ul>
+                    {props.data.map((item,index) => { 
+                        return (
+                            <li id={item.dial_code} value={item.dial_code} onClick={selectHandler} key={index}>
+                                {item.name}
+                            </li>
+                        )
+                    })}
+                </ul>
             }
 
             <span>
