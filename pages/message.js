@@ -3,7 +3,7 @@ import Base from '../layout/base'
 
 import DoctorsChat from '../modules/DoctorsChat'
 
-const message = () => {
+const Message = () => {
   return (
     <Fragment>
         <Base>
@@ -13,4 +13,4 @@ const message = () => {
   )
 }
 
-export default message
+export default Message

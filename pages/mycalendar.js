@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import Base from '../layout/base'
 
-export default function home (){
+export default function MyCalendar(){
   return (
     <Fragment>
         <Base>

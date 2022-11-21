@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import Base from '../../layout/base'
 import PatientDetails from '../../modules/PatientDetails'
-const patientdetails = () => {
+const PatientDetail = () => {
   return (
     <Fragment>
       <Base>
@@ -11,4 +11,4 @@ const patientdetails = () => {
   )
 }
 
-export default patientdetails
+export default PatientDetail

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import Base from '../layout/base';
 import DropDownWhite from '../modules/DropDownWhite';
-export default function reports() {
+export default function Reports() {
   return (
     <Fragment>
         <Base>

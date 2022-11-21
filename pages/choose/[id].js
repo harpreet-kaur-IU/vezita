@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import Base from '../../layout/base'
 import BookingDetailsChoose from '../../modules/BookingDetailsChoose'
 
-const main = () => {
+const Main = () => {
   return (
     <Fragment>
       <Base>
@@ -12,4 +12,4 @@ const main = () => {
   )
 }
 
-export default main
+export default Main

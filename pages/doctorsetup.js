@@ -658,7 +658,7 @@ export default function DoctorSetup() {
                             <h5 className='f-500 l-22 text-grey-3 mt-2 col-12'>Complete your profile to earn as a doctor is just a few steps</h5>
                             <div className='bg-light-blue p-5 rounded-12 mt-50'>
                                 <h3 className='f-500 l-28 text-dark-blue'>Step A: Profile details</h3>
-                                <h4 className='f-400 mt-2 l-22 text-grey-2'>Doctor’s basic details, medical registration, education qualification, establishment details etc.</h4>
+                                <h4 className='f-400 mt-2 l-22 text-grey-2'>Doctors basic details, medical registration, education qualification, establishment details etc.</h4>
                                 <button className='btn btn-primary mt-4' onClick={nextHandler}>Continue</button>
                             </div>
                             <h3 className='col-12 f-500 l-28 text-secondary mt-8'>Step B: Profile verification</h3>
@@ -692,22 +692,22 @@ export default function DoctorSetup() {
                                     <>
                                         <div className={`${styles["radio-buttons"]} d-flex`}>
                                             <input onClick={genderHandler} type="radio" id="male" name="gender" value="male" checked/>
-                                            <label for="male">Male</label>
+                                            <label htmlFor="male">Male</label>
                                         </div>
                                         <div className={`${styles["radio-buttons"]} d-flex ml-4`}>
                                             <input onClick={genderHandler} type="radio" id="female" name="gender" value="female"/>
-                                            <label for="female">Female</label>
+                                            <label htmlFor="female">Female</label>
                                         </div>
                                     </>
                                     :  
                                     <>
                                         <div className={`${styles["radio-buttons"]} d-flex`}>
                                             <input onClick={genderHandler} type="radio" id="male" name="gender" value="male" />
-                                            <label for="male">Male</label>
+                                            <label htmlFor="male">Male</label>
                                         </div>
                                         <div className={`${styles["radio-buttons"]} d-flex ml-4`}>
                                             <input onClick={genderHandler} type="radio" id="female" name="gender" value="female" checked/>
-                                            <label for="female">Female</label>
+                                            <label htmlFor="female">Female</label>
                                         </div>
                                     </>
                                 }
@@ -720,9 +720,9 @@ export default function DoctorSetup() {
                                         <input {...getInputProps({placeholder:"Select your City"})}></input>
                                         <div className={`${styles["city-suggestion-list"]}`}>
                                             {loading ?<h6 className='f-400'>...loading</h6>: null}
-                                            {suggestions.map((suggestion) => {
+                                            {suggestions.map((suggestion,index) => {
                                                 return (
-                                                    <div
+                                                    <div key={index}
                                                     {...getSuggestionItemProps(suggestion)}
                                                     >
                                                         <h6 onClick={()=>setCity(suggestion.description)} className='cursor-pointer f-400'>{suggestion.description}</h6>
@@ -792,11 +792,11 @@ export default function DoctorSetup() {
                         <form onSubmit={estabForm}>
                             <div className={`${styles["background-wrapper"]} d-flex`}>
                                 <input onClick={establishmentHandler} type="radio" id="own" name="connect" value="own"/>
-                                <h5 className='f-500  text-secondary ml-3 mb-0' for="own">I own an establishment</h5>
+                                <h5 className='f-500  text-secondary ml-3 mb-0' htmlFor="own">I own an establishment</h5>
                             </div>
                             <div className={`${styles["background-wrapper"]} d-flex mt-4`}>
                                 <input onClick={establishmentHandler} type="radio" id="visit" name="connect" value="visit"/>
-                                <h5 className='f-500  text-secondary ml-3 mb-0' for="visit">I visit an establishment</h5>
+                                <h5 className='f-500  text-secondary ml-3 mb-0' htmlFor="visit">I visit an establishment</h5>
                             </div>
                             <div className='d-flex mt-7 gap-2'>
                                 {/* <button className='col-6 btn btn-outline-grey' onClick={prevHandler}>Previous</button> */}
@@ -819,9 +819,9 @@ export default function DoctorSetup() {
                                         <input {...getInputProps({placeholder:"Type or select your college/institute"})}></input>
                                         <div className={`${styles["city-suggestion-list"]}`}>
                                             {loading ?<h6 className='f-400'>...loading</h6>: null}
-                                            {suggestions.map((suggestion) => {
+                                            {suggestions.map((suggestion,index) => {
                                                 return (
-                                                    <div
+                                                    <div key={index}
                                                     {...getSuggestionItemProps(suggestion)}
                                                     >
                                                         <h6 id={suggestion.terms[0].value} onClick={estCityHandler} className='cursor-pointer f-400'>{suggestion.terms[0].value}</h6>
@@ -844,7 +844,7 @@ export default function DoctorSetup() {
                         <h5 className='f-500 l-22 pl-5 text-grey-3 mt-2 col-12'>Your profile is just a few steps away from going live</h5>
                         <div className='mt-76 pl-5'>
                             <h3 className='f-500 l-28 text-dark-blue'>Step A: Profile details</h3>
-                            <h4 className='f-400 mt-2 l-22 text-grey-2'>Doctor’s basic details, medical registration, education qualification, establishment details etc.</h4>
+                            <h4 className='f-400 mt-2 l-22 text-grey-2'>Doctors basic details, medical registration, education qualification, establishment details etc.</h4>
                             <div className='d-flex d-align-center mt-4'>
                                 <span className='btn btn-light-green d-flex d-align-center d-justify-center' >
                                     <h4 className='f-400 l-26 text-green-4'>Completed</h4>
@@ -932,22 +932,22 @@ export default function DoctorSetup() {
                         <form onSubmit={estProofForm}>
                             <div className={`d-flex mt-2`}>
                                 <input onClick={estProofHandler} type="radio" id="owner" name="establishment" value="owner"/>
-                                <h4 className='f-400 l-26 text-secondary ml-4' for="owner">Owner of the establishment</h4>
+                                <h4 className='f-400 l-26 text-secondary ml-4' htmlFor="owner">Owner of the establishment</h4>
                             </div>
                             <div className={`d-flex mt-3`}>
                                 <input onClick={estProofHandler} type="radio" id="Rented other establishment" name="establishment" value="c"/>
-                                <h4 className='f-400 l-26 text-secondary ml-4' for="v">Rented other establishment</h4>
+                                <h4 className='f-400 l-26 text-secondary ml-4' htmlFor="v">Rented other establishment</h4>
                             </div>
                             <div className={`d-flex mt-3`}>
                                 <input onClick={estProofHandler} type="radio" id="consultant" name="establishment" value="consultant"/>
-                                <h4 className='f-400 l-26 text-secondary ml-4' for="consultant">Consultant doctor</h4>
+                                <h4 className='f-400 l-26 text-secondary ml-4' htmlFor="consultant">Consultant doctor</h4>
                             </div>
                             <div className={`d-flex mt-3`}>
                                 <input onClick={estProofHandler} type="radio" id="practice" name="establishment" value="practice"/>
-                                <h4 className='f-400 l-26 text-secondary ml-4' for="practice">Practising at home</h4>
+                                <h4 className='f-400 l-26 text-secondary ml-4' htmlFor="practice">Practising at home</h4>
                             </div>
                             <h5 className='f-400 l-22  text-secondary mt-4 col-12'>Accepted Proof</h5>
-                            <h6 className='f-500 l-20 text-grey-3 mt-2'>Clinic registration proof/ Waste disposal proof/ Tax receipt</h6>
+                            <h6 className='f-500 l-20 text-grey-3 mt-2'>Clinic registration, proof Waste disposal proof, Tax receipt</h6>
                             <div className={`p-relative col-12 mt-2 d-flex d-justify-center d-align-center ${styles["file-uploader-wrapper"]}`}>
                                 <input 
                                     className={`${styles["file-uploader-input"]}`} 
@@ -975,7 +975,7 @@ export default function DoctorSetup() {
                         <h5 className='f-500 l-22 pl-5 text-grey-3 mt-2 col-12'>Your profile is just a few steps away from going live</h5>
                         <div className='mt-40 pl-5'>
                             <h3 className='f-500 l-28 text-dark-blue'>Step A: Profile details</h3>
-                            <h4 className='f-400 mt-2 l-22 text-grey-2'>Doctor’s basic details, medical registration, education qualification, establishment details etc.</h4>
+                            <h4 className='f-400 mt-2 l-22 text-grey-2'>Doctors basic details, medical registration, education qualification, establishment details etc.</h4>
                             <div className='d-flex d-align-center mt-4'>
                                 <button className='btn btn-light-green d-flex d-align-center d-justify-center'>
                                     <h4 className='f-400 l-26 text-green-4'>Completed</h4>
@@ -1108,17 +1108,17 @@ export default function DoctorSetup() {
                         <label className='d-flex'>Consultation Fees</label>
                         <form onSubmit={consultForm}>
                             <div className={`${styles["background-wrapper"]} d-flex d-align-center`}>
-                                <h5 className='f-400 l-22 text-secondary' for="same">USD</h5>
+                                <h5 className='f-400 l-22 text-secondary' htmlFor="same">USD</h5>
                                 <input value={fees} onChange={feesHandler} type="number" placeholder='30' />
                             </div>
-                            <label className='d-flex'>Doctors'hours</label>
+                            <label className='d-flex'>Doctor hours</label>
                             <div className={`${styles["background-wrapper"]} d-flex`}>
                                 <input onClick={hourHandler} type="radio" id="same" name="hours" value="same"/>
-                                <h5 className='f-500  text-secondary ml-3 mb-0' for="same">Same as establishment hours</h5>
+                                <h5 className='f-500  text-secondary ml-3 mb-0' htmlFor="same">Same as establishment hours</h5>
                             </div>
                             <div className={`${styles["background-wrapper"]} d-flex mt-4`}>
                                 <input onClick={hourHandler} type="radio" id="differ" name="hours" value="differ"/>
-                                <h5 className='f-500  text-secondary ml-3 mb-0' for="differ">Different hours</h5>
+                                <h5 className='f-500  text-secondary ml-3 mb-0' htmlFor="differ">Different hours</h5>
                             </div>
                             <div className='d-flex mt-7 gap-2'>
                                 {/* <button className='col-6 btn btn-outline-grey' onClick={prevHandler}>Previous</button> */}
@@ -1133,7 +1133,7 @@ export default function DoctorSetup() {
                         <h5 className='f-500 l-22 text-grey-3 mt-2 col-12'>Our team is verifying your profile details which you have provided. Kindly give us 7 working days to verify the information</h5>
                         <div className={`mt-4 ${styles["wrapper-with-bottom-border"]}`}>
                             <h3 className='f-500 l-28 text-secondary'>Step A: Profile details</h3>
-                            <h4 className='f-400 mt-2 l-22 text-grey-2'>Doctor’s basic details, medical registration, education qualification, establishment details etc.</h4>
+                            <h4 className='f-400 mt-2 l-22 text-grey-2'>Doctors basic details, medical registration, education qualification, establishment details etc.</h4>
                             <div className='d-flex d-align-center mt-4'>
                                 <span className='btn btn-light-green d-flex d-align-center d-justify-center'>
                                     <h4 className='f-400 l-26 text-green-4'>Completed</h4>
@@ -1176,5 +1176,6 @@ export default function DoctorSetup() {
             </div>
         </div>
     </div>
+   
   )
 }

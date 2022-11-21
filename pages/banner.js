@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import Base from '../layout/base'
 import Banners from '../modules/Banners'
 
-export default function dashboard (){
+export default function Dashboard (){
   return (
     <Fragment>
         <Base>
