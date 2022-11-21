@@ -138,22 +138,22 @@ const BasicDetails = () => {
                             <>
                                 <div className={`${styles["radio-buttons"]} d-flex d-align-center`}>
                                     <input onClick={genderHandler} type="radio" id="male" name="gender" value="male" checked/>
-                                    <label for="male">Male</label>
+                                    <label htmlFor="male">Male</label>
                                 </div>
                                 <div className={`${styles["radio-buttons"]} d-flex ml-4`}>
                                     <input onClick={genderHandler} type="radio" id="female" name="gender" value="female" />
-                                    <label for="female">Female</label>
+                                    <label htmlFor="female">Female</label>
                                 </div>
                             </>
                             :
                             <>
                                 <div className={`${styles["radio-buttons"]} d-flex d-align-center`}>
                                     <input onClick={genderHandler} type="radio" id="male" name="gender" value="male" />
-                                    <label for="male">Male</label>
+                                    <label htmlFor="male">Male</label>
                                 </div>
                                 <div className={`${styles["radio-buttons"]} d-flex ml-4`}>
                                     <input onClick={genderHandler} type="radio" id="female" name="gender" value="female" checked/>
-                                    <label for="female">Female</label>
+                                    <label htmlFor="female">Female</label>
                                 </div>
                             </>
                         }

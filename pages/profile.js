@@ -74,7 +74,7 @@ export default function Profile() {
                     </div>
                 </div>
                 <div className={`${styles["section2"]} d-flex d-flex-wrap`}>
-                    <h2 className='f-600 l-32 text-secondary col-12' for="profile">{fill} <span className='h4 f-600'>profile completed</span></h2>
+                    <h2 className='f-600 l-32 text-secondary col-12' htmlFor="profile">{fill} <span className='h4 f-600'>profile completed</span></h2>
                     <div className={styles["progress-bar"]}>
                         <div className={styles["fill"]} style={{width:fill}}></div>
                         
