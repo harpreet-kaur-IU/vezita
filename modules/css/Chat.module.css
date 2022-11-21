@@ -1,0 +1,30 @@
+.wrapper{
+    border-radius: 0px 16px 16px 0px;
+    border: 2px solid var(--grey2);
+}
+.r-msg{
+    border-radius: 2px 20px 20px 20px;
+}
+.s-msg{
+    border-radius: 20px 2px 20px 20px;
+}
+.msg-wrapper{
+    height: 550px;
+}
+.input{
+    outline: none;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 26px; 
+    color:var(--grey2)
+}
+.input::placeholder{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 26px; 
+    color:var(--grey2)
+}

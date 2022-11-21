@@ -6,7 +6,7 @@ export default function DropDownDate(props){
     const [value, setValue] = useState(props.placeholder);
     const hours = [];
     for (let i=1;i<25;i++){
-        hours.push(i);
+        hours.push(i+":00");
     }
     const handler = (e) => {
         e.currentTarget.classList.toggle(styles["open"]);
@@ -21,9 +21,6 @@ export default function DropDownDate(props){
             <span> {value} </span>
 
            <ul>
-                <li value={props.placeholder} onClick={selectHandler}>
-                    {props.placeholder}
-                </li>
                 {hours.map((item,index) => { 
                     return (
                         <li value={item} onClick={selectHandler} key={index}>

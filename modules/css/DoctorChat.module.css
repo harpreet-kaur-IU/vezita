@@ -1,0 +1,48 @@
+.wrapper{
+    padding: 16px 40px 40px 40px;
+}
+.input{
+    background: transparent;
+    border: none;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+    color: var(--grey2);
+    outline: none;
+}
+.input::placeholder{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+    color: var(--grey2);
+}
+.header-circle{
+    width: 24px;
+    height: 24px;
+}
+.circle{
+    width: 20px;
+    height: 20px;
+    background-color: var(--yellow);
+}
+.search-input-wrapper{
+    background: var(--grey6);
+    border: 1.5px solid var(--grey5);
+    border-radius: 8px;
+}
+.search-input-wrapper svg{
+    padding: 15px 12px 15px 15px;
+}
+.chat-person-detail{
+    padding:16px;
+}
+/* right side styels */
+.chat-right-wrapper{
+    background: #FFFFFF;
+    border: 2px solid #EEEEF7;
+    border-radius: 0px 16px 16px 0px;
+}

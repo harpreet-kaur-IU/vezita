@@ -25,7 +25,7 @@ const MenuBar = () => {
         <MenuItem title="My Patients" path="/newpatient" multipath="0"></MenuItem>
         <MenuItem title="My Calendar" path="/mycalendar" multipath="0"></MenuItem>
         <MenuItem title="Create Medical Reports" path="/medicalreport" multipath="0"></MenuItem>
-        <MenuItem title="Messages" path="/" multipath="0"></MenuItem>
+        <MenuItem title="Messages" path="/message" multipath="0"></MenuItem>
         <MenuItem title="Finances" path="/finances" multipath="0"></MenuItem>
         {/* <MenuItem title="Banners" path="/banner" multipath="0"></MenuItem> */}
       </ul>

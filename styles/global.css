@@ -145,6 +145,9 @@ body {
 .bg-teal-5{
   background-color: var(--teal5);
 }
+.bg-grey-5{
+  background-color: var(--grey5);
+}
 .btn{
   display: inline-flex;
   align-items: center;
@@ -190,6 +193,7 @@ body {
   border:none;
   outline: none;
 }
+
 .rounded-4{
   border-radius: 4px;
 }
