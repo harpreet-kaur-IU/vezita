@@ -95,7 +95,7 @@ const CreateRecord = () => {
           <h5 className='f-400 l-22'>Appointment ID:<span className='f-500'> 89341908</span></h5>
         </div>
         <button className={`d-flex d-align-center ${styles["appointment-send-btn"]}`}>
-          <h5 className='f-500 l-22 text-dark-blue'><Link href="/prescriptiondetails">Send</Link></h5>
+          <h5 className='f-500 l-22 text-dark-blue'>Send</h5>
           <img src="send-icon.png"></img>
         </button>
       </div>
