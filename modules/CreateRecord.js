@@ -2,7 +2,6 @@ import React ,{useEffect, useState} from 'react'
 import Header from './Header'
 import styles from './css/BookingDetails.module.css'
 import styles2 from './css/TableTemplate.module.css'
-import Link from 'next/Link'
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies';
 const CreateRecord = () => {
 

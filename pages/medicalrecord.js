@@ -6,7 +6,7 @@ export default function MedicalRecord(){
   return (
     <Fragment>
         <Base>
-            <CreateRecord></CreateRecord>
+          <CreateRecord></CreateRecord>
         </Base>
     </Fragment>
   )
