@@ -647,7 +647,36 @@ export default function DoctorSetup() {
     //Location and Timing
     const locationForm = (e) =>{
         e.preventDefault();
-        setModal(prev => prev+1)
+        // setModal(prev => prev+1)
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "contactNumber": contact,
+            "location": {
+                "type": "Point",
+                "coordinates": [
+                    long,
+                    lat
+                ],
+                "address":address
+            },
+        });
+
+        var requestOptions = {
+            method: 'PATCH',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}establishment/update/${estId}`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            setTab(12)
+        })
+        .catch(error => console.log('error', error));
     }
 
     //session form
@@ -1274,11 +1303,11 @@ export default function DoctorSetup() {
                 </div>
             </div>
         </div>
-        {modal && 
+        {/* {modal && 
             <Modal modalClass="modal-verify">
                 <Verify code={countryCode} number={contact} handler={modalHandler}></Verify>
             </Modal>
-        }
+        } */}
     </>
    
   )

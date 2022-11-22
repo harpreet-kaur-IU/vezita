@@ -25,31 +25,59 @@ const BookingTable = (props) => {
 
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}booking/confirm-cancel/${doctorId}`, requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => {
+            getAllBooking()
+        })
         .catch(error => console.log('error', error));
     }
 
    
     useEffect(()=>{
-        if(props.title === "All"){
-            var myHeaders = new Headers();
-            myHeaders.append("token",JWTToken);
-            
-            var requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow'
-            };
-            
-            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}booking`, requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                const parsedResult = JSON.parse(result)
-                setBookingData(parsedResult.booking)
-            })
-            .catch(error => console.log('error', error));
+        if(JWTToken){
+            getProfile()
         }
     },[])
+
+    //get doctor profile
+    const getProfile = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = {
+            headers: myHeaders,
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            const parsedResult = JSON.parse(result)
+            getAllBooking(parsedResult.docter._id)
+        })
+        .catch(error => console.log('error', error));
+    }
+
+    //get all bookings
+    const getAllBooking = (docterID) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+        
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}booking?docter=${docterID}`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            const parsedResult = JSON.parse(result)
+            setBookingData(parsedResult.booking)
+        })
+        .catch(error => console.log('error', error));
+    }
     
   return (
     <div className={`${styles["booking-table-scroll-section"]}`}>
@@ -105,11 +133,11 @@ const BookingTable = (props) => {
                     </span>
                     {item.status === "pending" &&
                         <span className='d-flex'>
-                             <div onClick={()=>statusHandler("decline",item._id)} className={`cursor-pointer d-flex d-align-center d-justify-center ${styles["status-btn"]}`} >
+                             <div onClick={()=>statusHandler("cancelled",item._id)} className={`cursor-pointer d-flex d-align-center d-justify-center ${styles["status-btn"]}`} >
                                 <img src='cross.png'></img>
                                 Decline
                             </div>
-                            <div onClick={()=>statusHandler("accept",item._id)} className={`cursor-pointer d-flex d-align-center d-justify-center ${styles["status-btn-green"]}`}>
+                            <div onClick={()=>statusHandler("confirmed",item._id)} className={`cursor-pointer d-flex d-align-center d-justify-center ${styles["status-btn-green"]}`}>
                                 <img src='tick.png'></img>
                                 Accept
                             </div>
