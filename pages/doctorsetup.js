@@ -328,7 +328,6 @@ export default function DoctorSetup() {
         }) 
         .catch(error => console.log('error', error));
         getProfile();
-        
     },[])
 
     //get profile Handler
@@ -399,7 +398,7 @@ export default function DoctorSetup() {
                 setTab(9)
             }
             if(doc.documents[2].documentType == "establishment"){
-                updateDocumentStatus(doctorID);
+                updateDocumentStatus(doctorID)
                 setTab(10)
             }
             else{
@@ -459,8 +458,8 @@ export default function DoctorSetup() {
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile`, requestOptions)
         .then(response => response.text())
         .then(result => {
-            console.log(result)
             setTab(prev => prev+1)
+            getProfile()
         })
         .catch(error => console.log('error', error));
     }
@@ -559,6 +558,7 @@ export default function DoctorSetup() {
         .then(response => response.text())
         .then(result => {
             setTab(6)
+            getProfile()
         })
         .catch(error => console.log('error', error));
     }
@@ -584,7 +584,9 @@ export default function DoctorSetup() {
 
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}document`, requestOptions)
         .then(response => response.text())
-        .then(result => {setTab(8)})
+        .then(result => {
+            setTab(8)
+        })
         .catch(error => console.log('error', error));
     }
 
@@ -609,7 +611,9 @@ export default function DoctorSetup() {
 
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}document`, requestOptions)
         .then(response => response.text())
-        .then(result => {setTab(9)})
+        .then(result => {
+            setTab(9)
+        })
         .catch(error => console.log('error', error));
     }
 
@@ -634,7 +638,9 @@ export default function DoctorSetup() {
 
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}document`, requestOptions)
         .then(response => response.text())
-        .then(result => {setTab(10)})
+        .then(result => {
+            setTab(10)
+        })
         .catch(error => console.log('error', error));
     }
 
@@ -678,7 +684,9 @@ export default function DoctorSetup() {
 
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}slot`, requestOptions)
         .then(response => response.text())
-        .then(result =>  setTab(13))
+        .then(result => { 
+            setTab(13)
+        })
         .catch(error => console.log('error', error));
     }
 
