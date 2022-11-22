@@ -8,10 +8,11 @@ import { setVezitaOnBoardCookie } from '.././auth/userCookies'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 export default function Login() {
-    const {signInWithEmailAndPassword,signOut,authUser} = useFirebaseAuth()
+    const {signInWithEmailAndPassword,signOut,sendPasswordResetEmail,authUser} = useFirebaseAuth()
     const[email,setEmail] = useState("")
     const[password,setPassword] = useState("")
     const[loading,setLoading] = useState(false);
+    const[emailError,setEmailError] = useState(false)
     const router = useRouter();
     const logOutHandler = () => {
         signOut()
@@ -51,7 +52,7 @@ export default function Login() {
                 })
                 .catch(error => console.log('error', error));
             }else{
-                toast.error("User Not Verified",{
+                toast.warning("Please Check your mail and verify user",{
                     toastId:"1"
                 });
             }
@@ -74,6 +75,51 @@ export default function Login() {
             }
         })
     }
+    const validator3 = () =>{
+        if(email === ''){
+            setEmailError(true);
+            return false;
+        }else{
+            setEmailError(false);
+            return true;
+        }
+        
+    }
+    //forgot password handler
+    const forgetPasswordHandler = () =>{
+        const result = validator3();
+        if(result){
+            sendPasswordResetEmail(email)
+            .then(authUser => {
+                toast.success("Please check your email",{
+                    toastId:"1"
+                });
+            })
+            .catch(error => {
+                if(error.message == "Firebase: Error (auth/user-not-found)."){
+                    toast.error("User Not Found",{
+                        toastId:"1"
+                    });
+                }
+                else if(error.message == "Firebase: Error (auth/wrong-password)."){
+                    toast.error("Password Invalid",{
+                        toastId:"1"
+                    });
+                }
+                else if(error.message == "Firebase: There is no user record corresponding to this identifier. The user may have been deleted. (auth/user-not-found)."){
+                    toast.error("Invalid Email",{
+                        toastId:"1"
+                    });
+                }
+                else if(error.message == "Firebase: The password is invalid or the user does not have a password. (auth/wrong-password)."){
+                    toast.error("Incorrect Password",{
+                        toastId:"1"
+                    });
+                }
+                console.log(error)
+            })
+        }
+    }
   return (
     <>
         {loading && <Loader></Loader>}
@@ -92,9 +138,10 @@ export default function Login() {
                     <form onSubmit={formSubmit} className={`col-12 mt-10 d-flex d-flex-column ${styles["login-setup"]}`}>
                         <label>Email</label>
                         <input value={email} onChange={emailHandler} type="text" placeholder='Enter your email'/>
+                        {emailError && <h6 className='mt-2 text-red'>Please Enter valid email.</h6>}
                         <label>Password</label>
                         <input value={password} onChange={passwordHandler} type="password" placeholder='Enter your password'/>
-                        <h6 className='f-600 l-20 d-flex d-justify-end mt-2 text-grey-3'>Forgot password?</h6>
+                        <h6 onClick={forgetPasswordHandler} className='cursor-pointer f-600 l-20 d-flex d-justify-end mt-2 text-grey-3'>Forgot password?</h6>
                         <button className={`btn btn-primary mt-7 text-white ${styles["login-btn"]}`}>Login</button>
                         <h4 className='f-600 l-26 text-secondary mt-100'>Don’t have an account? <Link href="/signup" className='text-primary'>Signup</Link></h4>
                     </form>

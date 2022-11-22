@@ -5,15 +5,30 @@ import Link from 'next/link'
 import Moment from 'react-moment';
 const BookingTable = (props) => {
     const JWTToken = getVezitaOnBoardFromCookie();
-    const[status,setStatus] = useState('0');
     const[bookingData,setBookingData] = useState("")
 
-    const declineHandler = () =>{
-        setStatus('decline');
+    const statusHandler = (value,doctorId) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "status": value
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}booking/confirm-cancel/${doctorId}`, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
     }
-    const acceptHandler = () =>{
-        setStatus('accept');
-    }
+
    
     useEffect(()=>{
         if(props.title === "All"){
@@ -90,21 +105,24 @@ const BookingTable = (props) => {
                     </span>
                     {item.status === "pending" &&
                         <span className='d-flex'>
-                             <div className={`cursor-pointer d-flex d-align-center d-justify-center ${styles["status-btn"]}`} onClick={declineHandler}>
+                             <div onClick={()=>statusHandler("decline",item._id)} className={`cursor-pointer d-flex d-align-center d-justify-center ${styles["status-btn"]}`} >
                                 <img src='cross.png'></img>
                                 Decline
                             </div>
-                            <div className={`cursor-pointer d-flex d-align-center d-justify-center ${styles["status-btn-green"]}`} onClick={acceptHandler}>
+                            <div onClick={()=>statusHandler("accept",item._id)} className={`cursor-pointer d-flex d-align-center d-justify-center ${styles["status-btn-green"]}`}>
                                 <img src='tick.png'></img>
                                 Accept
                             </div>
                         </span>
                     }
                     {item.status === "completed" && 
-                        <span className={`f-500 d-flex ${styles["status-accept-text"]}`}>COMPLETED</span>
+                        <span className={`f-500 d-flex ${styles["status-noshow-text"]}`}>COMPLETED</span>
                     }
                     {item.status === "confirmed" &&
                         <span className={`f-500 d-flex ${styles["status-accept-text"]}`}>CONFIRMED</span>
+                    }
+                    {item.status === "cancelled" &&
+                        <span className={`f-500 d-flex ${styles["status-decline-text"]}`}>Cancelled</span>
                     }
                     <span className={`cursor-pointer d-flex d-justify-center ${styles["column-arrow"]}`}>
                         <Link href={`/choose/${item._id}`}><img src='arrow.png'></img></Link>

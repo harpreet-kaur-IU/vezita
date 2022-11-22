@@ -111,13 +111,13 @@ const AddNewPatient = () => {
     const countryCodeHandler1 = (val) =>{
         setCountryCode2(val)
     }
-    const dayHandler = () =>{
+    const dayHandler = (e) =>{
         setDay(e.target.value)
     }
-    const monthHandler = () =>{
+    const monthHandler = (e) =>{
         setMonth(e.target.value)
     }
-    const yearHandler = () =>{
+    const yearHandler = (e) =>{
         setYear(e.target.value)
     }
     //other states
@@ -440,11 +440,11 @@ const removeHandler = (e) =>{
                                     <div className={`d-flex ${styles["gender-radio-btns"]}`}>
                                         <div className={`d-flex d-align-center ${styles["gender-radio-btn-1"]}`}>
                                             <input onClick={genderHandler} value="male" className='cursor-pointer' type="radio" name="gender" id="male"></input>
-                                            <label className='cursor-pointer l-22 f-400' for="male">Male</label>
+                                            <label className='cursor-pointer l-22 f-400' htmlFor="male">Male</label>
                                         </div>
                                         <div className={`d-flex d-align-center ${styles["gender-radio-btn-2"]}`}>
                                             <input onClick={genderHandler} value="female" className='cursor-pointer' type="radio" name="gender" id='female'></input>
-                                            <label className='cursor-pointer l-22 f-400' for="female">Female</label>
+                                            <label className='cursor-pointer l-22 f-400' htmlFor="female">Female</label>
                                         </div>
                                     </div>                                 
                                 </div>
@@ -471,11 +471,11 @@ const removeHandler = (e) =>{
                                     <div className={`d-flex ${styles["gender-radio-btns"]}`}>
                                         <div className={`d-flex d-align-center ${styles["gender-radio-btn-1"]}`}>
                                             <input onClick={martialHandler} value="single" className='cursor-pointer' type="radio" name="martial" id="single"></input>
-                                            <label className='cursor-pointer l-22 f-400' for="single">Single</label>
+                                            <label className='cursor-pointer l-22 f-400' htmlFor="single">Single</label>
                                         </div>
                                         <div className={`d-flex d-align-center ${styles["gender-radio-btn-2"]}`}>
                                             <input onClick={martialHandler} value="married" className='cursor-pointer' type="radio" name="martial" id='married'></input>
-                                            <label className='cursor-pointer l-22 f-400' for="married">Married</label>
+                                            <label className='cursor-pointer l-22 f-400' htmlFor="married">Married</label>
                                         </div>
                                     </div>                                 
                                 </div>

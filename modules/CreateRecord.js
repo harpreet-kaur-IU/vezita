@@ -69,18 +69,18 @@ const CreateRecord = () => {
                           </div>
                       </div>
                       <div className={`d-flex ${styles["icons-wrapper"]}`} style={{gap:"28px"}}>
-                          <div className={` cursor-pointer ${styles["call-icon"]}`}>
-                              <img src='phone.png'></img>
+                          <div className={`cursor-pointer ${styles["call-icon"]}`}>
+                            <img src='phone.png'></img>
                           </div>
-                          <div className={` cursor-pointer ${styles["mail-icon"]}`}>
-                              <img src='mail.png'></img>
+                          <div className={`cursor-pointer ${styles["mail-icon"]}`}>
+                            <img src='mail.png'></img>
                           </div>
-                          <div className={` cursor-pointer ${styles["message-icon"]}`}>
-                              <img src='chat.png'></img>
+                          <div className={`cursor-pointer ${styles["message-icon"]}`}>
+                            <img src='chat.png'></img>
                           </div>
                           <div className={`d-flex d-align-center cursor-pointer ${styles["view-details-btn"]}`}>
-                              <h5 className='l-22 f-500'>View all details</h5>
-                              <img src='arrow.png'></img>
+                            <h5 className='l-22 f-500'>View all details</h5>
+                            <img src='arrow.png'></img>
                           </div>
                       </div>
                   </div>

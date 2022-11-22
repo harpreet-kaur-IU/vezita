@@ -5,7 +5,9 @@ import useFirebaseAuth from '../auth/useFirebaseAuth'
 import Loader from '../modules/Loader';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/router';
 export default function Signup() {
+    const router = useRouter();
     const {createUserWithEmailAndPassword,signOut} = useFirebaseAuth(); 
     const [email,setEmail] = useState("")
     const [password,setPassword] = useState("")
@@ -105,6 +107,7 @@ export default function Signup() {
                     userOnBoard(authUser)
                     signOut()
                     setLoading(false)
+                    router.push("/")
                 })
                 .catch(error => console.log('error', error));            
             })

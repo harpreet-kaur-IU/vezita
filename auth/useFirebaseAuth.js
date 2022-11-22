@@ -5,7 +5,9 @@ export default function useFirebaseAuth(){
     const clear = () => {
         removeVezitaOnBoardCookie();
     }
-   
+    const sendPasswordResetEmail = (email) =>
+        firebase.auth().sendPasswordResetEmail(email);
+        
     const signInWithEmailAndPassword = (email, password) =>
         firebase.auth().signInWithEmailAndPassword(email, password);
     
@@ -22,6 +24,7 @@ export default function useFirebaseAuth(){
         signInWithEmailAndPassword,
         createUserWithEmailAndPassword,
         signOut,
+        sendPasswordResetEmail,
         signOutOnBoard
     };
 }

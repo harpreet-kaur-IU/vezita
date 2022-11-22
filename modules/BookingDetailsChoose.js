@@ -92,6 +92,28 @@ const BookingDetailsChoose = () => {
         }
         
     },[bookingId])
+
+    const bookingStatus = (status) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "status": status
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}booking/confirm-cancel/${bookingId}`, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+    }
   return (
     <>
         {loading && <Loader></Loader>}
@@ -113,20 +135,33 @@ const BookingDetailsChoose = () => {
                     </div>
                 }
                 <div className={`bg-grey7 ${styles["left-col-1"]}`}>
-                    <div className={`d-flex d-align-center d-justify-space-between ${styles["status-wrapper"]}`}>
-                        <h3 className='text-secondary l-28 f-500'>Do you want to accept the booking?</h3>
-                        <div className='d-flex'>
-                            <button className={`cursor-pointer d-flex d-justify-center ${styles["status-button-decline"]}`}>
-                                <img src='cross.png'></img>
-                                DECLINE
-                            </button>
-                            <button className={`cursor-pointer d-flex d-justify-center ${styles["status-button-accept"]}`}>
-                                <img src='tick.png'></img>
-                                ACCEPT
-                            </button>
+                    {bookingData.status == "confirmed" &&
+                        <div className={`d-flex d-align-center d-justify-space-between ${styles["status-wrapper"]}`}>
+                            <h3 className='text-secondary l-28 f-500'>Do you want to accept the booking?</h3>
+                            <div className='d-flex'>
+                                <button onClick={()=>bookingStatus("cancelled")} className={`cursor-pointer d-flex d-justify-center ${styles["status-button-decline"]}`}>
+                                    <img src='cross.png'></img>
+                                    DECLINE
+                                </button>
+                                <button onClick={()=>bookingStatus("confirmed")} className={`cursor-pointer d-flex d-justify-center ${styles["status-button-accept"]}`}>
+                                    <img src='tick.png'></img>
+                                    ACCEPT
+                                </button>
+                            </div>
                         </div>
-                    </div>
-
+                    }
+                    {bookingData.status == "completed" &&
+                        <div className={`d-flex d-align-center d-justify-space-between ${styles["status-wrapper"]}`}>
+                            <h3 className='text-secondary l-28 f-500'>Do you want to accept the booking?</h3>
+                            <div className='d-flex'>
+                                <button className={`cursor-pointer d-flex d-justify-center ${styles["status-button-accept"]}`}>
+                                    <img src='tick.png'></img>
+                                    ACCEPT
+                                </button>
+                            </div>
+                        </div>
+                    }    
+                    
                     <div className={`d-flex d-flex-column ${styles['booking-details']}`}>
                         <div className='d-flex col-12'>
                             <h5 className='text-secondary col-6 f-400 l-22'>Booked on</h5>
@@ -241,17 +276,15 @@ const BookingDetailsChoose = () => {
                     <div className={`${styles["previous-appointments-list"]}`}>
                         {appointment && appointment.map((index=>(
                             <div className={`d-flex ${styles["previousa-appoi-single-item"]}`}>
-                                {index.slot.sessionType.map((item,index1)=>(
-                                    index1 === 0 ?
+                                {index.slot.sessionType[0] == "in-clinic" ?
                                         <div className={`d-flex d-align-center bg-purple-2 ${styles["appointment-icons-wrapper"]}`}>
                                             <img src="clinic-appointment.png"></img>
                                         </div>
                                     :
                                     <div className={`d-flex d-align-center bg-teal-2 ${styles["appointment-icons-wrapper"]}`}>
                                         <img src="video-appointment.png"></img>
-                                    </div>
-                                ))}
-                                
+                                    </div> 
+                                }
                                 <div>
                                     <h4 className='f-500 l-26 text-secondary'>
                                         {index.slot.sessionType.map(((item,index1)=>(

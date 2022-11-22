@@ -56,53 +56,53 @@ const EducationDetails = () => {
         e.preventDefault();
         addSpecialization()
         
-        // var myHeaders = new Headers();
-        // myHeaders.append("token",JWTToken);
-        // myHeaders.append("Content-Type","application/json");
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type","application/json");
 
-        // for(var i = 0;i<inputList.length;i++){
-        //     var raw = JSON.stringify({
-        //         "degree":inputList[i].degree,
-        //         "institute":inputList[i].institute,
-        //         "year":inputList[i].year,
-        //     });
+        for(var i = 0;i<inputList.length;i++){
+            var raw = JSON.stringify({
+                "degree":inputList[i].degree,
+                "institute":inputList[i].institute,
+                "year":inputList[i].year,
+            });
 
-        //     var addBody = JSON.stringify({
-        //         "degree":inputList[i].degree,
-        //         "institute":inputList[i].institute,
-        //         "year":inputList[i].year,
-        //         "docter":docterId
-        //     });
+            var addBody = JSON.stringify({
+                "degree":inputList[i].degree,
+                "institute":inputList[i].institute,
+                "year":inputList[i].year,
+                "docter":docterId
+            });
 
-        //     var requestOptions = {
-        //         method: 'PATCH',
-        //         headers: myHeaders,
-        //         body: raw,
-        //         redirect: 'follow'
-        //     };
+            var requestOptions = {
+                method: 'PATCH',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
 
-        //     var requestOptionsAdd = {
-        //         method: 'POST',
-        //         headers: myHeaders,
-        //         body: addBody,
-        //         redirect: 'follow'
-        //     };
+            var requestOptionsAdd = {
+                method: 'POST',
+                headers: myHeaders,
+                body: addBody,
+                redirect: 'follow'
+            };
 
-        //     if(inputList[i]._id){
-        //         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}qualification/update/${inputList[i]._id}`, requestOptions)
-        //         .then(response => response.text())
-        //         .then(result => {
-        //             console.log(result)
-        //         })
-        //         .catch(error => console.log('error', error));
-        //     }else{
-        //         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}qualification`, requestOptionsAdd)
-        //         .then(response => response.text())
-        //         .then(result => console.log(result))
-        //         .catch(error => console.log('error', error));
-        //     }
+            if(inputList[i]._id){
+                fetch(`${process.env.NEXT_PUBLIC_BASE_URL}qualification/update/${inputList[i]._id}`, requestOptions)
+                .then(response => response.text())
+                .then(result => {
+                    console.log(result)
+                })
+                .catch(error => console.log('error', error));
+            }else{
+                fetch(`${process.env.NEXT_PUBLIC_BASE_URL}qualification`, requestOptionsAdd)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+            }
            
-        // }
+        }
     }
 
     //to handler specialization input
@@ -118,6 +118,7 @@ const EducationDetails = () => {
     useEffect(()=>{
         if(JWTToken){
             getProfile()
+            getSpecialization()
         }
     },[])
 
@@ -191,39 +192,69 @@ const EducationDetails = () => {
 
     //add specialization API
     const addSpecialization = () =>{
-        var raw = {
-            "specialization":list,
-            "doctorId":docterId
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var arraySpe = [];
+        for(var i=0;i<list.length;i++){
+            var obj = {
+                    "specializationId":list[i],
+                    "docter":docterId
+                }
+                arraySpe.push(obj)
         }
-        console.log(raw)
-        // var myHeaders = new Headers();
-        // myHeaders.append("token",JWTToken);
-        // myHeaders.append("Content-Type", "application/json");
+        
+        var raw = JSON.stringify(arraySpe)
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
 
-
-        // var raw = JSON.stringify([
-        //     {
-        //         "specializationId": "6311d4ffa4fa527770972e44",
-        //         "docter": "63172298b637a66aeef88b4d"
-        //     },
-        //     {
-        //         "specializationId": "6311d8d1dedb6e1cd0c60ca6",
-        //         "docter": "63172298b637a66aeef88b4d"
-        //     }
-        // ]);
-
-        // var requestOptions = {
-        //     method: 'POST',
-        //     headers: myHeaders,
-        //     body: raw,
-        //     redirect: 'follow'
-        // };
-
-        // fetch("https://vezita-backend.herokuapp.com/api/v1/doctor-specialization", requestOptions)
-        // .then(response => response.text())
-        // .then(result => console.log(result))
-        // .catch(error => console.log('error', error));
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-specialization`, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
     }
+
+    //get specialization API
+    const getSpecialization = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-specialization`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            const specialization = JSON.parse(result)
+            var dlisting = [];
+            var listing = [];
+            
+            for(var i=0;i<specialization.specializations.length;i++){
+                var id = specialization.specializations[i].specializationId.id
+                var name = specialization.specializations[i].specializationId.name
+                
+                if(!list.includes(id)){
+                    //set data in list to store
+                    listing.push(id)
+                    setList(listing)
+
+                    //set data in display list
+                    dlisting.push(name)
+                    setDisplayList(dlisting)
+                }
+            }
+        })
+        .catch(error => console.log('error', error));
+    }
+
   return (
     <>
         <h4 className='f-600 l-26 col-12 text-primary'>Education and Specialization</h4>

@@ -168,9 +168,9 @@ const BasicDetails = () => {
                                         <input {...getInputProps({placeholder:"Type or select your college/institute"})}></input>
                                         <div className={`${styles["city-suggestion-list"]}`}>
                                             {loading ?<h6 className='f-400'>...loading</h6>: null}
-                                            {suggestions.map((suggestion) => {
+                                            {suggestions.map((suggestion,index) => {
                                                 return (
-                                                    <div
+                                                    <div key={index}
                                                     {...getSuggestionItemProps(suggestion)}
                                                     >
                                                         <h6 id={suggestion.terms[0].value} onClick={cityHandler} className='cursor-pointer f-400'>{suggestion.terms[0].value}</h6>

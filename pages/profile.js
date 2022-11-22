@@ -17,6 +17,10 @@ export default function Profile() {
 
     //completed states
     const[basicComp,setBasicComp] = useState(false)
+    const[eduComp,setEduComp] = useState(false)
+    const[regComp,setRegComp] = useState(false)
+    const[estComp,setEstComp] = useState(false)
+    const[serviceComp,setServiceComp] = useState(false)
 
     const tabHandler = (val) => {
         setTab(val);
@@ -47,8 +51,17 @@ export default function Profile() {
             {
                 setBasicComp(true)
                 setProgress(20)
-            }else{
-                setBasicComp(false)
+            }if(parsedResult.docter.education[0]){
+                setEduComp(true)
+                setProgress(35)
+            }
+            if(parsedResult.docter.medicalRegistrationDetails[0]){
+                setRegComp(true)
+                setProgress(50)
+            }
+            if(parsedResult.docter.establishment[0].contactNumber || docter.establishment[0].establishmentName){
+                setEstComp(true)
+                setProgress(70)
             }
             
         })
@@ -105,7 +118,7 @@ export default function Profile() {
             </div>
             <div className='d-flex d-flex-wrap mb-10'>
                 <div className={`col-3 pr-4 ${styles["sidebar"]}`}>
-                    <ProfileSidebar basic={basicComp} handler={tabHandler}></ProfileSidebar>
+                    <ProfileSidebar establishment={estComp} registration ={regComp} education={eduComp} basic={basicComp} handler={tabHandler}></ProfileSidebar>
                 </div>
 
                 <div className={`col-8 d-flex d-flex-wrap border-box ${styles["personal-detail-section"]}`}>

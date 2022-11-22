@@ -1,9 +1,17 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import styles from "../modules/css/dropdown.module.css";
 
 export default function DropDownDate(props){
+    
 
     const [value, setValue] = useState(props.placeholder);
+    useEffect(()=>{
+        if(props.placeholder)
+            setValue(props.placeholder)
+        else
+            setValue("select")
+    },[props.placeholder])
+
     const hours = [];
     for (let i=1;i<25;i++){
         hours.push(i+":00");
@@ -14,6 +22,7 @@ export default function DropDownDate(props){
 
     const selectHandler = (e) => {
         setValue(e.currentTarget.getAttribute("value"));
+        props.handler(e.currentTarget.getAttribute("value"),props.index)
     }
 
     return (
