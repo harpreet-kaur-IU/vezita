@@ -107,8 +107,6 @@ export default function DoctorSetup() {
         router.push("/subscription");
     }
     const nextHandler = () =>{
-        // setTab(prev => prev+1)
-        // formSubmit();
         if(tab == 0 || tab == 1){
             setTab(prev => prev+1)
         }else if(tab == 6 || tab == 10){
@@ -355,6 +353,7 @@ export default function DoctorSetup() {
             if(parsedResult.docter.medicalRegistrationDetails[0].councilName){
                setTab(3)
             }
+            console.log(parsedResult.docter.education[0].degree)
             if(parsedResult.docter.education[0].degree){
                 setTab(4)
             }
@@ -371,7 +370,8 @@ export default function DoctorSetup() {
             if(parsedResult.docter.establishment[0].consultationFee){
                 setTab(14)
             }
-            // getDocument(parsedResult.docter._id)
+            if(parsedResult.docter.isDocumentUploaded == false)
+                getDocument(parsedResult.docter._id)
         })
         .catch(error => console.log('error', error));
     }
@@ -399,12 +399,36 @@ export default function DoctorSetup() {
                 setTab(9)
             }
             if(doc.documents[2].documentType == "establishment"){
+                updateDocumentStatus(doctorID);
                 setTab(10)
             }
             else{
                 setTab(prev => prev+1)
             }
         })
+        .catch(error => console.log('error', error));
+    }
+
+    //update document status
+    const updateDocumentStatus = (doctorID) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "isDocumentUploaded": true
+        });
+
+        var requestOptions = {
+            method: 'PATCH',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/update/${doctorID}`, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
         .catch(error => console.log('error', error));
     }
 
@@ -466,6 +490,7 @@ export default function DoctorSetup() {
         .then(response => response.text())
         .then(result => {
             setTab(3)
+            getProfile()
         })
         .catch(error => console.log('error', error));
     }
@@ -532,7 +557,9 @@ export default function DoctorSetup() {
 
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}establishment`, requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => {
+            setTab(6)
+        })
         .catch(error => console.log('error', error));
     }
 
