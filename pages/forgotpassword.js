@@ -14,7 +14,7 @@ export default function ForgotPassword() {
         <div className='col-6 h-100 d-flex-wrap d-flex d-align-center d-justify-center'>
             <div className='col-7 d-flex d-flex-wrap'>
                 <h1 className='f-600 l-40 text-secondary col-12'>Forgot Password</h1>
-                <h5 className='f-500 l-22 text-secondary col-12 mt-2'>Enter the email associated with account and we’ll send an email with instructions to reset your passoword.</h5>
+                <h5 className='f-500 l-22 text-secondary col-12 mt-2'>Enter the email associated with account and well send an email with instructions to reset your passoword.</h5>
                 <form className={`col-12 mt-10 d-flex d-flex-column ${styles["login-setup"]}`}>
                     <label>Email</label>
                     <input type="text" placeholder='Enter your email'/>

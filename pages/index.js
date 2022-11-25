@@ -145,7 +145,7 @@ export default function Login() {
                             <h6 onClick={forgetPasswordHandler} className='col-3 cursor-pointer f-600 l-20 d-flex d-justify-end mt-2 text-grey-3'>Forgot password?</h6>
                         </div>
                         <button className={`btn btn-primary mt-7 text-white ${styles["login-btn"]}`}>Login</button>
-                        <h4 className='f-600 l-26 text-secondary mt-100'>Don't have an account? <Link href="/signup" className='text-primary'>Signup</Link></h4>
+                        <h4 className='f-600 l-26 text-secondary mt-100'>Dont have an account? <Link href="/signup" className='text-primary'>Signup</Link></h4>
                     </form>
                     <button onClick={logOutHandler} className='btn btn-primary mt-7'>Logout</button>
                 </div>
