@@ -3,10 +3,12 @@ import Header from './Header'
 import styles from './css/BookingDetails.module.css'
 import styles2 from './css/TableTemplate.module.css'
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies';
+import Loader from './Loader'
 const CreateRecord = () => {
 
   const JWTToken = getVezitaOnBoardFromCookie();
   const[template,setTemplate] = useState("")
+  const[loading,setLoading] = useState(false)
 
   const[drugData,setDrugData] = useState("")
   useEffect(()=>{ 
@@ -24,11 +26,13 @@ const CreateRecord = () => {
       redirect: 'follow'
     };
 
+    setLoading(true)
     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}template`, requestOptions)
     .then(response => response.text())
     .then(result => {
       var parseTemp = JSON.parse(result)
       setTemplate(parseTemp.templates)
+      setLoading(false)
     })
     .catch(error => console.log('error', error));
   }
@@ -45,17 +49,19 @@ const CreateRecord = () => {
       redirect: 'follow'
     };
 
+    setLoading(true)
     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}template/${templateId}`, requestOptions)
     .then(response => response.text())
     .then(result => {
       var parseTemp = JSON.parse(result)
       setDrugData(parseTemp.template.drunInstruction)
-      console.log(parseTemp.template.drunInstruction)
+      setLoading(false)
     })
     .catch(error => console.log('error', error));
   }
   return (
     <>
+      {loading && <Loader></Loader>}
       <Header title="Create a medical record"></Header>
       <div className={`d-flex ${styles["wrapper"]}`} style={{paddingBottom:"18px"}}>
           <div className={`col-12 ${styles["left-column"]}`} style={{marginRight: "0px"}}>

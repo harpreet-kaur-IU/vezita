@@ -6,6 +6,7 @@ import DaySelector from './DaySelector';
 import DropDownDate from './DropDownDate';
 import { GoogleMap,useJsApiLoader  } from '@react-google-maps/api';
 import CountryCode from './CountryCode.json'
+import Loader from './Loader';
 const containerStyle = {
     width: '100%',
     height: '200px',
@@ -45,6 +46,7 @@ const Establishment = () => {
     }
 
     //google map code ends here
+    const[loading,setLoading] = useState(false)
     const [subTab, setSubTab] = useState(0);
     const[dayArray,setDayArray] = useState([])
     const JWTToken = getVezitaOnBoardFromCookie();
@@ -90,11 +92,13 @@ const Establishment = () => {
             redirect: 'follow'
         };
 
+        setLoading(true)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
         .then(response => response.text())
         .then(result =>{
            
             const parsedResult =  JSON.parse(result)
+            setLoading(false)
             getSlots(parsedResult.docter._id)
             if(parsedResult.docter.establishment[0]){
                 setEstName(parsedResult.docter.establishment[0].establishmentName)
@@ -166,15 +170,16 @@ const Establishment = () => {
         myHeaders.append("token",JWTToken);
 
         var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
         };
 
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}slot?docter=63172298b637a66aeef88b4d`, requestOptions)
+        setLoading(true)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}slot?docter=${docterID}`, requestOptions)
         .then(response => response.text())
         .then(result =>{
-            
+            setLoading(false)
         })
         .catch(error => console.log('error', error));
     }
@@ -189,14 +194,14 @@ const Establishment = () => {
     
     const startHandler = (value,index) =>{
         const name = "startTime";
-        const val = value;
+        const val = value+":00";
         const list = [...inputList];
         list[index][name] = val;
         setInputList(list);
     }
     const endHandler = (value,index) =>{
         const name = "endTime";
-        const val = value;
+        const val = value+":00";
         const list = [...inputList];
         list[index][name] = val;
         setInputList(list);
@@ -214,60 +219,65 @@ const Establishment = () => {
         setEstAddress(e.target.value)
     }
     const estForm = (e) =>{
-        console.log(dayArray)
+        const date = new Date(inputList[0].endTime);
+
+        console.log(date)
         e.preventDefault();
-        var myHeaders = new Headers();
-        myHeaders.append("token",JWTToken);
-        myHeaders.append("Content-Type","application/json");
+        // var myHeaders = new Headers();
+        // myHeaders.append("token",JWTToken);
+        // myHeaders.append("Content-Type","application/json");
 
-        var raw = JSON.stringify({
-            "establishmentName":estName,
-            "city":city,
-            "contactNumber": contactNumber,
-            "location": {
-                "type": "Point",
-                "coordinates": [
-                    long,
-                    lat
-                ],
-                "address":estAddress
-            },
-            "consultationDay":dayArray
-        });
+        // var raw = JSON.stringify({
+        //     "establishmentName":estName,
+        //     "city":city,
+        //     "contactNumber": contactNumber,
+        //     "location": {
+        //         "type": "Point",
+        //         "coordinates": [
+        //             long,
+        //             lat
+        //         ],
+        //         "address":estAddress
+        //     },
+        //     "consultationDay":dayArray
+        // });
         
-        var requestOptions = {
-            method: 'PATCH',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-        };
+        // var requestOptions = {
+        //     method: 'PATCH',
+        //     headers: myHeaders,
+        //     body: raw,
+        //     redirect: 'follow'
+        // };
 
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}establishment/update/${estId}`, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-            setDayArray([])
-        })
-        .catch(error => console.log('error', error));
+        // fetch(`${process.env.NEXT_PUBLIC_BASE_URL}establishment/update/${estId}`, requestOptions)
+        // .then(response => response.text())
+        // .then(result => {
+        //     setDayArray([])
+        // })
+        // .catch(error => console.log('error', error));
     }
   return (
     <>
+        {loading && <Loader></Loader>}
         <h4 className='f-600 l-26 col-12 text-primary '>Establishments(Fees, Timings)</h4>
         <form onSubmit={estForm}>
-
             <div className='d-flex col-11 d-flex-wrap '>
                 <div className={`d-flex d-flex-wrap border-box ${styles["personal"]} col-12`}>
                     <h4 className='f-600 l-26 col-12 text-black mt-5'>Establishment address</h4>
                     <div className='d-flex d-flex-wrap col-12'>
+                        
                         <div className='col-6'>
                             <label className='d-flex'>Establishment name</label>
                             <input type="text" placeholder='Select or add title' onChange={estHandler} value={estName}/>
                         </div>
+
                         <div className='col-2 d-flex d-flex-wrap border-box'>
                             <div className='ml-5 col-12'>
                                 <label className='d-flex'>Establishment city</label>
-                                <input type="text" placeholder='Mumbai' onChange={cityHandler} value={city}/>
+                                <input type="text" placeholder='Enter establishment city' onChange={cityHandler} value={city}/>
                             </div>
                         </div>
+
                         <div className='col-2 d-flex d-flex-wrap border-box'>
                             <div className='ml-5 col-12'>
                                 <label className='d-flex'>Contact</label>

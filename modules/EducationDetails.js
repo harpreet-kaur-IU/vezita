@@ -1,6 +1,7 @@
 import React, { useEffect,useState } from 'react'
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies'
 import styles from './css/profile.module.css'
+import Loader from './Loader'
 const EducationDetails = () => {
     const JWTToken = getVezitaOnBoardFromCookie();
     const[inputList,setInputList] = useState([{degree:"",institute:"",year:""}])  
@@ -10,6 +11,7 @@ const EducationDetails = () => {
     const[displayList,setDisplayList] = useState([])
     const[docterId,setDoctorId] = useState("")
     const[qualificationId,setQualificationId] = useState("")
+    const[loading,setLoading] = useState(false)
     //add new slot of education details
     const addEduHandler = () =>{
         setInputList([...inputList,{degree:"",institute:"",year:""}])
@@ -133,11 +135,13 @@ const EducationDetails = () => {
             redirect: 'follow'
         };
 
+        setLoading(true)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
         .then(response => response.text())
         .then(result =>{
             const parsedResult =  JSON.parse(result)
             setDoctorId(parsedResult.docter._id)
+            setLoading(false)
             if(parsedResult.docter.education[0]){
                 setInputList(parsedResult.docter.education)
                 setQualificationId(parsedResult.docter.education[0]._id)
@@ -225,11 +229,12 @@ const EducationDetails = () => {
         myHeaders.append("token",JWTToken);
 
         var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
         };
 
+        setLoading(true)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-specialization`, requestOptions)
         .then(response => response.text())
         .then(result => {
@@ -251,12 +256,14 @@ const EducationDetails = () => {
                     setDisplayList(dlisting)
                 }
             }
+            setLoading(false)
         })
         .catch(error => console.log('error', error));
     }
 
   return (
     <>
+        {loading && <Loader></Loader>}
         <h4 className='f-600 l-26 col-12 text-primary'>Education and Specialization</h4>
         <form onSubmit={educationForm}>
             <div className='d-flex col-11 d-flex-wrap '>

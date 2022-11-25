@@ -1,42 +1,41 @@
-import React from 'react'
-// import { Avatar } from '@material-ui/core'
-import Chat from './Chat'
-import Link from 'next/link'
+import React , {useEffect} from 'react'
 import styles from './css/DoctorChat.module.css'
 import { useState } from 'react'
 import Header from './Header'
+import { getVezitaOnBoardFromCookie } from '../auth/userCookies'
 
 function DoctorsChat() {
     const[searchTerm,setSearchTerm]=useState("")
-    // useEffect(()=>{
-    //     var myHeaders = new Headers();
-    //     myHeaders.append("token", token);
-
-    //     var requestOptions = {
-    //         method: 'GET',
-    //         headers: myHeaders,
-    //         redirect: 'follow'
-    //     };
-
-    //     fetch(`https://vezita-backend.herokuapp.com/api/v1/dispute/all-admin?disputeOf=docter`, requestOptions)
-    //         .then(response => response.text())
-    //         .then(result => {
-    //         var res = JSON.parse(result);
-    //         // console.log(res.data)
-    //         setData(res.data)
-    //         setLoading(false)
-
-    //         })
-    //         .catch(error =>{ 
-    //         // console.log('error', error)
-    //         setLoading(false)
-    //         });
-    // },[])
+    const JWTToken = getVezitaOnBoardFromCookie();
+    useEffect(()=>{
+        if(JWTToken){
+            getAllChats()
+        }
+    },[])
     
+    //get all chats
+    const getAllChats = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}chat/channel`, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+    }
+    const bgClickHandler = (e) =>{
+        console.log(e.currentTarget.id)
+    }
   return (
     <>
         <Header title="Message"></Header>
-        <div className={`col-12 d-flex bg-white`}>
+        <div className={`d-flex bg-white ${styles["wrapper"]}`}>
             <div className='col-5 d-flex d-flex-column d-align-start gap-3'>
                 <div className={`col-12 d-flex d-flex-row gap-2 ${styles["search-input-wrapper"]}`}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +45,7 @@ function DoctorsChat() {
                 </div>
                 <h5 className={`text-uppercase f-600 l-22 text-dark-grey`}>Recents</h5>
             
-                <div className={`col-12 d-flex d-flex-row d-align-start d-justify-space-between bg-blue-2 rounded-12 rounded-16 border-lighter-gray `}>
+                <div id='chat-1' onClick={bgClickHandler} className={`cursor-pointer col-12 d-flex d-flex-row d-align-start d-justify-space-between rounded-12 rounded-16 border-lighter-gray `}>
                     <div className={`d-flex d-flex-row d-align-center gap-5 ${styles["chat-person-detail"]}`}>
                         <img src='dr.png'></img>
                         <div className={`d-flex d-flex-column d-align-start`}>
@@ -59,10 +58,46 @@ function DoctorsChat() {
                         <h6 className={`${styles["circle"]} d-flex d-align-center d-justify-center rounded-100 f-600 l-14 text-light-grey`}>1</h6>
                     </div>
                 </div>
+                <div  id='chat-2' onClick={bgClickHandler} className={`cursor-pointer col-12 d-flex d-flex-row d-align-start d-justify-space-between rounded-12 rounded-16 border-lighter-gray `}>
+                    <div className={`d-flex d-flex-row d-align-center gap-5 ${styles["chat-person-detail"]}`}>
+                        <img src='dr.png'></img>
+                        <div className={`d-flex d-flex-column d-align-start`}>
+                            <h4 className={`f-600 l-22 text-darker`}>hhg</h4>
+                            <h4 className={`f-500 l-22 text-dark-grey`}>You: Hii</h4>
+                        </div>
+                    </div>
+                    <div className={`d-flex d-flex-column d-align-center gap-2  ${styles["chat-person-detail"]}`}>
+                        <h6 className={`font-12 f-600 l-14 text-darker-grey`}>6:10</h6>
+                        {/* <h6 className={`${styles["circle"]} d-flex d-align-center d-justify-center rounded-100 f-600 l-14 text-light-grey`}>1</h6> */}
+                    </div>
+                </div>
             </div>
-            {/* <div className={`offset-1 col-6 ${styles["chat-right-wrapper"]}`}>
-               
-            </div> */}
+            <div className={`offset-1 col-6 ${styles["chat-right-wrapper"]}`}>
+                <div className={` d-flex d-flex-row d-align-center gap-2`}>
+                    <img className={`${styles["chat-person-img"]}`} src='dr.png'></img>
+                    <div className={`d-flex d-flex-column d-align-start gap-1`}>
+                        <h3 className={`f-500 l-28 text-secondary`}>Jane Jamel</h3>
+                        <h4 className={`f-500 l-26 text-grey-3`}>Last active 12:34 PM</h4>
+                    </div>
+                </div>
+                <div className='d-flex d-justify-start'>
+                    <div className={`${styles["chat-popup-r"]} bg-grey-6 mt-10`}>
+                        <h4 className='f-500 l-26 text-secondary'>What is the progress of the task that is allocated to you?What is the progress of the task that is allocated to you?What is the progress of the task that is allocated to you?</h4>
+                    </div>
+                </div>
+                <div className='d-flex d-justify-end'>
+                    <div className={`${styles["chat-popup-s"]} bg-primary mt-10`}>
+                        <h4 className='f-500 l-26 text-white'>What is the progress of the task that is allocated to you?What is the progress of the task that is allocated to you?What is the progress of the task that is allocated to you?</h4>
+                    </div>
+                </div>
+                <div className={`d-flex d-justify-space-between d-align-center gap-5 mt-50 ${styles["message-area"]}`}>
+                    <textarea type="text" placeholder="Message"></textarea>
+                    <div className='d-flex gap-3'>
+                        <img src='file-upload.png'></img>
+                        <img src='send.png'></img>
+                    </div>
+                </div>
+            </div>
         </div>
     </>
   )

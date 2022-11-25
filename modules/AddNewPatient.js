@@ -9,6 +9,9 @@ import { getVezitaOnBoardFromCookie } from '../auth/userCookies';
 import useFirebaseAuth from '../auth/useFirebaseAuth';
 import DropDown from './DropDown';
 import CountryCode from './CountryCode.json';
+
+import Loader from './Loader'
+import DateDropdown from './DateDropdown';
 const AddNewPatient = () => {
     const JWTToken = getVezitaOnBoardFromCookie();
     const[add,setAdd] = useState(false);
@@ -16,6 +19,7 @@ const AddNewPatient = () => {
     const [activeTab, setActiveTab] = useState("tab1");
     const router = useRouter();
     const {createUserWithEmailAndPassword,signOutOnBoard} = useFirebaseAuth(); 
+    const[loading,setLoading] = useState(false)
     //states
     const avatarRef = useRef();
     const[avatar,setAvatar] = useState("")
@@ -61,6 +65,31 @@ const AddNewPatient = () => {
     //doctor id
     const[doctorId,setDoctorId] = useState("")
 
+    //error states
+    const[eNumberError,setENumberError] = useState(false)
+    const[numberError,setNumberError] = useState(false)
+
+    //height and weight units
+    var heightUnits = [
+        {
+            "name":"cm",
+            "id":"cm"
+        },
+        {
+            "name":"feet",
+            "id":"feet"
+        }
+    ]
+    var weightUnits = [
+        {
+            "name":"kg",
+            "id":"kg"
+        },
+        {
+            "name":"pound",
+            "id":"pound"
+        }
+    ]
     useEffect(()=>{
         for(var i = 0;i<CountryCode.length;i++){
             setCountryCodeList(CountryCode)
@@ -82,7 +111,13 @@ const AddNewPatient = () => {
         setRelation(e.target.value)
     }
     const contactHandler = (e) =>{
-        setContact(e.target.value)
+        var pattern = /^(\s*|\d+)$/;
+        if(pattern.test(e.target.value)){
+            setContact(e.target.value)
+            setNumberError(false)
+        }
+        else    
+            setNumberError(true)
     }
     const genderHandler = (e) =>{
         setGender(e.currentTarget.value)
@@ -100,7 +135,13 @@ const AddNewPatient = () => {
         setEmergencyName(e.target.value)
     }
     const emergencyNumberHandler = (e) =>{
-        setEmergencyNumber(e.target.value)
+        var pattern = /^(\s*|\d+)$/;
+        if(pattern.test(e.target.value)){
+            setEmergencyNumber(e.target.value)
+            setENumberError(false)
+        }
+        else    
+            setENumberError(true)
     }
     const locationHandler = (e) =>{
         setLocation(e.target.value)
@@ -112,6 +153,7 @@ const AddNewPatient = () => {
         setCountryCode2(val)
     }
     const dayHandler = (e) =>{
+        console.log(e.target.value)
         setDay(e.target.value)
     }
     const monthHandler = (e) =>{
@@ -136,6 +178,12 @@ const AddNewPatient = () => {
         router.push("/patientdetails")
     }
 
+    const heightUnitHandler = (val) =>{
+        console.log(val)
+    }
+    const weightUnitHandler = (val) =>{
+        console.log(val)
+    }
     const valueHandler = (type,val) => {
         
         if(type == "Blood Group"){
@@ -171,6 +219,7 @@ const AddNewPatient = () => {
 const formSubmit = (e) =>{
     e.preventDefault();
     
+    setLoading(true)
     createUserWithEmailAndPassword(email,password)
     .then(authUser =>{
         var myHeaders = new Headers();
@@ -195,6 +244,7 @@ const formSubmit = (e) =>{
             authUser.user.sendEmailVerification()
             userOnBoard(authUser)
             signOutOnBoard()
+            setLoading(false)
         })
         .catch(error => console.log('error', error));            
     })
@@ -225,17 +275,18 @@ const userOnBoard = (authUser) =>{
         redirect: 'follow'
     };
 
+    setLoading(true)
     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}user/onboarding`, requestOptions)
     .then(response => response.text())
     .then(result => {
         var parse = JSON.parse(result)
         setUserId(parse.user._id)
-        console.log(parse.user._id)
         if(parse.user._id){
             getDoctor(parse.user._id);
         }else{
             console.log("error occured while calling getDoctor")
         }
+        setLoading(false)
     })
     .catch(error => console.log('error', error));
 }
@@ -251,6 +302,7 @@ const getDoctor = (userID) =>{
         redirect: 'follow'
     };
 
+    setLoading(true)
     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
     .then(response => response.text())
     .then(result => {
@@ -258,9 +310,8 @@ const getDoctor = (userID) =>{
         setDoctorId(parse.docter._id);
         if(parse.docter._id){
             addNewPatient(userID,parse.docter._id);
-        }else{
-            console.log("error occured while calling addNewPatient")
         }
+        setLoading(false)
         
     })
     .catch(error => console.log('error', error));
@@ -296,6 +347,7 @@ const addNewPatient = (userID,doctorID) =>{
         redirect: 'follow'
     };
 
+    setLoading(true)
     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}patient/add`, requestOptions)
     .then(response => response.text())
     .then(result => {
@@ -303,9 +355,9 @@ const addNewPatient = (userID,doctorID) =>{
         setPatientId(parsedResult.patient._id)
         if(parsedResult.patient._id){
             addPatientMedicalData(parsedResult.patient._id,userID,doctorID)
-        }else{
-            console.log("error occured while calling addPatientMedicalData")
         }
+        console.log(userID)
+        setLoading(false)
     })
     .catch(error => console.log('error', error));
 }
@@ -334,11 +386,12 @@ const addPatientMedicalData = (patientID,userID,doctorID) =>{
         redirect: 'follow'
     };
 
+    setLoading(true)
     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}patient/add-patientMedical`, requestOptions)
     .then(response => response.text())
     .then(result => {
         saveReport(patientID,userID,doctorID)
-        console.log(result)
+        setLoading(false)
     })
     .catch(error => console.log('error', error));
 }
@@ -366,11 +419,10 @@ const saveReport = (patientID,userID,doctorID) =>{
             redirect: 'follow'
         };
 
+        setLoading(true)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter-report-of-patient`, requestOptions)
         .then(response => response.text())
-        .then(result => {
-            console.log(result)
-        })
+        .then(result => setLoading(false))
         .catch(error => console.log('error', error));
     }
 }
@@ -385,6 +437,7 @@ const removeHandler = (e) =>{
 }
   return (
     <>
+        {loading && <Loader></Loader>}
         <Header title="Add a new patient"></Header>
         <div className={`${styles["wrapper"]}`}>
             <form onSubmit={formSubmit}>
@@ -434,7 +487,7 @@ const removeHandler = (e) =>{
                                         <input value={contact} onChange={contactHandler} className={`col-12 text-secondary l-22 f-400 ${styles["contact-input"]}`} type="text" required></input>
                                     </div>
                                 </div>
-                                
+                                {numberError && <h6 className='f-600 l-22 mt-2 text-red'>Contact number can only contain numbers</h6>}
                                 <div className={`${styles["gender-radio-btn-wrapper"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Gender</h6>   
                                     <div className={`d-flex ${styles["gender-radio-btns"]}`}>
@@ -459,9 +512,11 @@ const removeHandler = (e) =>{
                                     
                                 </div>
                                 <div className={`d-flex ${styles["name-field"]}`}>
-                                    <input value={day} onChange={dayHandler} className='col-4 text-secondary l-22 f-400' type="text" required></input>
-                                    <input value={month} onChange={monthHandler} className='col-4 text-secondary l-22 f-400' type="text" required></input>
-                                    <input value={year} onChange={yearHandler} className='col-4 text-secondary l-22 f-400' type="text" required></input>
+                                 
+                                    {/* <input value={day} onChange={dayHandler} className='col-4 text-secondary l-22 f-400' type="text" required></input> */}
+                                    {/* <input value={month} onChange={monthHandler} className='col-4 text-secondary l-22 f-400' type="text" required></input>
+                                    <input value={year} onChange={yearHandler} className='col-4 text-secondary l-22 f-400' type="text" required></input> */}
+                                    <input className='col-12' value={day} onChange={dayHandler} type="date"></input>
                                 </div>
                             </div>
 
@@ -479,13 +534,19 @@ const removeHandler = (e) =>{
                                         </div>
                                     </div>                                 
                                 </div>
-                                <div className={`d-flex d-flex-column ${styles["name-field"]}`}>
+                                <div className={`d-flex d-flex-column ${styles["field-with-dropdown"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Height</h6>
-                                    <input value={height} onChange={heightHandler} className='text-secondary l-22 f-400' type="text" required></input>
+                                    <div className={`d-flex ${styles["unit-dropdown"]}`}>
+                                        <input value={height} onChange={heightHandler} className='col-12 text-secondary l-22 f-400' type="text" required></input>
+                                        <DateDropdown width="100px" handler={heightUnitHandler} data={heightUnits} placeholder="cm"></DateDropdown>
+                                    </div>
                                 </div>
-                                <div className={`d-flex d-flex-column ${styles["name-field"]}`}>
+                                <div className={`d-flex d-flex-column ${styles["field-with-dropdown"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Weight</h6>
-                                    <input value={weight} onChange={weightHandler} className='text-secondary l-22 f-400' type="text" required></input>
+                                    <div className={`d-flex ${styles["unit-dropdown"]}`}>
+                                        <input value={weight} onChange={weightHandler} className='col-12 text-secondary l-22 f-400' type="text" required></input>
+                                        <DateDropdown width="140px" handler={weightUnitHandler} data={weightUnits} placeholder="kg"></DateDropdown>
+                                    </div>
                                 </div>
                                 <div className={`d-flex d-flex-column ${styles["name-field"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Emergency Contact name</h6>
@@ -498,6 +559,7 @@ const removeHandler = (e) =>{
                                         <input value={emergencyNumber} onChange={emergencyNumberHandler} className={`col-12 text-secondary l-22 f-400 ${styles["contact-input"]}`} type="text"></input>
                                     </div>
                                 </div>
+                                {eNumberError && <h6 className='f-600 l-22 mt-2 text-red'>Contact number can only contain numbers</h6>}
                                 <div className={`d-flex d-flex-column ${styles["name-field"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Location</h6>
                                     <input value={location} onChange={locationHandler} className='text-secondary l-22 f-400' type="text" required></input>

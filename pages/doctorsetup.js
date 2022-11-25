@@ -11,6 +11,7 @@ import { GoogleMap,useJsApiLoader  } from '@react-google-maps/api';
 import CountryCode from '../modules/CountryCode.json'
 import Modal from '../modules/Modals/Modal';
 import Verify from '../modules/Modals/Verify';
+import useFirebaseAuth from '../auth/useFirebaseAuth';
 const containerStyle = {
     width: '500px',
     height: '160px'
@@ -39,6 +40,7 @@ export default function DoctorSetup() {
     }, [])
 
 
+    const {signOut} = useFirebaseAuth()
     const [tab, setTab] = useState(0);
     const router = useRouter();
     const JWTToken = getVezitaOnBoardFromCookie();
@@ -311,7 +313,14 @@ export default function DoctorSetup() {
     const hourHandler = (e) =>{
         setHour(e.target.value)
     }
-
+    const logoutHandler = () =>{
+        signOut()
+        // .then(response => response.text())
+        .then(result =>{
+          router.push("/")
+        })
+        .catch((error)=>console.log("error while logout"+error))
+    }
     useEffect(()=>{
         for(var i = 0;i<CountryCode.length;i++){
             setCountryCodeList(CountryCode)
@@ -327,7 +336,23 @@ export default function DoctorSetup() {
             setSpecialization(parsedResult.specialization)
         }) 
         .catch(error => console.log('error', error));
-        getProfile();
+        if(JWTToken){
+            function parseJwt() {
+                if(!JWTToken){
+                return
+                }
+                const base64Url = JWTToken.split('.')[1];
+                const base64 = base64Url.replace('-', '+').replace('_', '/');
+                return JSON.parse(window.atob(base64));
+            }
+            var user = parseJwt();
+            if(user.exp*1000<Date.now()){
+                logoutHandler()
+            }else{
+                getProfile();
+            }
+        }
+        
     },[])
 
     //get profile Handler
@@ -690,28 +715,28 @@ export default function DoctorSetup() {
             "consultationDay":dayArray
         });
 
-        var requestOptions = {
+        var requestOptions1 = {
             method: 'PATCH',
             headers: myHeaders,
             body: raw,
             redirect: 'follow'
         };
 
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}establishment/update/${estId}`, requestOptions)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}establishment/update/${estId}`, requestOptions1)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
       
         var raw2 = JSON.stringify(inputList);
 
-        var requestOptions = {
+        var requestOptions2 = {
             method: 'POST',
             headers: myHeaders,
             body: raw2,
             redirect: 'follow'
         };
 
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}slot`, requestOptions)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}slot`, requestOptions2)
         .then(response => response.text())
         .then(result => { 
             setTab(13)

@@ -1,10 +1,48 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import Base from '../layout/base';
 import DropDownWhite from '../modules/DropDownWhite';
+import dynamic from 'next/dynamic';
+import Header from '../modules/Header';
 export default function Reports() {
+    const Chart = dynamic(()=>import('react-apexcharts'),{ssr:false});
+    const[chart,setChart] = useState({
+        options: {
+          chart: {
+            id: 'apexchart-example'
+          },
+          xaxis: {
+            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+          }
+        },
+        series: [{
+          name: 'series-1',
+          data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
+        }]
+    })
+
+    const[pie,setPie] = useState({
+        series: [44, 55, 41, 17, 15],
+        options: {
+          chart: {
+            type: 'donut',
+          },
+          responsive: [{
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 200
+              },
+              legend: {
+                position: 'bottom'
+              }
+            }
+          }]
+        },
+    });
   return (
     <Fragment>
         <Base>
+            <Header title="Reports"></Header>
             <div className='p-5'>
                 <div className='d-flex d-flex-wrap box-border mt-7 d-justify-space-between'>
                     <div className={`col-6 pr-2 mb-5 box-border`}>
@@ -16,7 +54,8 @@ export default function Reports() {
                                     <DropDownWhite placeholder="Daily"></DropDownWhite>
                                 </div>
                             </div>
-                            <img src="diagno.png" height="250"/>
+                            <Chart options={pie.options} series={pie.series} type="donut" height={330} />
+                            
                         </div>
                     </div>
                     <div className={`col-6 pl-2  box-border `}>
@@ -28,7 +67,7 @@ export default function Reports() {
                                     <DropDownWhite placeholder="Daily"></DropDownWhite>
                                 </div>
                             </div>
-                            <img src="stat.png" height="250"/>
+                            <Chart options={chart.options} series={chart.series} type="line" />
                         </div>
                     </div>
                     <div className={`col-6 pr-2  box-border`}>
@@ -40,7 +79,7 @@ export default function Reports() {
                                     <DropDownWhite placeholder="Daily"></DropDownWhite>
                                 </div>
                             </div>
-                            <img src="stat.png" height="250"/>
+                            <Chart options={chart.options} series={chart.series} type="line" />
                         </div>
                     </div>
                     <div className={`col-6 pl-2  box-border `}>
@@ -52,7 +91,7 @@ export default function Reports() {
                                     <DropDownWhite placeholder="Daily"></DropDownWhite>
                                 </div>
                             </div>
-                            <img src="patient.png" height="250"/>
+                            <Chart options={chart.options} series={chart.series} type="bar"  />
                         </div>
                     </div>
                 </div>

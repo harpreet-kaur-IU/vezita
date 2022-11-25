@@ -5,6 +5,7 @@ import styles2 from './css/TableTemplate.module.css'
 import DynamicDropdown from './DynamicDropdown'
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies'
 import { useRouter } from 'next/router'
+import Loader from './Loader'
 const Prescription = () => {
     const router = useRouter();
     const patientId = router.query["id"];
@@ -15,6 +16,7 @@ const Prescription = () => {
     const[tempId,setTempId] = useState("")
     const[drugLength,setDrugLength] = useState("")
     const[patientData,setPatientData] = useState("")
+    const[loading,setLoading] = useState(false)
     const durTypeData = [
         {
             "title":"day"
@@ -44,11 +46,13 @@ const Prescription = () => {
             redirect: 'follow'
         };
           
+        setLoading(true)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}patient/get/${patientId}`, requestOptions)
         .then(response => response.text())
         .then(result => {
             const parsePatient = JSON.parse(result)
             setPatientData(parsePatient.patient)
+            setLoading(false)
         })
         .catch(error => console.log('error', error));
     }
@@ -108,10 +112,11 @@ const Prescription = () => {
                     body: drugString,
                     redirect: 'follow'
                 };
-
+                
+                setLoading(true)
                 fetch(`${process.env.NEXT_PUBLIC_BASE_URL}template/drug-instruction/create`, requestOptions)
                 .then(response => response.text())
-                .then(result => console.log(result))
+                .then(result => setLoading(false))
                 .catch(error => console.log('error', error));
             }else{
                 console.log(inputList)
@@ -137,9 +142,10 @@ const Prescription = () => {
                     redirect: 'follow'
                 };
                   
+                setLoading(true)
                 fetch(`${process.env.NEXT_PUBLIC_BASE_URL}template/drug-instruction/${inputList[i]._id}`, requestOptions)
                 .then(response => response.text())
-                .then(result => console.log(result))
+                .then(result => setLoading(false))
                 .catch(error => console.log('error', error));
             }
         }
@@ -170,11 +176,12 @@ const Prescription = () => {
                 redirect: 'follow'
             };
         
-           
+            setLoading(true)
             fetch(`${process.env.NEXT_PUBLIC_BASE_URL}template`, requestOptions)
             .then(response => response.text())
             .then(result => {
                 getAllTemplate()
+                setLoading(false)
             })
             .catch(error => console.log('error', error));
         }
@@ -192,11 +199,13 @@ const Prescription = () => {
             redirect: 'follow'
         };
 
+        setLoading(true)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}template`, requestOptions)
         .then(response => response.text())
         .then(result => {
             var parseTemp = JSON.parse(result)
             setTemplate(parseTemp.templates)
+            setLoading(false)
         })
         .catch(error => console.log('error', error));
     }
@@ -245,17 +254,20 @@ const Prescription = () => {
             redirect: 'follow'
         };
 
+        setLoading(true)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}template/drug-instruction/${drugId}/delete`, requestOptions)
         .then(response => response.text())
         .then(result =>{
             var druglen = drugLength-1;
             setDrugLength(druglen)
             getAllTemplate()
+            setLoading(false)
         })
         .catch(error => console.log('error', error));
     }
   return (
     <>
+        {loading && <Loader></Loader>}
         <Header title="Prescription"></Header>
         <div className={`d-flex ${styles["wrapper"]}`} style={{paddingBottom:"18px"}}>
             <div className={`col-12 ${styles["left-column"]}`} style={{marginRight: "0px"}}>

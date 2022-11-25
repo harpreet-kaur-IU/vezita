@@ -1,21 +1,19 @@
-import { useState } from "react";
+import React,{useState} from 'react'
 import styles from "../modules/css/dropdown.module.css";
 
-export default function DropDown(props){
-
+const DateDropdown = (props) => {
     const [value, setValue] = useState(props.placeholder);
     const handler = (e) => {
         e.currentTarget.classList.toggle(styles["open"]);
     }
 
     const selectHandler = (e) => {
-        console.log(e.currentTarget.getAttribute("id"))
         setValue(e.currentTarget.getAttribute("value"));
         props.handler(e.currentTarget.getAttribute("id"));
     }
 
     return (
-        <div className={`${styles["drop-down"]}`} onClick={handler} style={{backgroundColor:props.color}}>
+        <div className={`${styles["drop-down"]}`} onClick={handler} style={{width:props.width}}>
             <span>{value}</span>
             {!props.data && <ul>
                 <li value={props.placeholder} onClick={selectHandler}>
@@ -32,23 +30,11 @@ export default function DropDown(props){
                 </li>
             </ul>
             }
-
-            {props.name=="specialization" && props.data?
-               
+            {props.data &&
                 <ul>
                     {props.data.map((item,index) => { 
                         return (
                             <li id={item.id} value={item.name} onClick={selectHandler} key={index}>
-                                {item.name}
-                            </li>
-                        )
-                    })}
-                </ul>
-                :
-                <ul>
-                    {props.data.map((item,index) => { 
-                        return (
-                            <li id={item.dial_code} value={item.dial_code} onClick={selectHandler} key={index}>
                                 {item.name}
                             </li>
                         )
@@ -66,3 +52,5 @@ export default function DropDown(props){
     )
 }
 
+
+export default DateDropdown

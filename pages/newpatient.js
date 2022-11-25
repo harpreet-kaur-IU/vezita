@@ -5,9 +5,9 @@ import AllPatients from '../modules/AllPatients'
 export default function NewPatient(){
   return (
     <Fragment>
-        <Base>
-            <AllPatients></AllPatients>
-        </Base>
+      <Base>
+        <AllPatients></AllPatients>
+      </Base>
     </Fragment>
   )
 }

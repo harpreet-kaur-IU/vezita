@@ -1,17 +1,17 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect, useRef } from 'react'
 import Header from './Header'
 import styles from './css/BookingDetails.module.css'
 import { useRouter } from 'next/router';
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies';
 import Moment from 'react-moment';
-const PatientDetails = () => {
+import Loader from './Loader'
+const PatientDetails = (props) => {
     const [activeTab, setActiveTab] = useState("tab1");
     const router = useRouter();
     const JWTToken = getVezitaOnBoardFromCookie();
-    const bookingId = router.query["id"];
-    const [bookingData,setBookingData] = useState("")
     const [loading,setLoading] = useState(false)
-    const [medicalData,setMedicalData] = useState("")
+    const[bookingData,setBookingData] = useState(props.data)
+    const [medicalData,setMedicalData] = useState(props.data.patientMedicalDetail)
     const [appointment,setAppointment] = useState("")
     const [doctorReports,setDoctorReports] = useState("")
     const [patientReports,setPatientReports] = useState("")
@@ -19,81 +19,93 @@ const PatientDetails = () => {
     const handleClick = (e) =>{
         setActiveTab(e.target.id);
     }
-
     useEffect(()=>{
-        var patientId = "";
-        var docterId = "";
-        if(bookingId){
-            var myHeaders = new Headers();
-            myHeaders.append("token",JWTToken);
+        setBookingData(props.data)
+        setMedicalData(props.data.patientMedicalDetail)
+        getDoctorProfile()
+    },[])
 
-            var requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow'
-            };
-            setLoading(true)
-            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}booking/${bookingId}`, requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                setLoading(false)
-                var parsedResult = JSON.parse(result)
-                setBookingData(parsedResult.booking)
+    //get doctor profile data
+    const getDoctorProfile = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
 
-                patientId = parsedResult.booking.patient._id;
-                docterId = parsedResult.booking.docter._id;
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
 
-                var requestOptions1 = {
-                    headers: myHeaders,
-                    method: 'GET',
-                    redirect: 'follow'
-                };
-                    
-                fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient/single-patient?docterId=${docterId}&patientId=${patientId}`, requestOptions1)
-                .then(response => response.text())
-                .then(result => {
-                    var medical = JSON.parse(result)
-                    setMedicalData(medical.patientMedicalDetails)
-                    setAppointment(medical.docterPatient.apointments)
-                })
-                .catch(error => console.log('error', error));
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var parseDoctor = JSON.parse(result)
+            getMedicalAndAppointment(bookingData.patient._id,parseDoctor.docter._id)
+            getReportsByPatient(bookingData.patient._id)
+            getRepotsByDoctor(bookingData.patient._id,parseDoctor.docter._id)
+        })
+        .catch(error => console.log('error', error));
+    }
+    
+    // get medical and appointment data
+    const getMedicalAndAppointment = (docterId,patientId) =>{
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+          
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient/single-patient?docterId=${docterId}&patientId=${patientId}`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var medical = JSON.parse(result)
+            setAppointment(medical.docterPatient.apointments)
+        })
+        .catch(error => console.log('error', error));
+    }
 
-                //patient reports by doctor
-                var requestOptions3 = {
-                    method: 'GET',
-                    redirect: 'follow'
-                };
-
-                fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter-report-of-patient/get/${patientId}?docter=${docterId}`, requestOptions3)
-                .then(response => response.text())
-                .then(result => {
-                    const parsedResult = JSON.parse(result)
-                    setDoctorReports(parsedResult.docterReports)
-                })
-                .catch(error => console.log('error', error));
-
-                //patient reports by patient
-                var requestOptions = {
-                    method: 'GET',
-                    redirect: 'follow'
-                };
-                  
-                fetch(`${process.env.NEXT_PUBLIC_BASE_URL}report/get/patient-report/${patientId}?lastWeek=true`, requestOptions)
-                .then(response => response.text())
-                .then(result =>{
-                    const reportsPatient = JSON.parse(result)
-                    setPatientReports(reportsPatient.patientReport)
-                })
-                .catch(error => console.log('error', error));
-            })
-            .catch(error => console.log('error', error));
-        }
+    //patient reports by doctor
+    const getRepotsByDoctor = (patientId,docterId) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
         
-    },[bookingId])
+        var requestOptions3 = {
+            headers: myHeaders,
+            method: 'GET',
+            redirect: 'follow'
+        };
 
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter-report-of-patient/get/${patientId}?docter=${docterId}`, requestOptions3)
+        .then(response => response.text())
+        .then(result => {
+            const parsedResult = JSON.parse(result)
+            setDoctorReports(parsedResult.docterReports)
+        })
+        .catch(error => console.log('error', error));
+    }
+
+    //patient reports by patient
+    const getReportsByPatient = (patientId) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var requestOptions = {
+            headers: myHeaders,
+            method: 'GET',
+            redirect: 'follow'
+        };
+            
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}report/get/patient-report/${patientId}?lastWeek=true`, requestOptions)
+        .then(response => response.text())
+        .then(result =>{
+            const reportsPatient = JSON.parse(result)
+            setPatientReports(reportsPatient.patientReport)
+        })
+        .catch(error => console.log('error', error));
+    }
   return (
     <>
-        <Header title="Bookings Details"></Header>
+    {loading && <Loader></Loader>}
+        <Header title="Patient Details"></Header>
         <div className={`d-flex ${styles["wrapper"]}`}>
             <div className={`col-8 ${styles["left-column"]}`}>
                 <div className={`bg-grey7 ${styles["left-col-2"]}`} style={{marginTop:"0px"}}>
@@ -223,7 +235,7 @@ const PatientDetails = () => {
                             </div>
                         </div>
                     ))}
-                </div>
+                </div> 
             </div>
             <div className={`col-4 ${styles["right-column"]}`}>
                 <div className={`bg-grey7 ${styles["right-col-1"]}`}>
@@ -231,16 +243,15 @@ const PatientDetails = () => {
                     <div className={`${styles["previous-appointments-list"]}`}>
                         {appointment && appointment.map((index=>(
                             <div className={`d-flex ${styles["previousa-appoi-single-item"]}`}>
-                                {index.slot.sessionType.map((item,index1)=>(
-                                    index1 === 0 ?
+                                {index.slot.sessionType[0] == "in-clinic" ?
                                         <div className={`d-flex d-align-center bg-purple-2 ${styles["appointment-icons-wrapper"]}`}>
                                             <img src="clinic-appointment.png"></img>
                                         </div>
                                     :
                                     <div className={`d-flex d-align-center bg-teal-2 ${styles["appointment-icons-wrapper"]}`}>
                                         <img src="video-appointment.png"></img>
-                                    </div>
-                                ))}
+                                    </div> 
+                                }
                                 
                                 <div>
                                     <h4 className='f-500 l-26 text-secondary'>

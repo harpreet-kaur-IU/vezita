@@ -1,15 +1,6 @@
 import React from 'react'
 import style from './css/SideBar.module.css'
 import Link from 'next/link'
-import Dashboard from '../icons/dashboard'
-import Reports from '../icons/reports'
-import Banner from '../icons/banner'
-import Bookings from '../icons/bookings'
-import Calendar from '../icons/calendar'
-import CreateReports from '../icons/createReports'
-import Finance from '../icons/finance'
-import Message from '../icons/message'
-import Patients from '../icons/patients'
 import MenuItem from './MenuItem'
 const MenuBar = () => {
   return (
@@ -22,7 +13,7 @@ const MenuBar = () => {
         <MenuItem title="Dashboard" path="/dashboard" multipath="0"></MenuItem>
         <MenuItem title="Reports" path="/reports" multipath="0"></MenuItem>
         <MenuItem title="Bookings" path="/allBookings" multipath="0"></MenuItem>
-        <MenuItem title="My Patients" path="/newpatient" multipath="0"></MenuItem>
+        <MenuItem title="My Patients" path="/newpatient" path1="/patientdetails/[id]" path2="/addnewpatient" multipath="1" haspath1="1" haspath2="1"></MenuItem>
         <MenuItem title="My Calendar" path="/mycalendar" multipath="0"></MenuItem>
         <MenuItem title="Create Medical Reports" path="/medicalreport" multipath="0"></MenuItem>
         <MenuItem title="Messages" path="/message" multipath="0"></MenuItem>
@@ -34,7 +25,9 @@ const MenuBar = () => {
         <h6 className='cursor-pointer f-400 l-20'>
           <Link href='/helpsupport'>Help & support</Link>
         </h6>
-        <h6 className='cursor-pointer f-400 l-20'>Terms & conditions</h6>
+        <h6 className='cursor-pointer f-400 l-20'>
+          <Link href='/tc'>Terms & conditions</Link>
+        </h6>
       </div>
     </>
   )

@@ -1,11 +1,12 @@
 import React, { useEffect,useRef,useState } from 'react'
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies'
 import styles from './css/profile.module.css'
+import Loader from './Loader'
 const Registration = () => {
     const JWTToken = getVezitaOnBoardFromCookie();
     const[inputList,setInputList] = useState([{registrationNumber:"",councilName:"",year:""}])  
     const[docterId,setDoctorId] = useState("")
-
+    const[loading,setLoading] = useState(false)
     //documnet states
     const[document,setDocument] = useState("")
 
@@ -27,11 +28,13 @@ const Registration = () => {
             redirect: 'follow'
         };
 
+        setLoading(true)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
         .then(response => response.text())
         .then(result =>{
             const parsedResult =  JSON.parse(result)
             setDoctorId(parsedResult.docter._id)
+            setLoading(false)
             if(parsedResult.docter.medicalRegistrationDetails[0]){
                 setInputList(parsedResult.docter.medicalRegistrationDetails)
             }
@@ -158,6 +161,7 @@ const Registration = () => {
     }
   return (
     <>
+        {loading && <Loader></Loader>}
         <h4 className='f-600 l-26 col-12 text-primary'>Registration and Documents</h4>
         <form onSubmit={regForm}>
             <div className='d-flex col-11 d-flex-wrap '>

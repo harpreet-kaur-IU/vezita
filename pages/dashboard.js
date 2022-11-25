@@ -1,9 +1,33 @@
-import React, { Fragment } from 'react'
+import { useRouter } from 'next/router';
+import React, { Fragment, useState } from 'react'
 import Base from '../layout/base';
 import styles from '../modules/css/dashboard.module.css';
 import DropDownWhite from '../modules/DropDownWhite';
 import Header from '../modules/Header';
+import dynamic from 'next/dynamic';
 export default function Dashboard() {
+    const Chart = dynamic(()=>import('react-apexcharts'),{ssr:false});
+    const router = useRouter();
+    const bookingHandler = () =>{
+        router.push("/mycalendar")
+    }
+    const patientHandler = () =>{
+        router.push("/addnewpatient")
+    }
+    const[chart,setChart] = useState({
+        options: {
+          chart: {
+            id: 'apexchart-example'
+          },
+          xaxis: {
+            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+          }
+        },
+        series: [{
+          name: 'series-1',
+          data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
+        }]
+    })
   return (
 
     <Fragment>
@@ -60,6 +84,7 @@ export default function Dashboard() {
                             <h6 className='f-500 l-20 text-grey-2'>Today revenue</h6>
                             <h2 className='f-600 l-32 text-secondary mt-1'>$175</h2>
                         </div>
+                        
                     </div>
                 </div>
                 <div className='d-flex d-justify-end gap-2 mt-10'>
@@ -67,13 +92,13 @@ export default function Dashboard() {
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15.8125 8C15.8125 8.24864 15.7137 8.4871 15.5379 8.66291C15.3621 8.83873 15.1236 8.9375 14.875 8.9375H8.9375V14.875C8.9375 15.1236 8.83873 15.3621 8.66291 15.5379C8.4871 15.7137 8.24864 15.8125 8 15.8125C7.75136 15.8125 7.5129 15.7137 7.33709 15.5379C7.16127 15.3621 7.0625 15.1236 7.0625 14.875V8.9375H1.125C0.87636 8.9375 0.637903 8.83873 0.462087 8.66291C0.286272 8.4871 0.1875 8.24864 0.1875 8C0.1875 7.75136 0.286272 7.5129 0.462087 7.33709C0.637903 7.16127 0.87636 7.0625 1.125 7.0625H7.0625V1.125C7.0625 0.87636 7.16127 0.637903 7.33709 0.462087C7.5129 0.286272 7.75136 0.1875 8 0.1875C8.24864 0.1875 8.4871 0.286272 8.66291 0.462087C8.83873 0.637903 8.9375 0.87636 8.9375 1.125V7.0625H14.875C15.1236 7.0625 15.3621 7.16127 15.5379 7.33709C15.7137 7.5129 15.8125 7.75136 15.8125 8Z" fill="white"/>
                         </svg>
-                        <h5 className='ml-2 f-500 l-22 text-white'>Add new booking</h5>
+                        <h5 onClick={bookingHandler} className='cursor-pointer ml-2 f-500 l-22 text-white'>Add new booking</h5>
                     </div>
                     <div className='border-none bg-primary d-flex d-align-center pt-2 pb-2 pl-5 pr-5 rounded-100'>
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15.8125 8C15.8125 8.24864 15.7137 8.4871 15.5379 8.66291C15.3621 8.83873 15.1236 8.9375 14.875 8.9375H8.9375V14.875C8.9375 15.1236 8.83873 15.3621 8.66291 15.5379C8.4871 15.7137 8.24864 15.8125 8 15.8125C7.75136 15.8125 7.5129 15.7137 7.33709 15.5379C7.16127 15.3621 7.0625 15.1236 7.0625 14.875V8.9375H1.125C0.87636 8.9375 0.637903 8.83873 0.462087 8.66291C0.286272 8.4871 0.1875 8.24864 0.1875 8C0.1875 7.75136 0.286272 7.5129 0.462087 7.33709C0.637903 7.16127 0.87636 7.0625 1.125 7.0625H7.0625V1.125C7.0625 0.87636 7.16127 0.637903 7.33709 0.462087C7.5129 0.286272 7.75136 0.1875 8 0.1875C8.24864 0.1875 8.4871 0.286272 8.66291 0.462087C8.83873 0.637903 8.9375 0.87636 8.9375 1.125V7.0625H14.875C15.1236 7.0625 15.3621 7.16127 15.5379 7.33709C15.7137 7.5129 15.8125 7.75136 15.8125 8Z" fill="white"/>
                         </svg>
-                        <h5 className='ml-2 f-500 l-22 text-white'>Add new patient</h5>
+                        <h5 onClick={patientHandler} className='cursor-pointer ml-2 f-500 l-22 text-white'>Add new patient</h5>
                     </div>
                 </div>
                 <div className='d-flex d-flex-wrap box-border mt-7 d-justify-space-between'>
@@ -86,13 +111,14 @@ export default function Dashboard() {
                                     <DropDownWhite placeholder="Daily"></DropDownWhite>
                                 </div>
                             </div>
-                            <img src="graph-revenue.png"/>
+                        
+                            <Chart options={chart.options} series={chart.series} type="line"  />
                         </div>
                     </div>
                     <div className={`col-5 pl-2  box-border `}>
                         <div className='bg-grey-7 p-5 rounded-12'>
                             <h3 className='f-500 l-28 text-black'>Today, 18th Feb, 2022</h3>
-                            <img src="calendar.png"/>
+                            
                         </div>
                     </div>
                 </div>

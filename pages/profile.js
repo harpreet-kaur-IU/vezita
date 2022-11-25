@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react'
+import React,{useEffect, useRef, useState} from 'react'
 import styles from '../modules/css/profile.module.css'
 import ProfileSidebar from '../modules/ProfileSidebar';
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies';
@@ -8,13 +8,18 @@ import EducationDetails from '../modules/EducationDetails';
 import Registration from '../modules/Registration';
 import Establishment from '../modules/Establishment';
 import Services from '../modules/Services';
+import Loader from '../modules/Loader';
+import Pending from '../modules/Pending';
+import useFirebaseAuth from '../auth/useFirebaseAuth';
 export default function Profile() {
+    const {signOut} = useFirebaseAuth()
     const JWTToken = getVezitaOnBoardFromCookie();
     const [progress, setProgress] = useState(10);
     const [tab, setTab] = useState(0);
     const fill = progress+"%";
     const[name,setName] = useState("")
-
+    const[loading,setLoading] = useState(false)
+    const[pending,setPending] = useState(false)
     //completed states
     const[basicComp,setBasicComp] = useState(false)
     const[eduComp,setEduComp] = useState(false)
@@ -25,12 +30,79 @@ export default function Profile() {
     const tabHandler = (val) => {
         setTab(val);
     }
+    const logoutHandler = () =>{
+        signOut()
+        // .then(response => response.text())
+        .then(result =>{
+          router.push("/")
+        })
+        .catch((error)=>console.log("error while logout"+error))
+    }
     useEffect(()=>{
         if(JWTToken){
-            getProfile();
+            function parseJwt() {
+                if(!JWTToken){
+                return
+                }
+                const base64Url = JWTToken.split('.')[1];
+                const base64 = base64Url.replace('-', '+').replace('_', '/');
+                return JSON.parse(window.atob(base64));
+            }
+            var user = parseJwt();
+            if(user.exp*1000<Date.now()){
+                logoutHandler()
+            }else{
+                setPending("0")
+                getProfile();
+            }
         }
-        
     },[])
+    
+    const first = useRef(true)
+    //get doctor experience 
+    const getExperience = (basic,edu,reg,est) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        setLoading(true)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter-experience`, requestOptions)
+        .then(response => response.text())
+        .then(result =>{
+            setLoading(false)
+            var exp = true;
+            const parseData = JSON.parse(result)
+            var data = parseData.experience;
+
+            if(data.length>0){
+                if(data[0]._id){
+                    exp= false;
+                    setServiceComp(true)
+                }
+            }      
+            if(first.current){
+
+                if(basic)
+                    setPending(++pending)
+                if(edu)
+                    setPending(++pending)
+                if(reg)
+                    setPending(++pending)
+                if(est)
+                    setPending(++pending)
+                if(exp)
+                    setPending(++pending)
+                first.current = false;
+            }
+            setLoading(false)
+        })
+        .catch(error => console.log('error', error));
+    }
     //get doctor profile Handler
     const getProfile = () =>{
         var myHeaders = new Headers();
@@ -41,36 +113,51 @@ export default function Profile() {
             headers: myHeaders,
             redirect: 'follow'
         };
-
+        setLoading(true)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
         .then(response => response.text())
         .then(result =>{
             const parsedResult =  JSON.parse(result)
             setName(parsedResult.docter.fullName)
-            if(parsedResult.docter.fullName && parsedResult.docter.gender && parsedResult.docter.totalExperiences && parsedResult.docter.city && parsedResult.docter.bio && parsedResult.docter.image && parsedResult.docter.countryCode && parsedResult.docter.phone)
+            var basic = true;
+            var edu = true;
+            var reg = true;
+            var est = true;
+            setLoading(false)
+            if(parsedResult.docter.fullName && parsedResult.docter.gender && parsedResult.docter.totalExperiences>-1 && parsedResult.docter.city && parsedResult.docter.bio && parsedResult.docter.image && parsedResult.docter.countryCode && parsedResult.docter.phone)
             {
                 setBasicComp(true)
+                basic = false;
                 setProgress(20)
-            }if(parsedResult.docter.education[0]){
+            }
+            if(parsedResult.docter.education[0]){
                 setEduComp(true)
+                edu = false;
                 setProgress(35)
             }
             if(parsedResult.docter.medicalRegistrationDetails[0]){
                 setRegComp(true)
-                setProgress(50)
+                reg = false;
+                setProgress(45)
             }
-            if(parsedResult.docter.establishment[0].contactNumber || docter.establishment[0].establishmentName){
+            if(parsedResult.docter.establishment[0].contactNumber || parsedResult.docter.establishment[0].establishmentName){
                 setEstComp(true)
+                est= false;
                 setProgress(70)
             }
+            getExperience(basic,edu,reg,est);
             
         })
         .catch(error => console.log('error', error));
     }
 
+    const handler = () =>{
+        getProfile()
+    }
   return (
   
     <>
+        {loading && <Loader></Loader>}
         <Header title="Complete Profile"></Header>
         <div className='p-10 mt-40'>
             <div className={styles["top-header-section"]}>
@@ -96,15 +183,7 @@ export default function Profile() {
                         <ProgressBar completed={98} bgColor="#3085F4" baseBgColor="#D6E7FD" isLabelVisible={false} />
                     </div> */}
                 </div>
-                <div className={`${styles["section2"]} d-flex d-flex-wrap`}>
-                    <div className='d-flex d-align-center'>
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10 0.25C8.07164 0.25 6.18657 0.821828 4.58319 1.89317C2.97982 2.96451 1.73013 4.48726 0.992179 6.26884C0.254225 8.05042 0.061142 10.0108 0.437348 11.9021C0.813554 13.7934 1.74215 15.5307 3.10571 16.8943C4.46928 18.2579 6.20656 19.1865 8.09787 19.5627C9.98919 19.9389 11.9496 19.7458 13.7312 19.0078C15.5127 18.2699 17.0355 17.0202 18.1068 15.4168C19.1782 13.8134 19.75 11.9284 19.75 10C19.7475 7.4149 18.7195 4.93639 16.8916 3.10845C15.0636 1.28051 12.5851 0.252482 10 0.25ZM9.25 5.5C9.25 5.30109 9.32902 5.11032 9.46967 4.96967C9.61033 4.82902 9.80109 4.75 10 4.75C10.1989 4.75 10.3897 4.82902 10.5303 4.96967C10.671 5.11032 10.75 5.30109 10.75 5.5V10.75C10.75 10.9489 10.671 11.1397 10.5303 11.2803C10.3897 11.421 10.1989 11.5 10 11.5C9.80109 11.5 9.61033 11.421 9.46967 11.2803C9.32902 11.1397 9.25 10.9489 9.25 10.75V5.5ZM10 15.25C9.7775 15.25 9.55999 15.184 9.37499 15.0604C9.18998 14.9368 9.04579 14.7611 8.96064 14.5555C8.87549 14.35 8.85321 14.1238 8.89662 13.9055C8.94003 13.6873 9.04718 13.4868 9.20451 13.3295C9.36184 13.1722 9.5623 13.065 9.78053 13.0216C9.99876 12.9782 10.225 13.0005 10.4305 13.0856C10.6361 13.1708 10.8118 13.315 10.9354 13.5C11.059 13.685 11.125 13.9025 11.125 14.125C11.125 14.4234 11.0065 14.7095 10.7955 14.9205C10.5845 15.1315 10.2984 15.25 10 15.25Z" fill="#FF8651"/>
-                        </svg>
-                        <h4 className='ml-2 f-500 l-26 text-secondary'>1 pending section</h4>
-                    </div>
-                    <h5 className='f-400 l-22 text-grey-3 mt-2'>Complete this sections to make your profile go live</h5>
-                </div>
+                <Pending pendingStatus = {pending}></Pending>
                 <div className={`${styles["section3"]} d-flex d-flex-wrap`}>
                     <div className='d-flex d-align-center'>
                         <svg width="16" height="22" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -118,12 +197,12 @@ export default function Profile() {
             </div>
             <div className='d-flex d-flex-wrap mb-10'>
                 <div className={`col-3 pr-4 ${styles["sidebar"]}`}>
-                    <ProfileSidebar establishment={estComp} registration ={regComp} education={eduComp} basic={basicComp} handler={tabHandler}></ProfileSidebar>
+                    <ProfileSidebar services={serviceComp} establishment={estComp} registration ={regComp} education={eduComp} basic={basicComp} handler={tabHandler}></ProfileSidebar>
                 </div>
 
                 <div className={`col-8 d-flex d-flex-wrap border-box ${styles["personal-detail-section"]}`}>
                     {tab == 0 &&
-                        <BasicDetails></BasicDetails>
+                        <BasicDetails handler={handler}></BasicDetails>
                     }
                     {tab == 1 &&
                         <EducationDetails></EducationDetails>
@@ -134,7 +213,6 @@ export default function Profile() {
                     {tab == 3 &&
                         <Establishment></Establishment>
                     }
-                
                     {tab == 4 &&
                         <Services></Services>
                     }

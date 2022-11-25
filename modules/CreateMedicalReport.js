@@ -16,25 +16,66 @@ const CreateMedicalReport = () => {
 
     useEffect(()=>{
         if(JWTToken){
-            var myHeaders = new Headers();
-            myHeaders.append("token",JWTToken);
-            myHeaders.append("Content-Type", "application/json");
+            // var myHeaders = new Headers();
+            // myHeaders.append("token",JWTToken);
+            // myHeaders.append("Content-Type", "application/json");
             
-            var requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow'
-            };
+            // var requestOptions = {
+            //     method: 'GET',
+            //     headers: myHeaders,
+            //     redirect: 'follow'
+            // };
             
-            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient`, requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                var parsedResult = JSON.parse(result)
-                setPatientData(parsedResult.docterPatient)
-            })
-            .catch(error => console.log('error', error));
+            // fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient`, requestOptions)
+            // .then(response => response.text())
+            // .then(result => {
+            //     var parsedResult = JSON.parse(result)
+            //     setPatientData(parsedResult.docterPatient)
+            // })
+            // .catch(error => console.log('error', error));
+            getProfile()
         }
     },[])
+
+    const getProfile = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = {
+            headers: myHeaders,
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            const parsedResult = JSON.parse(result)
+            getAllBooking(parsedResult.docter._id)
+        })
+        .catch(error => console.log('error', error));
+    }
+
+    const getAllBooking = (docterID) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+        
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}booking?docter=${docterID}`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            const parsedResult = JSON.parse(result)
+            // setBookingData(parsedResult.booking)
+            console.log(parsedResult.booking)
+        })
+        .catch(error => console.log('error', error));
+    }
   return (
     <>
         <Header title="Create medical reports"></Header>
@@ -69,20 +110,19 @@ const CreateMedicalReport = () => {
                                 <h5 className='l-22 f-400'>{item.patient.name}</h5>
                             </span>
                             <span className='d-flex'>
-                                <h5 className='l-22 f-400'>{item.apointments[0].slot.consultationFor}</h5>
+                                <h5 className='l-22 f-400'>{item.apointments.length>0 && item.apointments[0].slot.consultationFor}</h5>
                             </span>
                             <span className='d-flex'>
-                                <h5 className='l-22 f-400'>{item.apointments[0].slot.sessionType[0]} Consultation</h5>
+                                <h5 className='l-22 f-400'>{item.apointments.length>0 && item.apointments[0].slot.sessionType[0]} Consultation</h5>
                             </span>
                             <span className='d-flex'>
                                 <h5 className='l-22 f-400'>
                                     <Moment format="HH:mm" withTitle>
-                                        {item.apointments[0].slot.startTime}
+                                        {item.apointments.length>0 && item.apointments[0].slot.startTime}
                                     </Moment>
                                 </h5>
                             </span>
-                            
-                            {item.apointments[0].isPrescribe?
+                            {item.apointments.length>0 && item.apointments[0].isPrescribe?
                                 <span className={`d-flex ${styles['prescription-btn-green']}`}>
                                     <button onClick={()=>prescriptionHandler(item.patient._id)} className='cursor-pointer d-flex'>
                                         <h6 className='text-grey-2 l-20 f-600'>Prescribe</h6>

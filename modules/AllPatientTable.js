@@ -2,31 +2,35 @@ import React, { useEffect, useState } from 'react'
 import styles from './css/AllPatientsTable.module.css'
 import Link from 'next/link'
 import Loader from './Loader'
+import { getVezitaOnBoardFromCookie } from '../auth/userCookies'
+import Moment from 'react-moment'
 const AllPatientTable = () => {
-    const[status,setStatus] = useState('0');
+    const JWTToken = getVezitaOnBoardFromCookie()
     const[patient,setPatient] = useState("")
     const[loading,setLoading] = useState(false)
-    const declineHandler = () =>{
-        setStatus('decline');
-    }
-    const acceptHandler = () =>{
-        setStatus('accept');
-    }
+
+
     useEffect(()=>{
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
-        setLoading(true)
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient`, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-            const parsedResult = JSON.parse(result)
-            setPatient(parsedResult.docterPatient)
-            console.log(parsedResult.docterPatient)
-            setLoading(false)
-        })
-        .catch(error => console.log('error', error));
+        if(JWTToken){
+            var myHeaders = new Headers();
+            myHeaders.append("token",JWTToken);
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
+            setLoading(true)
+            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient`, requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                const parsedResult = JSON.parse(result)
+                setPatient(parsedResult.docterPatient)
+                setLoading(false)
+            })
+            .catch(error => console.log('error', error));
+        }
     },[])
   return (
     <>
@@ -38,13 +42,13 @@ const AllPatientTable = () => {
                         <h5 className='l-22 f-500'>Patient name</h5>
                     </span>
                     <span className='d-flex'>
-                        <h5 className='l-22 f-500'>Consultation for</h5>
+                        <h5 className='l-22 f-500'>Email</h5>
                     </span>
                     <span className='d-flex'>
-                        <h5 className='l-22 f-500'>No. of Consultations</h5>
+                        <h5 className='l-22 f-500'>Contact Number</h5>
                     </span>
                     <span className='d-flex'>
-                        <h5 className='l-22 f-500'>Last visited on</h5>
+                        <h5 className='l-22 f-500'>Created on</h5>
                     </span>
                     <span className='d-flex'>
                         <h5 className='l-22 f-500'>Status</h5>
@@ -53,29 +57,37 @@ const AllPatientTable = () => {
                         <h5 className='l-22 f-500'>View details</h5>
                     </span>
                 </div>
-                {patient && patient.map((item)=>(
-                    <div className={`${styles["booking-table-column"]} d-flex d-align-center`}>
+                {patient && patient.map((item,index)=>(
+                    <div key={index} className={`${styles["booking-table-column"]} d-flex d-align-center`}>
                         <span className={`d-flex d-align-center ${styles["patient-details-column"]}`}>
                             <img src={item.patient.avatar}></img>
                             <h5 className='l-22 f-400'>{item.patient.name}</h5>
                         </span>
-                        {item.apointments && item.apointments.map((app)=>(
+                  
                             <span className='d-flex'>
-                                <h5 className='l-22 f-400'>{app.slot.consultationFor}</h5>
+                                <h5 className='l-22 f-400'>{item.patient.email}</h5>
                             </span>
-                        ))}
+                       
                         <span className='d-flex'>
-                            <h5 className='l-22 f-400'>{item.numOfPreConsultation}</h5>
+                            <h5 className='l-22 f-400'>{item.patient.phone}</h5>
                         </span>
                         <span className='d-flex'>
-                            <h5 className='l-22 f-400'>Feb 12, 2021, 4:00 PM</h5>
+                            <h5 className='l-22 f-400'>
+                                <Moment format="D MMM YYYY" withTitle>
+                                    {item.createdAt}
+                                </Moment> 
+                                &nbsp;
+                                <Moment format="HH:mm" withTitle>
+                                    {item.createdAt}
+                                </Moment>
+                            </h5>
                         </span>
                         <span className={`f-500 d-flex ${styles["status-decline-text"]}`}>
                             <h5 className='l-22 f-400'>{item.status}</h5>
                         </span>
                         
                         <span className={`cursor-pointer d-flex d-justify-center ${styles["column-arrow"]}`}>
-                            <Link href={`/patientdetails/${item.dummyField}`}><img src='arrow.png'></img></Link>
+                            <Link href={`/patientdetails/${item.patient._id}`}><img src='arrow.png'></img></Link>
                         </span>
                     </div>
                 ))}

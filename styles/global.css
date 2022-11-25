@@ -117,6 +117,9 @@ body {
 .text-red{
   color: var(--red);
 }
+.text-teal-5{
+  color: var(--teal5);
+}
 /* background colors */
 .bg-red{
   background-color: var(--red);
@@ -398,6 +401,10 @@ body {
 .gap-5{
   gap:40px;
 }
+.gap-5{
+  gap:40px;
+}
+
 .bg-teal-1{
   background-color: var( --teal1);
 }
