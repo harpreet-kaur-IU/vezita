@@ -57,12 +57,14 @@ export default function Login() {
                     });
                 });
             }else{
+                setLoading(false)
                 toast.warning("Please Check your mail and verify user",{
                     toastId:"1"
                 });
             }
         })
         .catch(error => {
+            setLoading(false)
             if(error.message == 'Firebase: The email address is already in use by another account. (auth/email-already-in-use).'){
                 toast.error("Email Already Exists",{
                     toastId:"2"

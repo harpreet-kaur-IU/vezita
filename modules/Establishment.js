@@ -325,7 +325,7 @@ const Establishment = () => {
                             <DaySelector isActive={sat?true:false} handler={dayHandler} title="Sat"/>
                             <DaySelector isActive={sun?true:false} handler={dayHandler} title="Sun"/>
                         </div>
-                        <div className=' d-grid grid-col-2'>
+                        <div className='col-12 d-grid grid-col-2'>
                             {inputList.map((item,index)=>(
                                 <>
                                     <div className='mt-5 d-flex d-flex-column'>
