@@ -5,7 +5,7 @@ const PatientDetail = () => {
   return (
     <Fragment>
       <Base>
-        <PatientDetails></PatientDetails>
+        
       </Base>
     </Fragment>
   )
