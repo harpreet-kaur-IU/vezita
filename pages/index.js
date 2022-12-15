@@ -46,8 +46,8 @@ export default function Login() {
                 fetch(`${process.env.NEXT_PUBLIC_BASE_URL}user/login`, requestOptions)
                 .then(response => response.json())
                 .then(result =>{
-                    setVezitaOnBoardCookie(authUser.user.multiFactor.user.accessToken);
                     setLoading(false)
+                    setVezitaOnBoardCookie(authUser.user.multiFactor.user.accessToken);
                     router.push("/doctorsetup")
                 })
                 .catch(error => {
