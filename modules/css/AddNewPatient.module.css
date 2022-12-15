@@ -141,7 +141,6 @@
     margin-top:20px;
 }
 .personal-detail-img{
-    background: var(--white);
     border: 2px dashed var(--grey5);
     width: 100px;
     height: 100px;

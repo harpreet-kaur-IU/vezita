@@ -146,3 +146,11 @@
 .city-suggestion-list h6{
     padding: 10px;
 }
+.slot-checkbox{
+    width: auto !important;
+    padding: 0px !important;
+}
+.slot-label{
+    padding: 0px !important;
+    margin: 0px !important;
+}

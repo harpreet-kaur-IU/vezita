@@ -5,6 +5,8 @@ import { getVezitaOnBoardFromCookie } from '../auth/userCookies';
 import styles from './css/profile.module.css'
 import DropDown from './DropDown';
 import Loader from './Loader';
+import Modal from './Modals/Modal';
+import Verify from './Modals/Verify';
 const BasicDetails = (props) => {
     const JWTToken = getVezitaOnBoardFromCookie();
     const[name,setName] = useState("")
@@ -18,6 +20,8 @@ const BasicDetails = (props) => {
     const[countryCode,setCountryCode] = useState("+91")
     const [countryCodeList,setCountryCodeList] = useState([])
     const[loading,setLoading] = useState(false)
+    const[modal,setModal] = useState(false)
+    
     //basic details form handler
     const nameHandler = (e) =>{
         setName(e.target.value)
@@ -83,6 +87,11 @@ const BasicDetails = (props) => {
     //city select Handler
     const handleSelect = async value => { }
 
+    //modal Handler
+    const modalHandler = () =>{
+        setModal(!modal)
+    }
+
     //form submit
     const basicDetailsForm = (e) =>{
         e.preventDefault();
@@ -96,7 +105,7 @@ const BasicDetails = (props) => {
             "city":city,
             "totalExperiences":exp,
             "bio":bio,
-            "countryCode":countryCode,
+            "countryCode":countryCode?countryCode:"+91",
             "phone":contactNumber,
             "image":profileImg
         });
@@ -111,10 +120,26 @@ const BasicDetails = (props) => {
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/update/${docterId}`, requestOptions)
         .then(response => response.text())
         .then(result => {
-            console.log(result)
-            props.handler();
-            // setTab(prev => prev+1)
+            sendOTP();
+            modalHandler();
+            props.handler();   
         })
+        .catch(error => console.log('error', error));
+    }
+
+    const sendOTP = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/send-phone-otp`, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
         .catch(error => console.log('error', error));
     }
   return (
@@ -208,10 +233,11 @@ const BasicDetails = (props) => {
                                 </div>
                                 <div className='col-10 d-flex d-flex-wrap border-box'>
                                     <div className='ml-3 col-12'>
-                                        <input type="text" placeholder='Enter contact number' onChange={contactHandler} value={contactNumber}/>
+                                        <input type="text" placeholder='Enter contact number' onChange={contactHandler} value={contactNumber} required/>
                                     </div>
                                 </div>
                             </div>
+                            
                             <div className='ml-3 col-1 d-flex d-align-center'>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xns="http://www.w3.org/2000/svg">
                                     <path d="M4.035 15.4791C4.01193 15.6518 4.00024 15.8258 4 16.0001C4 18.3781 6.138 20.2841 8.521 19.9641C9.214 21.1981 10.534 22.0001 12 22.0001C13.466 22.0001 14.786 21.1981 15.479 19.9641C17.857 20.2841 20 18.3781 20 16.0001C20 15.8271 19.988 15.6531 19.965 15.4791C21.198 14.7861 22 13.4651 22 12.0001C22 10.5351 21.198 9.21409 19.965 8.52109C19.988 8.34709 20 8.17309 20 8.00009C20 5.62209 17.857 3.71209 15.479 4.03609C14.786 2.80209 13.466 2.00009 12 2.00009C10.534 2.00009 9.214 2.80209 8.521 4.03609C6.138 3.71209 4 5.62209 4 8.00009C4 8.17309 4.012 8.34709 4.035 8.52109C2.802 9.21409 2 10.5351 2 12.0001C2 13.4651 2.802 14.7861 4.035 15.4791ZM5.477 10.0761L6.579 9.78309L6.145 8.73009C6.04981 8.49846 6.00056 8.25052 6 8.00009C6 6.89709 6.897 6.00009 8 6.00009C8.247 6.00009 8.499 6.05009 8.73 6.14509L9.784 6.57909L10.077 5.47709C10.1899 5.05326 10.4396 4.67858 10.7873 4.4113C11.1351 4.14402 11.5614 3.99912 12 3.99912C12.4386 3.99912 12.8649 4.14402 13.2127 4.4113C13.5604 4.67858 13.8101 5.05326 13.923 5.47709L14.216 6.57909L15.27 6.14509C15.501 6.05009 15.753 6.00009 16 6.00009C17.103 6.00009 18 6.89709 18 8.00009C18 8.24709 17.95 8.50009 17.855 8.73009L17.421 9.78309L18.523 10.0761C18.9458 10.1903 19.3193 10.4407 19.5856 10.7885C19.8518 11.1363 19.9961 11.5621 19.9961 12.0001C19.9961 12.4381 19.8518 12.8639 19.5856 13.2117C19.3193 13.5595 18.9458 13.8098 18.523 13.9241L17.421 14.2171L17.855 15.2701C17.95 15.5001 18 15.7531 18 16.0001C18 17.1031 17.103 18.0001 16 18.0001C15.753 18.0001 15.501 17.9501 15.27 17.8551L14.216 17.4211L13.923 18.5231C13.8101 18.9469 13.5604 19.3216 13.2127 19.5889C12.8649 19.8562 12.4386 20.0011 12 20.0011C11.5614 20.0011 11.1351 19.8562 10.7873 19.5889C10.4396 19.3216 10.1899 18.9469 10.077 18.5231L9.784 17.4211L8.73 17.8551C8.49834 17.9502 8.25042 17.9995 8 18.0001C6.897 18.0001 6 17.1031 6 16.0001C6 15.7531 6.05 15.5001 6.145 15.2701L6.579 14.2171L5.477 13.9241C5.05416 13.8098 4.68073 13.5595 4.41445 13.2117C4.14817 12.8639 4.00388 12.4381 4.00388 12.0001C4.00388 11.5621 4.14817 11.1363 4.41445 10.7885C4.68073 10.4407 5.05416 10.1903 5.477 10.0761Z" fill="#3085F4"/>
@@ -240,7 +266,6 @@ const BasicDetails = (props) => {
                     <h6 className='f-600 l-20 text-secondary'>Profile picture</h6>
                     <h6 className='f-400 l-20 text-grey-3 mt-1'>Recommended Image size: 400x400px</h6>
                     {profileImg?
-                        
                         <div className={styles["profile-picture-upload"]}>
                             <img src={profileImg}></img>
                         </div>
@@ -257,6 +282,11 @@ const BasicDetails = (props) => {
                 <button className='col-3 btn btn-primary d-flex d-justify-center'>Save</button>
             </div>
         </form>
+        {modal && 
+            <Modal modalClass="modal-verify">
+                <Verify code={countryCode} number={contactNumber} handler={modalHandler}></Verify>
+            </Modal>
+        }
     </>
   )
 }

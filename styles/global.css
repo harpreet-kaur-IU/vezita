@@ -120,6 +120,9 @@ body {
 .text-teal-5{
   color: var(--teal5);
 }
+.text-green-5{
+  color: var(--green5);
+}
 /* background colors */
 .bg-red{
   background-color: var(--red);
@@ -433,4 +436,22 @@ body {
 
 .underline-none{
     text-decoration: none;
+}
+
+.grid{
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  column-gap:24px;
+}
+.grid-col-2{
+  grid-template-columns: repeat(2,1fr);
+  column-gap:50px;
+}
+.grid-col-3{
+  grid-template-columns: repeat(3,1fr);
+  /* column-gap:50px; */
+}
+.grid-col-4{
+  grid-template-columns: repeat(4,1fr);
+  column-gap:50px;
 }

@@ -96,7 +96,26 @@ const AddNewPatient = () => {
         }
     },[])
     const avatarHandler = (e) =>{
-        setAvatar(e.target.files[0])
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var formdata = new FormData();
+        formdata.append("type","patient");
+        formdata.append("file", e.target.files[0]);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}file-upload`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var parsedResult = JSON.parse(result)
+            setAvatar(parsedResult.urls[0])
+        })
+        .catch(error => console.log('error', error));
     }
     const nameHandler = (e) =>{
         setName(e.target.value)
@@ -453,7 +472,7 @@ const removeHandler = (e) =>{
                 </div>
                 {activeTab === "tab1" &&
                     <div className={`d-flex d-flex-column ${styles["personal-details-wrapper"]}`}>
-                        <div className={`p-relative col-12 ${styles["personal-detail-img"]}`}>
+                        <div className={`p-relative col-12 ${styles["personal-detail-img"]}`} style={{backgroundImage:`url(${avatar})`,backgroundRepeat: 'no-repeat',backgroundSize: 'contain',backgroundPosition:'center'}} >
                             <input 
                                 type='file'
                                 ref={avatarRef}
@@ -476,10 +495,12 @@ const removeHandler = (e) =>{
                                     <h6 className='text-secondary l-20 f-600'>Password</h6>
                                     <input value={password} onChange={passwordHandler} className='text-secondary l-22 f-400' type="password" required></input>
                                 </div>
+                                
                                 <div className={`d-flex d-flex-column ${styles["name-field"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Relationship</h6>
                                     <input value={relation} onChange={relationHandler} className='text-secondary l-22 f-400' type="text" required></input>
                                 </div>
+
                                 <div className={`d-flex d-flex-column ${styles["contact-field"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Contact</h6>
                                     <div className='d-flex'>
@@ -487,6 +508,7 @@ const removeHandler = (e) =>{
                                         <input value={contact} onChange={contactHandler} className={`col-12 text-secondary l-22 f-400 ${styles["contact-input"]}`} type="text" required></input>
                                     </div>
                                 </div>
+
                                 {numberError && <h6 className='f-600 l-22 mt-2 text-red'>Contact number can only contain numbers</h6>}
                                 <div className={`${styles["gender-radio-btn-wrapper"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Gender</h6>   
@@ -548,10 +570,12 @@ const removeHandler = (e) =>{
                                         <DateDropdown width="140px" handler={weightUnitHandler} data={weightUnits} placeholder="kg"></DateDropdown>
                                     </div>
                                 </div>
+    
                                 <div className={`d-flex d-flex-column ${styles["name-field"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Emergency Contact name</h6>
                                     <input value={emergencyName} onChange={emergencyNameHandler} className='text-secondary l-22 f-400' type="text" required></input>
                                 </div>
+
                                 <div className={`d-flex d-flex-column ${styles["contact-field"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Emergency Contact number</h6>
                                     <div className='d-flex'>
@@ -559,6 +583,7 @@ const removeHandler = (e) =>{
                                         <input value={emergencyNumber} onChange={emergencyNumberHandler} className={`col-12 text-secondary l-22 f-400 ${styles["contact-input"]}`} type="text"></input>
                                     </div>
                                 </div>
+
                                 {eNumberError && <h6 className='f-600 l-22 mt-2 text-red'>Contact number can only contain numbers</h6>}
                                 <div className={`d-flex d-flex-column ${styles["name-field"]}`}>
                                     <h6 className='text-secondary l-20 f-600'>Location</h6>

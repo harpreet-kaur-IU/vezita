@@ -179,6 +179,7 @@ const Establishment = () => {
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}slot?docter=${docterID}`, requestOptions)
         .then(response => response.text())
         .then(result =>{
+            console.log(result)
             setLoading(false)
         })
         .catch(error => console.log('error', error));
@@ -219,10 +220,8 @@ const Establishment = () => {
         setEstAddress(e.target.value)
     }
     const estForm = (e) =>{
-        const date = new Date(inputList[0].endTime);
-
-        console.log(date)
         e.preventDefault();
+        subTabHandler()
         // var myHeaders = new Headers();
         // myHeaders.append("token",JWTToken);
         // myHeaders.append("Content-Type","application/json");
@@ -259,102 +258,119 @@ const Establishment = () => {
   return (
     <>
         {loading && <Loader></Loader>}
-        <h4 className='f-600 l-26 col-12 text-primary '>Establishments(Fees, Timings)</h4>
-        <form onSubmit={estForm}>
-            <div className='d-flex col-11 d-flex-wrap '>
-                <div className={`d-flex d-flex-wrap border-box ${styles["personal"]} col-12`}>
-                    <h4 className='f-600 l-26 col-12 text-black mt-5'>Establishment address</h4>
-                    <div className='d-flex d-flex-wrap col-12'>
-                        
-                        <div className='col-6'>
-                            <label className='d-flex'>Establishment name</label>
-                            <input type="text" placeholder='Select or add title' onChange={estHandler} value={estName}/>
-                        </div>
+        <h4 className='f-600 l-26 col-12 text-primary'>Establishments(Fees, Timings)</h4>
+        {subTab == 0 &&
+            <form onSubmit={estForm}>
+                <div className='d-flex col-11 d-flex-wrap'>
+                    <div className={`d-flex d-flex-wrap border-box ${styles["personal"]} col-12`}>
+                        <h4 className='f-600 l-26 col-12 text-black mt-5'>Establishment address</h4>
+                        <div className='d-flex d-flex-wrap col-12'>
+                            
+                            <div className='col-5'>
+                                <label className='d-flex'>Establishment name</label>
+                                <input type="text" placeholder='Select or add title' onChange={estHandler} value={estName}/>
+                            </div>
 
-                        <div className='col-2 d-flex d-flex-wrap border-box'>
-                            <div className='ml-5 col-12'>
-                                <label className='d-flex'>Establishment city</label>
-                                <input type="text" placeholder='Enter establishment city' onChange={cityHandler} value={city}/>
+                            <div className='col-3 d-flex d-flex-wrap border-box'>
+                                <div className='ml-5 col-12'>
+                                    <label className='d-flex'>City</label>
+                                    <input type="text" placeholder='Enter city' onChange={cityHandler} value={city}/>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className='col-2 d-flex d-flex-wrap border-box'>
-                            <div className='ml-5 col-12'>
-                                <label className='d-flex'>Contact</label>
-                                <DropDown handler={countryCodeHandler} data={countryCodeList} placeholder="+91"></DropDown>
+                            <div className='col-2 d-flex d-flex-wrap border-box'>
+                                <div className='ml-5 col-12'>
+                                    <label className='d-flex'>Code</label>
+                                    <DropDown handler={countryCodeHandler} data={countryCodeList} placeholder="+91"></DropDown>
+                                </div>
+                            </div>
+                            <div className='col-2 d-flex d-flex-wrap border-box'>
+                                <div className='ml-2 col-12'>
+                                    <label className='d-flex'>Contact</label>
+                                    <input type="text" placeholder='9876543210' onChange={contactHandler} value={contactNumber}/>
+                                </div>
                             </div>
                         </div>
-                        <div className='col-2 d-flex d-flex-wrap border-box'>
-                            <div className='ml-2 col-12'>
-                                <label className='d-flex'>Contact</label>
-                                <input type="text" placeholder='9876543210' onChange={contactHandler} value={contactNumber}/>
+                        <label className='d-flex'>Establishment address</label>
+                        <input type="text" placeholder='4517 Washington Ave. Manchester, Kentucky 39495' onChange={addressHandler} value={estAddress}/>
+                        <div className='d-flex d-flex-column col-12'>
+                            <h6 className='f-500 l-20 text-grey-3 mt-5 mb-1'>Drop a pin to link your Clinic address</h6>
+                            <div className='col-12'>
+                                <GoogleMap
+                                    width = {100}
+                                    onClick={getLatLang}
+                                    mapContainerStyle={containerStyle}
+                                    center={center}
+                                    zoom={10}
+                                    onLoad={onLoad}
+                                    onUnmount={onUnmount}
+                                ></GoogleMap>
                             </div>
                         </div>
-                    </div>
-                    <label className='d-flex'>Establishment address</label>
-                    <input type="text" placeholder='4517 Washington Ave. Manchester, Kentucky 39495' onChange={addressHandler} value={estAddress}/>
-                    <div className='d-flex d-flex-column col-12'>
-                        <h6 className='f-500 l-20 text-grey-3 mt-5 mb-1'>Drop a pin to link your Clinic address</h6>
-                        <div className='col-12'>
-                            <GoogleMap
-                                width = {100}
-                                onClick={getLatLang}
-                                mapContainerStyle={containerStyle}
-                                center={center}
-                                zoom={10}
-                                onLoad={onLoad}
-                                onUnmount={onUnmount}
-                            ></GoogleMap>
+                        <label className='d-flex'>Establishment photos</label>
+                        <div className='col-12 d-flex d-flex-wrap'>
+                            <img src="build.png" />
+                            <img src="build.png" className='ml-2' />
                         </div>
                     </div>
-                    <label className='d-flex'>Establishment photos</label>
-                    <div className='col-12 d-flex d-flex-wrap'>
-                        <img src="build.png" />
-                        <img src="build.png" className='ml-2' />
-                    </div>
-                </div>
-                <div className='col-12 mt-7 d-flex d-flex-wrap'>
-                    <h4 className='f-600 l-26 col-12 text-black mt-7'>Practice timings</h4>
-                    <label className='d-flex'>Days</label>
-                    <div className='mt-5 d-flex gap-2 col-12'>
-                        <DaySelector isActive={mon?true:false} handler={dayHandler} title="Mon"/>
-                        <DaySelector isActive={tue?true:false} handler={dayHandler} title="Tue"/>
-                        <DaySelector isActive={wed?true:false} handler={dayHandler} title="Wed"/>
-                        <DaySelector isActive={thu?true:false} handler={dayHandler} title="Thu"/>
-                        <DaySelector isActive={fri?true:false} handler={dayHandler} title="Fri"/>
-                        <DaySelector isActive={sat?true:false} handler={dayHandler} title="Sat"/>
-                        <DaySelector isActive={sun?true:false} handler={dayHandler} title="Sun"/>
-                    </div>
-                    {inputList.map((item,index)=>(
-                        <>
-                            <div className='mt-5 d-flex gap-2 col-12'>
-                                <div className='d-flex d-flex-column col-6'>
-                                    <h6 className='col-12 f-600 l-26 text-black'>Session {index+1}</h6>
-                                    <div className={`mt-2 d-flex d-align-center gap-3 col-12 ${styles["timing"]}`}>
-                                        <DropDownDate  index={index} handler={startHandler} placeholder="From"/>
-                                        <img src="arrow.png"/>
-                                        <DropDownDate  index={index} handler={endHandler} placeholder="To"/>
+                    <div className='col-12 mt-7 d-flex d-flex-wrap'>
+                        <h4 className='f-600 l-26 col-12 text-black mt-7'>Practice timings</h4>
+                        <label className='d-flex'>Days</label>
+                        <div className='mt-5 d-flex gap-2 col-12'>
+                            <DaySelector isActive={mon?true:false} handler={dayHandler} title="Mon"/>
+                            <DaySelector isActive={tue?true:false} handler={dayHandler} title="Tue"/>
+                            <DaySelector isActive={wed?true:false} handler={dayHandler} title="Wed"/>
+                            <DaySelector isActive={thu?true:false} handler={dayHandler} title="Thu"/>
+                            <DaySelector isActive={fri?true:false} handler={dayHandler} title="Fri"/>
+                            <DaySelector isActive={sat?true:false} handler={dayHandler} title="Sat"/>
+                            <DaySelector isActive={sun?true:false} handler={dayHandler} title="Sun"/>
+                        </div>
+                        <div className=' d-grid grid-col-2'>
+                            {inputList.map((item,index)=>(
+                                <>
+                                    <div className='mt-5 d-flex d-flex-column'>
+                                        <h5 className='col-12 f-600 l-26 text-black'>Session {index+1}</h5>
+                                        <h6 className='f-600 l-20 text-secondary mt-2'>Session type</h6>
+                                        <div className='d-flex col-12 mt-3'>
+                                            <div className={` d-flex d-align-center`}>
+                                                <input type="checkbox" id="video" name="session" value="video" style={{width:"auto"}}/>
+                                                <h6 className='f-500  text-secondary ml-2 mb-0' htmlFor="video">Video Appointment</h6>
+                                            </div>
+                                            <div className={` d-flex d-align-center ml-4`}>
+                                                <input type="checkbox" id="inclinic" name="session" value="inclinic"  style={{width:"auto"}}/>
+                                                <h6 className='f-500  text-secondary ml-2 mb-0' htmlFor="inclinic">In-clinic appointment</h6>
+                                            </div>
+                                        </div>
+                                        <div className='mt-8 d-flex d-align-center gap-3 col-12 '>
+                                            <h6 className='col-6 f-400 text-secondary ml-2 mb-0' htmlFor="inclinic">Start Time</h6>
+                                            <h6 className='col-6 f-400 text-secondary ml-2 mb-0' htmlFor="inclinic">End Time</h6>
+                                        </div>
+                                        <div className={`mt-2 d-flex d-align-center gap-3 col-12 ${styles["timing"]}`}>
+                                            <DropDownDate  index={index} handler={startHandler} placeholder="From"/>
+                                            <img src="arrow.png"/>
+                                            <DropDownDate  index={index} handler={endHandler} placeholder="To"/>
+                                        </div>
+                                        {inputList.length - 1 === index &&
+                                            <div onClick={addSessionHandler} className='d-flex d-align-center mt-6'>
+                                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M19.375 10C19.375 10.2984 19.2565 10.5845 19.0455 10.7955C18.8345 11.0065 18.5484 11.125 18.25 11.125H11.125V18.25C11.125 18.5484 11.0065 18.8345 10.7955 19.0455C10.5845 19.2565 10.2984 19.375 10 19.375C9.70163 19.375 9.41548 19.2565 9.2045 19.0455C8.99353 18.8345 8.875 18.5484 8.875 18.25V11.125H1.75C1.45163 11.125 1.16548 11.0065 0.954505 10.7955C0.743526 10.5845 0.625 10.2984 0.625 10C0.625 9.70163 0.743526 9.41548 0.954505 9.2045C1.16548 8.99353 1.45163 8.875 1.75 8.875H8.875V1.75C8.875 1.45163 8.99353 1.16548 9.2045 0.954505C9.41548 0.743526 9.70163 0.625 10 0.625C10.2984 0.625 10.5845 0.743526 10.7955 0.954505C11.0065 1.16548 11.125 1.45163 11.125 1.75V8.875H18.25C18.5484 8.875 18.8345 8.99353 19.0455 9.2045C19.2565 9.41548 19.375 9.70163 19.375 10Z" fill="#3085F4"/>
+                                                </svg>
+                                                <h5 className='ml-2 f-600 l-20 text-primary'> ADD TIMING</h5>
+                                            </div>
+                                        }
                                     </div>
-                                </div>
-                            </div>
-                            {inputList.length - 1 === index &&
-                                <div onClick={addSessionHandler} className='d-flex d-align-center mt-6'>
-                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M19.375 10C19.375 10.2984 19.2565 10.5845 19.0455 10.7955C18.8345 11.0065 18.5484 11.125 18.25 11.125H11.125V18.25C11.125 18.5484 11.0065 18.8345 10.7955 19.0455C10.5845 19.2565 10.2984 19.375 10 19.375C9.70163 19.375 9.41548 19.2565 9.2045 19.0455C8.99353 18.8345 8.875 18.5484 8.875 18.25V11.125H1.75C1.45163 11.125 1.16548 11.0065 0.954505 10.7955C0.743526 10.5845 0.625 10.2984 0.625 10C0.625 9.70163 0.743526 9.41548 0.954505 9.2045C1.16548 8.99353 1.45163 8.875 1.75 8.875H8.875V1.75C8.875 1.45163 8.99353 1.16548 9.2045 0.954505C9.41548 0.743526 9.70163 0.625 10 0.625C10.2984 0.625 10.5845 0.743526 10.7955 0.954505C11.0065 1.16548 11.125 1.45163 11.125 1.75V8.875H18.25C18.5484 8.875 18.8345 8.99353 19.0455 9.2045C19.2565 9.41548 19.375 9.70163 19.375 10Z" fill="#3085F4"/>
-                                    </svg>
-                                    <h5 className='ml-2 f-600 l-20 text-primary'> ADD TIMING</h5>
-                                </div>
-                            }
-                        </>
-                    ))}
+                                </>
+                            ))}
+                        </div>
+                    </div>
+                    <div className='col-12 mt-60 d-flex d-justify-end'>
+                        <button className='col-3 btn btn-primary d-flex d-justify-center' onClick={subTabHandler}>Save</button>
+                    </div>
                 </div>
-                <div className='col-12 mt-60 d-flex d-justify-end'>
-                    <button className='col-3 btn btn-primary d-flex d-justify-center' onClick={subTabHandler}>Save</button>
-                </div>
-            </div>
-        </form>
+            </form>
+        }
        
-        {/* {subTab == 1 &&
+        {subTab == 1 &&
         <>
             <div className='d-flex col-11 d-flex-wrap '>
                 <div className={`d-flex d-flex-wrap border-box ${styles["personal"]} col-12`}>
@@ -362,7 +378,7 @@ const Establishment = () => {
                     <div className='d-flex d-flex-wrap col-12'>
                         <div className='col-6 d-flex d-flex-wrap'>
                             <label className='d-flex'>Consultation duration</label>
-                            <DropDown placeholder="30 minutes"/>
+                            <input type="text" placeholder='30 mintues' />
                         </div>
                         <div className='col-6 d-flex d-flex-wrap'>
                             <div className='ml-5 col-12 d-flex d-flex-wrap'>
@@ -374,7 +390,7 @@ const Establishment = () => {
                             </div>
                         </div>
                     </div>
-                    <label className='d-flex col-12'>Doctor's hours</label>
+                    {/* <label className='d-flex col-12'>Doctor's hours</label>
                     <div className='d-flex d-flex-wrap col-6 mt-1'>
                         <div className={`${styles["wrapper"]} d-flex d-align-center`}>
                             <input type="radio" id="same" name="hours" value="same"/>
@@ -384,7 +400,7 @@ const Establishment = () => {
                             <input type="radio" id="differ" name="hours" value="differ"/>
                             <h5 className='f-500  text-secondary ml-2 mb-0' htmlFor="differ">Different hours</h5>
                         </div>
-                    </div>
+                    </div> */}
                     <label className='d-flex col-12 mt-2'>Consultation timings</label>
                     <div className={`${styles["timing-message"]} mt-1 col-12 `}>
                         <h6 className='f-500 l-20 text-green-5'>Inclinic timings should be within practice timings Mon-Sun 9:00AM-7:00PM. Video consultation timings can be outside practice timings.</h6>
@@ -419,24 +435,10 @@ const Establishment = () => {
                             <h5 className='f-500  text-secondary ml-2 mb-0' htmlFor="Sun">Sun</h5>
                         </div>
                     </div>
-                    <div className='col-12 d-flex d-flex-wrap'>
-                        <div className='col-6 mt-2'>
-                            <label className='d-flex'>Session 1</label>
-                            <h6 className='f-400 l-20 text-secondary mt-2'>Session type</h6>
-                            <div className='d-flex col-12 mt-3'>
-                                <div className={` d-flex d-align-center`}>
-                                    <input type="checkbox" id="video" name="session" value="video" style={{width:"auto"}}/>
-                                    <h5 className='f-500  text-secondary ml-2 mb-0' htmlFor="video">Video Appointment</h5>
-                                </div>
-                                <div className={` d-flex d-align-center ml-4`}>
-                                    <input type="checkbox" id="inclinic" name="session" value="inclinic"  style={{width:"auto"}}/>
-                                    <h5 className='f-500  text-secondary ml-2 mb-0' htmlFor="inclinic">In-clinic appointment</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='col-6'>
-                            <div className='ml-3 col-12 d-flex d-flex-wrap'>
-                                <label className='d-flex col-12 '>Session 2</label>
+                    <div className='d-grid grid-col-2'>
+                        {inputList.map((item,index)=>(
+                            <div className='mt-2'>
+                                <label className='d-flex'>Session {index+1}</label>
                                 <h6 className='f-400 l-20 text-secondary mt-2'>Session type</h6>
                                 <div className='d-flex col-12 mt-3'>
                                     <div className={` d-flex d-align-center`}>
@@ -448,21 +450,34 @@ const Establishment = () => {
                                         <h5 className='f-500  text-secondary ml-2 mb-0' htmlFor="inclinic">In-clinic appointment</h5>
                                     </div>
                                 </div>
+
+                                <div className='mt-5 d-flex gap-2 col-12'>
+                                    <div className='d-flex d-flex-column col-12'>
+                                        {/* <h6 className='col-12 f-600 l-26 text-black'>Session {index+1}</h6> */}
+                                        <div className={`mt-2 d-flex d-align-center gap-3 col-12 ${styles["timing"]}`}>
+                                            <DropDownDate  index={index} handler={startHandler} placeholder="From"/>
+                                            <img src="arrow.png"/>
+                                            <DropDownDate  index={index} handler={endHandler} placeholder="To"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                {inputList.length - 1 === index &&
+                                    <div onClick={addSessionHandler} className='d-flex d-align-center mt-6'>
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M19.375 10C19.375 10.2984 19.2565 10.5845 19.0455 10.7955C18.8345 11.0065 18.5484 11.125 18.25 11.125H11.125V18.25C11.125 18.5484 11.0065 18.8345 10.7955 19.0455C10.5845 19.2565 10.2984 19.375 10 19.375C9.70163 19.375 9.41548 19.2565 9.2045 19.0455C8.99353 18.8345 8.875 18.5484 8.875 18.25V11.125H1.75C1.45163 11.125 1.16548 11.0065 0.954505 10.7955C0.743526 10.5845 0.625 10.2984 0.625 10C0.625 9.70163 0.743526 9.41548 0.954505 9.2045C1.16548 8.99353 1.45163 8.875 1.75 8.875H8.875V1.75C8.875 1.45163 8.99353 1.16548 9.2045 0.954505C9.41548 0.743526 9.70163 0.625 10 0.625C10.2984 0.625 10.5845 0.743526 10.7955 0.954505C11.0065 1.16548 11.125 1.45163 11.125 1.75V8.875H18.25C18.5484 8.875 18.8345 8.99353 19.0455 9.2045C19.2565 9.41548 19.375 9.70163 19.375 10Z" fill="#3085F4"/>
+                                        </svg>
+                                        <h5 className='ml-2 f-600 l-20 text-primary'> ADD TIMING</h5>
+                                    </div>
+                                }                            
                             </div>
-                        </div>
-                    </div>
-                    <div className='d-flex d-align-center mt-6'>
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19.375 10C19.375 10.2984 19.2565 10.5845 19.0455 10.7955C18.8345 11.0065 18.5484 11.125 18.25 11.125H11.125V18.25C11.125 18.5484 11.0065 18.8345 10.7955 19.0455C10.5845 19.2565 10.2984 19.375 10 19.375C9.70163 19.375 9.41548 19.2565 9.2045 19.0455C8.99353 18.8345 8.875 18.5484 8.875 18.25V11.125H1.75C1.45163 11.125 1.16548 11.0065 0.954505 10.7955C0.743526 10.5845 0.625 10.2984 0.625 10C0.625 9.70163 0.743526 9.41548 0.954505 9.2045C1.16548 8.99353 1.45163 8.875 1.75 8.875H8.875V1.75C8.875 1.45163 8.99353 1.16548 9.2045 0.954505C9.41548 0.743526 9.70163 0.625 10 0.625C10.2984 0.625 10.5845 0.743526 10.7955 0.954505C11.0065 1.16548 11.125 1.45163 11.125 1.75V8.875H18.25C18.5484 8.875 18.8345 8.99353 19.0455 9.2045C19.2565 9.41548 19.375 9.70163 19.375 10Z" fill="#3085F4"/>
-                        </svg>
-                        <h5 className='ml-2 f-600 l-20 text-primary'> ADD TIMING</h5>
+                        ))}
                     </div>
                 </div>
             </div>
             <div className='col-11 mt-60 d-flex d-justify-end'>
-                <button className='col-3 btn btn-primary d-flex d-justify-center'  onClick={nextHandler}>Save</button>
+                <button className='col-3 btn btn-primary d-flex d-justify-center'>Save</button>
             </div>
-        </>} */}
+        </>}
     </>
   )
 }

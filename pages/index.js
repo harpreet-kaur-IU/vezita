@@ -50,7 +50,12 @@ export default function Login() {
                     setLoading(false)
                     router.push("/doctorsetup")
                 })
-                .catch(error => console.log('error', error));
+                .catch(error => {
+                    setLoading(false)
+                    toast.warning("Something went wrong,Please try again",{
+                        toastId:"1"
+                    });
+                });
             }else{
                 toast.warning("Please Check your mail and verify user",{
                     toastId:"1"

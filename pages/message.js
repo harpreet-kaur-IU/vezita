@@ -6,9 +6,9 @@ import DoctorsChat from '../modules/DoctorsChat'
 const Message = () => {
   return (
     <Fragment>
-        <Base>
-            <DoctorsChat></DoctorsChat>
-        </Base>
+      <Base>
+        <DoctorsChat></DoctorsChat>
+      </Base>
     </Fragment>
   )
 }

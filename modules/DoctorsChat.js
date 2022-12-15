@@ -1,19 +1,52 @@
-import React , {useEffect} from 'react'
+import React , {useEffect, useRef} from 'react'
 import styles from './css/DoctorChat.module.css'
 import { useState } from 'react'
 import Header from './Header'
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies'
+import Moment from 'react-moment'
 
 function DoctorsChat() {
     const[searchTerm,setSearchTerm]=useState("")
+    const[data,setData] = useState([])
+    const[chatUser,setChatUser] = useState([])
+    const[activeUser,setActiveUser] = useState("")
+    const[activeUserImg,setActiveUserImg] = useState("")
+    const[message,setMessage] = useState("")
+    const[channelId,setChannelId] = useState("")
+    const[receiverId,setReceiverID] = useState("")
+    const[senderId,setSenderId] = useState("")
+    const[isSend,setIsSend] = useState(false)
+
+    const mediaRef = useRef()
+    const[media,setMedia] = useState("")
+    const[mediaType,setMediaType] = useState("")
     const JWTToken = getVezitaOnBoardFromCookie();
     useEffect(()=>{
         if(JWTToken){
+            getProfile()
             getAllChats()
         }
     },[])
     
-    //get all chats
+    const getProfile = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
+        .then(response => response.text())
+        .then(result =>{
+          const parsedResult =  JSON.parse(result)
+          setSenderId(parsedResult.docter._id)
+        })
+        .catch(error => console.log('error', error));
+    }
+    //get all channels API
     const getAllChats = () =>{
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
@@ -26,11 +59,129 @@ function DoctorsChat() {
 
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}chat/channel`, requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => {
+            var parsedResult = JSON.parse(result)
+            setData(parsedResult.chatChannel)
+        })
         .catch(error => console.log('error', error));
     }
-    const bgClickHandler = (e) =>{
-        console.log(e.currentTarget.id)
+
+    //fetch all chat messages API
+    const startChatHandler = (channelId,user,image,userID) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}chat/message/${channelId}/all`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var parseChat = JSON.parse(result)
+            setChatUser(parseChat.chats)
+            setChannelId(channelId)
+            setActiveUser(user)
+            setActiveUserImg(image)
+            setReceiverID(userID)
+        })
+        .catch(error => console.log('error', error));
+    }
+
+    //message Handler
+    const messageHandler = (e) =>{
+        if(e.target.value){
+            setMessage(e.target.value)
+            setIsSend(true)
+        }else{
+            setMessage(e.target.value)
+            setIsSend(false)
+        }
+    }
+ 
+    //save media API
+    const mediaHandler = (e) =>{
+        if(e.target.files){
+            const str = e.target.files[0].type;
+            setMediaType(str.substring(str.lastIndexOf('/')+1))
+        }
+        // var myHeaders = new Headers();
+        // myHeaders.append("token",JWTToken);
+
+        // var formdata = new FormData();
+        // formdata.append("type","chatMedia");
+        // formdata.append("file", e.target.files[0]);
+
+        // var requestOptions = {
+        //     method: 'POST',
+        //     headers: myHeaders,
+        //     body: formdata
+        // };
+
+        // fetch(`${process.env.NEXT_PUBLIC_BASE_URL}file-upload`, requestOptions)
+        // .then(response => response.text())
+        // .then(result => {
+        //     var parsedResult = JSON.parse(result)
+        //     setMedia(parsedResult.urls[0])
+        //     setIsSend(true)
+        // })
+        // .catch(error => console.log('error', error));
+    } 
+
+    //send Message API
+    const sendMessage = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+        var raw = {};
+        if(media){
+            raw = JSON.stringify({
+                "channelId":channelId,
+                "message":message,
+                "media": media,
+                "mediaType": "image",
+                "receiver":receiverId,
+                "sender":senderId
+            });
+        }else{
+            raw = JSON.stringify({
+                "channelId":channelId,
+                "message":message,
+                "mediaType": "text",
+                "receiver":receiverId,
+                "sender":senderId
+            });
+        }
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}chat/message`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var parseMessage = JSON.parse(result)
+            console.log(parseMessage)
+            setMessage("")
+            startChatHandler(channelId,activeUser,activeUserImg,receiverId)
+            setIsSend(true)
+        })
+        .catch(error => console.log('error', error));
+    }
+    //remove media
+    const removeMediaHandler = () =>{
+        setMedia("")
+        if(message){
+            setIsSend(true)
+        }
+        else{
+            setIsSend(false)
+        }
     }
   return (
     <>
@@ -44,60 +195,79 @@ function DoctorsChat() {
                     <input className={`${styles["input"]} col-11 f-500 font-16 l-22`} type='text' placeholder='Search in chats' value={searchTerm} onChange={(e)=>setSearchTerm(e.target.value)}/>
                 </div>
                 <h5 className={`text-uppercase f-600 l-22 text-dark-grey`}>Recents</h5>
-            
-                <div id='chat-1' onClick={bgClickHandler} className={`cursor-pointer col-12 d-flex d-flex-row d-align-start d-justify-space-between rounded-12 rounded-16 border-lighter-gray `}>
-                    <div className={`d-flex d-flex-row d-align-center gap-5 ${styles["chat-person-detail"]}`}>
-                        <img src='dr.png'></img>
-                        <div className={`d-flex d-flex-column d-align-start`}>
-                            <h4 className={`f-600 l-22 text-darker`}>hhg</h4>
-                            <h4 className={`f-500 l-22 text-dark-grey`}>You: Hii</h4>
+                {data && data.map((item,index)=>(
+                    <div key={index} onClick={()=>startChatHandler(item._id,item.user.name,item.user.avatar,item.user._id)} className={`cursor-pointer col-12 d-flex d-flex-row d-align-start d-justify-space-between rounded-12 rounded-16 border-lighter-gray `}>
+                        <div className={`d-flex d-flex-row d-align-center gap-5 ${styles["chat-person-detail"]}`}>
+                            <img src={item.user.avatar}></img>
+                            <div className={`d-flex d-flex-column d-align-start`}>
+                                <h4 className={`f-600 l-22 text-darker`}>{item.user.name}</h4>
+                                {/* <h4 className={`f-500 l-22 text-dark-grey`}>You: Hii</h4> */}
+                            </div>
+                        </div>
+                        <div className={`d-flex d-flex-column d-align-center gap-2  ${styles["chat-person-detail"]}`}>
+                            <h6 className={`font-12 f-600 l-14 text-darker-grey`}>
+                                <Moment format="HH:mm" withTitle>
+                                    {item.user.createdAt}
+                                </Moment>
+                            </h6>
+                            {/* <h6 className={`${styles["circle"]} d-flex d-align-center d-justify-center rounded-100 f-600 l-14 text-light-grey`}>1</h6> */}
                         </div>
                     </div>
-                    <div className={`d-flex d-flex-column d-align-center gap-2  ${styles["chat-person-detail"]}`}>
-                        <h6 className={`font-12 f-600 l-14 text-darker-grey`}>6:10</h6>
-                        <h6 className={`${styles["circle"]} d-flex d-align-center d-justify-center rounded-100 f-600 l-14 text-light-grey`}>1</h6>
-                    </div>
-                </div>
-                <div  id='chat-2' onClick={bgClickHandler} className={`cursor-pointer col-12 d-flex d-flex-row d-align-start d-justify-space-between rounded-12 rounded-16 border-lighter-gray `}>
-                    <div className={`d-flex d-flex-row d-align-center gap-5 ${styles["chat-person-detail"]}`}>
-                        <img src='dr.png'></img>
-                        <div className={`d-flex d-flex-column d-align-start`}>
-                            <h4 className={`f-600 l-22 text-darker`}>hhg</h4>
-                            <h4 className={`f-500 l-22 text-dark-grey`}>You: Hii</h4>
+                ))}
+            </div>
+            {activeUser &&
+                <div className={`offset-1 col-6 ${styles["chat-right-wrapper"]}`}>
+                    <div className={` d-flex d-flex-row d-align-center gap-2`}>
+                        <img className={`${styles["chat-person-img"]}`} src={activeUserImg}></img>
+                        <div className={`d-flex d-flex-column d-align-start gap-1`}>
+                            <h3 className={`f-500 l-28 text-secondary`}>{activeUser}</h3>
+                            {/* <h4 className={`f-500 l-26 text-grey-3`}>Last active 12:34 PM</h4> */}
                         </div>
                     </div>
-                    <div className={`d-flex d-flex-column d-align-center gap-2  ${styles["chat-person-detail"]}`}>
-                        <h6 className={`font-12 f-600 l-14 text-darker-grey`}>6:10</h6>
-                        {/* <h6 className={`${styles["circle"]} d-flex d-align-center d-justify-center rounded-100 f-600 l-14 text-light-grey`}>1</h6> */}
+                        <div className={`${styles["chat-area"]}`}>
+                        {chatUser && chatUser.map((item,index)=>(
+                            <>
+                                {item.sender == senderId?
+                                    <div key={index} className='d-flex d-justify-end'>
+                                        <div className={`${styles["chat-popup-s"]} bg-primary mt-10`}>
+                                            <h4 className='f-500 l-26 text-white'>{item.message}</h4>
+                                        </div>
+                                    </div>
+                                    :
+                                    <div key={index} className='d-flex d-justify-start'>
+                                        <div className={`${styles["chat-popup-r"]} bg-grey-6 mt-10`}>
+                                            <h4 className='f-500 l-26 text-secondary'>What is the progress of the task that is allocated to you?What is the progress of the task that is allocated to you?What is the progress of the task that is allocated to you?</h4>
+                                        </div>
+                                    </div>
+                                }
+                            </>
+                        ))} 
+                        </div>
+                        {media &&
+                            <div className={`p-relative d-flex d-align-start d-justify-end ${styles["uploaded-media"]}`} style={{backgroundImage:`url(${media})`,backgroundRepeat: 'no-repeat',backgroundSize: 'contain',backgroundPosition:'center'}} >
+                                <img className='cursor-pointer' onClick={removeMediaHandler} src='cross-grey.png'></img>
+                            </div>     
+                        }
+                    <div className={`d-flex d-justify-space-between d-align-center gap-5 mt-50 ${styles["message-area"]}`}>
+                        <textarea value={message} onChange={messageHandler} type="text" placeholder="Message"></textarea>
+                        <div className='d-flex gap-3'>
+                            <div className={`cursor-pointer p-relative col-12 ${styles["media-img"]}`} >
+                                <img className='cursor-pointer' src='file-upload.png'></img>
+                                <input 
+                                    type='file'
+                                    ref={mediaRef}
+                                    multiple={true}
+                                    onChange={mediaHandler}
+                                    title=''
+                                >
+                                </input>
+                            </div>
+                            {isSend && <img className='cursor-pointer' onClick={sendMessage} src='send.png'></img>}
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className={`offset-1 col-6 ${styles["chat-right-wrapper"]}`}>
-                <div className={` d-flex d-flex-row d-align-center gap-2`}>
-                    <img className={`${styles["chat-person-img"]}`} src='dr.png'></img>
-                    <div className={`d-flex d-flex-column d-align-start gap-1`}>
-                        <h3 className={`f-500 l-28 text-secondary`}>Jane Jamel</h3>
-                        <h4 className={`f-500 l-26 text-grey-3`}>Last active 12:34 PM</h4>
-                    </div>
-                </div>
-                <div className='d-flex d-justify-start'>
-                    <div className={`${styles["chat-popup-r"]} bg-grey-6 mt-10`}>
-                        <h4 className='f-500 l-26 text-secondary'>What is the progress of the task that is allocated to you?What is the progress of the task that is allocated to you?What is the progress of the task that is allocated to you?</h4>
-                    </div>
-                </div>
-                <div className='d-flex d-justify-end'>
-                    <div className={`${styles["chat-popup-s"]} bg-primary mt-10`}>
-                        <h4 className='f-500 l-26 text-white'>What is the progress of the task that is allocated to you?What is the progress of the task that is allocated to you?What is the progress of the task that is allocated to you?</h4>
-                    </div>
-                </div>
-                <div className={`d-flex d-justify-space-between d-align-center gap-5 mt-50 ${styles["message-area"]}`}>
-                    <textarea type="text" placeholder="Message"></textarea>
-                    <div className='d-flex gap-3'>
-                        <img src='file-upload.png'></img>
-                        <img src='send.png'></img>
-                    </div>
-                </div>
-            </div>
+            }
+           
         </div>
     </>
   )

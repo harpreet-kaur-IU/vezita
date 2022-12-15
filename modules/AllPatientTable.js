@@ -76,7 +76,7 @@ const AllPatientTable = () => {
                                 <Moment format="D MMM YYYY" withTitle>
                                     {item.createdAt}
                                 </Moment> 
-                                &nbsp;
+                                ,&nbsp;
                                 <Moment format="HH:mm" withTitle>
                                     {item.createdAt}
                                 </Moment>

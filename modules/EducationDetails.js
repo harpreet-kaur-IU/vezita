@@ -9,6 +9,7 @@ const EducationDetails = () => {
     const[dropdown,setDropdown] = useState(false)
     const[list,setList] = useState([])
     const[displayList,setDisplayList] = useState([])
+    const[specId,setSpecId] = useState([])
     const[docterId,setDoctorId] = useState("")
     const[qualificationId,setQualificationId] = useState("")
     const[loading,setLoading] = useState(false)
@@ -120,7 +121,6 @@ const EducationDetails = () => {
     useEffect(()=>{
         if(JWTToken){
             getProfile()
-            getSpecialization()
         }
     },[])
 
@@ -141,6 +141,7 @@ const EducationDetails = () => {
         .then(result =>{
             const parsedResult =  JSON.parse(result)
             setDoctorId(parsedResult.docter._id)
+            getSpecialization(parsedResult.docter._id)
             setLoading(false)
             if(parsedResult.docter.education[0]){
                 setInputList(parsedResult.docter.education)
@@ -184,7 +185,14 @@ const EducationDetails = () => {
 
     //specialization remove Handler
     const removeHandler = (index) =>{
-        
+        if(specId.length>0){
+            const slisting = [...specId]
+            slisting.splice(index,1)
+            setSpecId(slisting)
+            
+            //call delete API
+            deleteSpecialization(specId[index])
+        }
         const listing = [...list];
         listing.splice(index,1);
         setList(listing)
@@ -192,6 +200,24 @@ const EducationDetails = () => {
         const dlisting = [...displayList]
         dlisting.splice(index,1)
         setDisplayList(dlisting)
+    }
+
+    //delete specialization API
+    const deleteSpecialization = (id) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = {
+            method: 'DELETE',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-specialization/${id}`, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
     }
 
     //add specialization API
@@ -224,7 +250,7 @@ const EducationDetails = () => {
     }
 
     //get specialization API
-    const getSpecialization = () =>{
+    const getSpecialization = (doctor) =>{
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
 
@@ -235,18 +261,24 @@ const EducationDetails = () => {
         };
 
         setLoading(true)
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-specialization`, requestOptions)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-specialization?docter=${doctor}`, requestOptions)
         .then(response => response.text())
         .then(result => {
             const specialization = JSON.parse(result)
             var dlisting = [];
             var listing = [];
+            var sId = [];
             
             for(var i=0;i<specialization.specializations.length;i++){
+                var spec = specialization.specializations[i]._id
                 var id = specialization.specializations[i].specializationId.id
                 var name = specialization.specializations[i].specializationId.name
                 
                 if(!list.includes(id)){
+                    //specialization ids needed to remove specialization
+                    sId.push(spec)
+                    setSpecId(sId)
+
                     //set data in list to store
                     listing.push(id)
                     setList(listing)
@@ -323,7 +355,7 @@ const EducationDetails = () => {
                                 <h6 className='mt-5 f-600 l-20 text-grey-3'>SUGGESTIONS</h6>
                                 <ul className={`${styles["suggestion-items"]}`}>
                                     {suggestion && suggestion.map((item)=>(
-                                        <li><h5 onClick={()=>inputHandler(item._id,item.name)} className='cursor-pointer text-secondary l-22 f-500'>{item.name}</h5></li>
+                                        <li><h5 id={item._id} onClick={()=>inputHandler(item._id,item.name)} className='cursor-pointer text-secondary l-22 f-500'>{item.name}</h5></li>
                                     ))}
                                 </ul>
                             </>

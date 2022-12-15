@@ -10,6 +10,7 @@ const Services = () => {
     const[list,setList] = useState([])
     const[dropdown,setDropdown] = useState(false)
     const[displayList,setDisplayList] = useState([])
+    const[servId,setServId] = useState([])
     const[suggestion,setSuggestion] = useState("")
     const[inputList,setInputList] = useState([{id:"",startmonth:"",endmonth:"",role:"",city:"",name:""}])
 
@@ -37,6 +38,15 @@ const Services = () => {
     }
     //specialization remove Handler
     const removeHandler = (index) =>{
+        if(servId.length>0){
+            const slisting = [...servId]
+            slisting.splice(index,1)
+            setServId(slisting)
+            
+            //call delete API
+            deleteService(servId[index])
+        }
+
         const listing = [...list];
         const items = listing.splice(index,1);
         setList(listing)
@@ -48,21 +58,21 @@ const Services = () => {
         // removeServices(items[0])
     }
   
-    // const removeServices = (serviceID) =>{
-    //     var myHeaders = new Headers();
-    //     myHeaders.append("token",JWTToken);
+    const deleteService = (serviceID) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
 
-    //     var requestOptions = {
-    //         method: 'DELETE',
-    //         headers: myHeaders,
-    //         redirect: 'follow'
-    //     };
+        var requestOptions = {
+            method: 'DELETE',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
 
-    //     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}service/delete-docter-service/${serviceID}`, requestOptions)
-    //     .then(response => response.text())
-    //     .then(result => console.log(result))
-    //     .catch(error => console.log('error', error));
-    // }
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}service/delete-docter-service/${serviceID}`, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+    }
 
     useEffect(()=>{
         getServices();
@@ -122,11 +132,18 @@ const Services = () => {
             const service = JSON.parse(result)
             var dlisting = [];
             var listing = [];
+            var sId = [];
+
             for(var i=0;i<service.docterService.length;i++){
+                var ser = service.docterService[i]._id
                 var id = service.docterService[i].serviceId._id
                 var name = service.docterService[i].serviceId.name
                 
                 if(!list.includes(id)){
+                    //service ids needed to remove service
+                    sId.push(ser)
+                    setServId(sId)
+
                     //set data in list to store
                     listing.push(id)
                     setList(listing)

@@ -40,6 +40,12 @@
 .chat-person-detail{
     padding:16px;
 }
+.chat-person-detail img{
+    width: 56px;
+    height: 56px;
+    border-radius: 100px;
+    object-fit: cover;
+}
 /* right side styels */
 .chat-right-wrapper{
     background: #FFFFFF;
@@ -51,6 +57,7 @@
     width: 56px;
     height: 56px;
     border-radius: 100px;
+    object-fit: cover;
 }
 .chat-popup-r{
     width: 346px;
@@ -76,4 +83,38 @@
 }
 .message-area textarea:focus{
     outline: none;
+}
+.chat-area{
+    min-height: 500px;
+}
+
+.media-img input{
+    position: absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    opacity:0;
+}
+.uploaded-media{
+    background: #FFFFFF;
+    border: 2px dashed #DFDFEE;
+    border-radius: 8px;
+    width: 100px;
+    height: 100px;
+    margin-top: 70px;
+}
+.uploaded-media img{
+    position: absolute;
+    top: -14px;
+    right: -15px;
+    padding: 7px;
+    background-color: var(--grey1);
+    border-radius: 100px;
+}
+.chat-popup-r h4{
+    word-break: break-word;
+}
+.chat-popup-s h4{
+    word-break: break-word;
 }

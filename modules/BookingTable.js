@@ -8,8 +8,9 @@ const BookingTable = (props) => {
     const JWTToken = getVezitaOnBoardFromCookie();
     const[bookingData,setBookingData] = useState("")
     const[loading,setLoading] = useState(false)
-
-    const statusHandler = (value,doctorId) =>{
+    const[docterID,setDocterID] = useState("")
+    //status handler 
+    const statusHandler = (value) =>{
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
         myHeaders.append("Content-Type", "application/json");
@@ -26,10 +27,9 @@ const BookingTable = (props) => {
         };
 
         setLoading(true)
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}booking/confirm-cancel/${doctorId}`, requestOptions)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}booking/confirm-cancel/${docterID}`, requestOptions)
         .then(response => response.text())
         .then(result => {
-           
             getAllBooking()
             setLoading(false)
         })
@@ -61,6 +61,7 @@ const BookingTable = (props) => {
         .then(result => {
             const parsedResult = JSON.parse(result)
             getAllBooking(parsedResult.docter._id)
+            setDocterID(parsedResult.docter._id)
             setLoading(false)
         })
         .catch(error => console.log('error', error));
@@ -117,7 +118,7 @@ const BookingTable = (props) => {
                     </span>
                 </div>
                 {bookingData && bookingData.map((item)=>(
-                    <div className={`${styles["booking-table-column"]} d-flex d-align-center`}>
+                    <div key={item._id} className={`${styles["booking-table-column"]} d-flex d-align-center`}>
                         <span className={`d-flex d-align-center ${styles["patient-details-column"]}`}>
                             <img src={item.patient.avatar}></img>
                             <h5 className='l-22 f-400'>{item.patient.name}</h5>
@@ -137,7 +138,7 @@ const BookingTable = (props) => {
                             </h5>
                         </span>
                         <span className='d-flex'>
-                            <h5 className='l-22 f-400'>Video call</h5>
+                            <h5 className='l-22 f-400'>{item.bookingType}</h5>
                         </span>
                         <span className='d-flex'>
                             <h5 className='l-22 f-400'>{item.numOfPreConsultation}</h5>

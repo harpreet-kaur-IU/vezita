@@ -15,6 +15,20 @@ const PatientDetails = (props) => {
     const [appointment,setAppointment] = useState("")
     const [doctorReports,setDoctorReports] = useState("")
     const [patientReports,setPatientReports] = useState("")
+    const [ageYear,setAgeYear] = useState("")
+    const [ageMonth,setAgeMonth] = useState("")
+    
+    const getAge = () =>{
+        var today = new Date();
+        var birthDate = new Date(props.data.patient.dob);
+        var age = today.getFullYear()-birthDate.getFullYear();
+        var m = today.getMonth()-birthDate.getMonth();
+        setAgeMonth(m)
+        if(m<0 || (m === 0 && today.getDate()<birthDate.getDate())){
+            age--;
+        }
+        setAgeYear(age);
+    }
 
     const handleClick = (e) =>{
         setActiveTab(e.target.id);
@@ -23,6 +37,7 @@ const PatientDetails = (props) => {
         setBookingData(props.data)
         setMedicalData(props.data.patientMedicalDetail)
         getDoctorProfile()
+        getAge()
     },[])
 
     //get doctor profile data
@@ -102,6 +117,31 @@ const PatientDetails = (props) => {
         })
         .catch(error => console.log('error', error));
     }
+
+    //create chat
+    const chatHandler = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token", JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "user2":bookingData.patient.user
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}chat/channel`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            router.push("/message")
+        })
+        .catch(error => console.log('error', error));
+    }
   return (
     <>
     {loading && <Loader></Loader>}
@@ -124,7 +164,7 @@ const PatientDetails = (props) => {
                             <div className={`${styles["mail-icon"]}`}>
                                 <img src='mail.png'></img>
                             </div>
-                            <div className={`${styles["message-icon"]}`}>
+                            <div onClick={chatHandler} className={`${styles["message-icon"]}`}>
                                 <img src='chat.png'></img>
                             </div>
                         </div>
@@ -132,7 +172,7 @@ const PatientDetails = (props) => {
                     <div className={`d-flex ${styles["patient-age-details"]}`}>
                         <div className={`col-4 d-flex d-flex-column d-align-center ${styles["patient-age-details-col"]}`}>
                             <h6 className='text-secondary l-20 f-500'>Age</h6>
-                            <h5 className='text-grey-2 l-22 f-400'>28</h5>
+                            <h5 className='text-grey-2 l-22 f-400'>{ageYear?ageYear+" years":ageMonth+" months"}</h5>
                         </div>
                         <div className={`col-4 d-flex d-flex-column d-align-center ${styles["patient-age-details-col"]}`}>
                             <h6 className='text-secondary l-20 f-500'>Gender</h6>

@@ -51,6 +51,7 @@
 import React,{useRef,useState} from 'react'
 import styles from './css/profile.module.css'
 export default function ProfileSidebar(props) {
+    console.log(props.education)
     const tabRef = useRef();
     const [tab, setTab] = useState()
     const tabHandler = (e) =>{

@@ -86,7 +86,6 @@ export default function Profile() {
                 }
             }      
             if(first.current){
-
                 if(basic)
                     setPending(++pending)
                 if(edu)
@@ -124,7 +123,7 @@ export default function Profile() {
             var reg = true;
             var est = true;
             setLoading(false)
-            if(parsedResult.docter.fullName && parsedResult.docter.gender && parsedResult.docter.totalExperiences>-1 && parsedResult.docter.city && parsedResult.docter.bio && parsedResult.docter.image && parsedResult.docter.countryCode && parsedResult.docter.phone)
+            if(parsedResult.docter.fullName && parsedResult.docter.gender && parsedResult.docter.totalExperiences>-1 && parsedResult.docter.city && parsedResult.docter.bio && parsedResult.docter.countryCode && parsedResult.docter.phone)
             {
                 setBasicComp(true)
                 basic = false;
@@ -143,7 +142,7 @@ export default function Profile() {
             if(parsedResult.docter.establishment[0].contactNumber || parsedResult.docter.establishment[0].establishmentName){
                 setEstComp(true)
                 est= false;
-                setProgress(70)
+                setProgress(100)
             }
             getExperience(basic,edu,reg,est);
             

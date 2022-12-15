@@ -9,7 +9,6 @@ export default function DropDown(props){
     }
 
     const selectHandler = (e) => {
-        console.log(e.currentTarget.getAttribute("id"))
         setValue(e.currentTarget.getAttribute("value"));
         props.handler(e.currentTarget.getAttribute("id"));
     }

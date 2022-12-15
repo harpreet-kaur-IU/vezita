@@ -10,16 +10,20 @@ import Finance from '../icons/finance'
 import Message from '../icons/message'
 import Patients from '../icons/patients'
 import Link from 'next/link'
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 const MenuItem = (props) => {
     const [path, setPath] = useState('');
+    const router = useRouter();
     useEffect(()=>{
         setPath(Router.route)
     },[])
+    const navigationHandler = () =>{
+        router.push(props.path)
+    }
     if(path==props.path || (props.multipath=="1" && ((props.haspath1=="1" && path==props.path1) || (props.haspath2=="1" && path==props.path2) || (props.haspath3=="1" && path==props.path3) || (props.haspath4=="1" && path==props.path4)))){
         return (
             <>
-                <li className={`f-400 l-22 h5 d-flex d-align-center ${style["menu-item-wrapper"]} ${style["active"]}`}>
+                <li onClick={navigationHandler} className={`cursor-pointer gap-1 d-flex d-align-center ${style["menu-item-wrapper"]} ${style["active"]}`}>
                     {props.title==="Dashboard" && <Dashboard></Dashboard>}
                     {props.title==="Reports" && <Reports></Reports>}
                     {props.title==="Banners" && <Banner></Banner>}
@@ -29,7 +33,7 @@ const MenuItem = (props) => {
                     {props.title==="Finances" && <Finance></Finance>}
                     {props.title==="Messages" && <Message></Message>}
                     {props.title==="My Patients" && <Patients></Patients>}
-                <Link href={props.path}>{props.title}</Link>
+                    <h5 className='text-white f-400 l-22'>{props.title}</h5>
                 </li>
             </>
         )

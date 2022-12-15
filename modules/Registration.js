@@ -8,10 +8,10 @@ const Registration = () => {
     const[docterId,setDoctorId] = useState("")
     const[loading,setLoading] = useState(false)
     //documnet states
-    const[document,setDocument] = useState("")
-
-    const [idProof,setIdProof] = useState("")
+    const[document,setDocument] = useState([{type:"",url:""}])
+    const [index,setIndex] = useState(0);
     const idRef = useRef();
+
     useEffect(()=>{
         if(JWTToken){
             getProfile();
@@ -38,7 +38,7 @@ const Registration = () => {
             if(parsedResult.docter.medicalRegistrationDetails[0]){
                 setInputList(parsedResult.docter.medicalRegistrationDetails)
             }
-            getDocument(parsedResult.docter._id)
+            // getDocument(parsedResult.docter._id)
         })
         .catch(error => console.log('error', error));
     }
@@ -82,10 +82,66 @@ const Registration = () => {
         list.splice(index,1);
         setInputList(list)
     }
-  
+
+    //identity proof Handler
+    const idHandler = (e,type) =>{
+        console.log(type)
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var formdata = new FormData();
+        formdata.append("type","document");
+        formdata.append("file", e.currentTarget.files[0]);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}file-upload`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var parsedResult = JSON.parse(result)
+            const value = parsedResult.urls[0];
+            addDocumentsUrl(type,value)
+        })
+        .catch(error => console.log('error', error));
+    }
+
+    const addDocumentsUrl = (type,value) =>{
+        const list = [...document];
+        list[index]["type"] = type;
+        list[index]["url"] = value;
+        setIndex(++index)
+        setDocument(list);
+        setDocument([...document,{type:"",url:""}])
+    }
+
+    //get all documnet of doctor
+    // const getDocument = (docterid) =>{
+    //     var myHeaders = new Headers();
+    //     myHeaders.append("token",JWTToken);
+
+    //     var requestOptions = {
+    //         method: 'GET',
+    //         headers: myHeaders,
+    //         redirect: 'follow'
+    //     };
+
+    //     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}document/${docterid}`, requestOptions)
+    //     .then(response => response.text())
+    //     .then(result => {
+    //         const parseDoc = JSON.parse(result)
+    //         console.log(parseDoc.documents)
+    //     })
+    //     .catch(error => console.log('error', error));
+    // }
+
     //form to save Registration data
     const regForm = (e) =>{
         e.preventDefault();
+        uploadDocument()
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
         myHeaders.append("Content-Type","application/json");
@@ -131,33 +187,36 @@ const Registration = () => {
                 .then(result => console.log(result))
                 .catch(error => console.log('error', error));
             }
-           
+            
         }
     }
 
-    //identity proof Handler
-    const idHandler = (e) =>{
-        setIdProof(e.target.files[0].name)
-    }
-
-    //get all documnet of doctor
-    const getDocument = (docterid) =>{
+    const uploadDocument = () =>{
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
 
-        var requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
+        for(var i=0;i<document.length;i++){
+            if(document[i].type){
+                var raw = JSON.stringify({
+                    "documentType":document[i].type,
+                    "document": document[i].url,
+                    "docter": docterId,
+                })
 
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}document/${docterid}`, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-            const parseDoc = JSON.parse(result)
-            console.log(parseDoc.documents)
-        })
-        .catch(error => console.log('error', error));
+                var requestOptions = {
+                    method: 'POST',
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: 'follow'
+                };
+
+                fetch(`${process.env.NEXT_PUBLIC_BASE_URL}document`, requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+            }
+        }
     }
   return (
     <>
@@ -210,11 +269,12 @@ const Registration = () => {
                             <h6 className='f-600 l-26 col-12 text-black'>Identity Proof</h6>
                             <div className={`p-relative d-flex d-align-center d-justify-center gap-2 ${styles["document-upload-section"]}`}>
                                 <input
+                                    id="file-input-field-identity"
                                     className={`${styles["file-uploader-input"]}`} 
                                     type='file'
                                     ref={idRef}
                                     multiple={false}
-                                    onChange={idHandler}
+                                    onChange={e => idHandler(e,"identity")}
                                 >
                                 </input>
                                 <img src='file-upload.png'></img>
@@ -228,11 +288,12 @@ const Registration = () => {
                             <h6 className='f-600 l-26 col-12 text-black'>Medical registration proof</h6>
                             <div className={`p-relative d-flex d-align-center d-justify-center gap-2 ${styles["document-upload-section"]}`}>
                                 <input
+                                    id="file-input-field-medical"
                                     className={`${styles["file-uploader-input"]}`} 
                                     type='file'
                                     ref={idRef}
                                     multiple={false}
-                                    onChange={idHandler}
+                                    onChange={e => idHandler(e,"medical")}
                                 >
                                 </input>
                                 <img src='file-upload.png'></img>
@@ -246,11 +307,12 @@ const Registration = () => {
                             <h6 className='f-600 l-26 col-12 text-black'>Qualification proof</h6>
                             <div className={`p-relative d-flex d-align-center d-justify-center gap-2 ${styles["document-upload-section"]}`}>
                                 <input
+                                    id="file-input-field-qualification"
                                     className={`${styles["file-uploader-input"]}`} 
                                     type='file'
                                     ref={idRef}
                                     multiple={false}
-                                    onChange={idHandler}
+                                    onChange={e => idHandler(e,"qualification")}
                                 >
                                 </input>
                                 <img src='file-upload.png'></img>
@@ -264,11 +326,12 @@ const Registration = () => {
                             <h6 className='f-600 l-26 col-12 text-black'>Establishment proof</h6>
                             <div className={`p-relative d-flex d-align-center d-justify-center gap-2 ${styles["document-upload-section"]}`}>
                                 <input
+                                    id="file-input-field-establishment"
                                     className={`${styles["file-uploader-input"]}`} 
                                     type='file'
                                     ref={idRef}
                                     multiple={false}
-                                    onChange={idHandler}
+                                    onChange={e => idHandler(e,"establishment")}
                                 >
                                 </input>
                                 <img src='file-upload.png'></img>

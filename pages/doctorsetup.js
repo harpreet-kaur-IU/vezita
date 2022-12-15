@@ -11,6 +11,8 @@ import { GoogleMap,useJsApiLoader  } from '@react-google-maps/api';
 import CountryCode from '../modules/CountryCode.json'
 import Modal from '../modules/Modals/Modal';
 import Verify from '../modules/Modals/Verify';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import useFirebaseAuth from '../auth/useFirebaseAuth';
 const containerStyle = {
     width: '500px',
@@ -71,18 +73,18 @@ export default function DoctorSetup() {
     //tab5 state
     const [estName,setEstName] = useState("")
     const [estCity,setEstCity] = useState("")
-    const [lat,setLat] = useState("")
-    const [long,setLong] = useState("")
+    const [lat,setLat] = useState("-3.745")
+    const [long,setLong] = useState("-38.523")
 
     //tab6 state
     const idRef = useRef();
     const [idProof,setIdProof] = useState("")
-    const [isIdUploaded,SetIdUploaded] = useState(false)
+    const [isIdUploaded,setIdUploaded] = useState(false)
 
     //tab7 state
     const medicalRef = useRef();
     const [medReg,setMedReg] = useState("")
-    const [isMedUploaded,SetMedUploaded] = useState(false)
+    const [isMedUploaded,setMedUploaded] = useState(false)
 
     //tab8 state
     const estRef = useRef();
@@ -98,12 +100,17 @@ export default function DoctorSetup() {
     const[modal,setModal] = useState(false)
 
     //tab12
-    const dayArray = [];
-    const[inputList,setInputList] = useState([{startTime:"",endTime:""}])  
+    const [dayArray,setDayArray] = useState([])
+    const[inputList,setInputList] = useState([{startTime:"",endTime:"",video:false,clinic:false}])  
+    const[endDate,setEndDate] = useState("");
 
     //tab13 state
     const [fees,setFees] = useState("")
     const [hour,setHour] = useState("")
+
+    //verification skip
+    const[veriSkip,setVeriSkip] = useState(false)
+    const[patientSkip,setPatientSkip] = useState(false)
 
     const continueHandler = () =>{
         router.push("/subscription");
@@ -125,6 +132,7 @@ export default function DoctorSetup() {
         setTab(1);
     }
     const verificationSkipHandler = () =>{
+        setVeriSkip(true)
         setTab(10)
         setSkip(true)
     }
@@ -132,6 +140,7 @@ export default function DoctorSetup() {
         setTab(7);
     }
     const getPatientSkipHandler = () => {
+        setPatientSkip(true)
         setTab(14)
     }
     const getPatientsChangeHandler = () => {
@@ -198,21 +207,78 @@ export default function DoctorSetup() {
 
     //tab6 handler
     const idHandler = (e) =>{
-        setIdProof(e.target.files[0].name)
-        SetIdUploaded(true)
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var formdata = new FormData();
+        formdata.append("type","document");
+        formdata.append("file", e.target.files[0]);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}file-upload`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var parsedResult = JSON.parse(result)
+            setIdProof(parsedResult.urls[0])
+            setIdUploaded(true)
+        })
+        .catch(error => console.log('error', error));
     }
     //tab7 handler 
     const medRegHandler = (e) =>{
-        setMedReg(e.target.files[0].name)
-        SetMedUploaded(true)
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var formdata = new FormData();
+        formdata.append("type","document");
+        formdata.append("file", e.target.files[0]);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}file-upload`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var parsedResult = JSON.parse(result)
+            setMedReg(parsedResult.urls[0])
+            setMedUploaded(true)
+        })
+        .catch(error => console.log('error', error));
     }
     //tab8 Handler
     const estProofHandler = (e) =>{
         setEstProof(e.currentTarget.value)
     }
     const clinicProofHandler = (e) =>{
-        setClinicProof(e.target.files[0].name)
-        setIsClinic(true)
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var formdata = new FormData();
+        formdata.append("type","document");
+        formdata.append("file", e.target.files[0]);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}file-upload`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var parsedResult = JSON.parse(result)
+            setClinicProof(parsedResult.urls[0])
+            setIsClinic(true)
+        })
+        .catch(error => console.log('error', error));
     }
 
     //tab11 Handler
@@ -265,7 +331,8 @@ export default function DoctorSetup() {
     }
     //Tab 12 Handler
     const dayHandler = (day,val) =>{
-        if(val){
+        console.log(val,day)
+        if(val){       
             dayArray.push(day)
         }
         else{
@@ -275,30 +342,52 @@ export default function DoctorSetup() {
                 }
             }
         }
+        console.log(dayArray)
     }
     //add session slot
     const addSessionHandler = () =>{
-        setInputList([...inputList,{startTime:"",endTime:""}])
+        setInputList([...inputList,{startTime:"",endTime:"",video:false,clinic:false}])
     }
 
-    //
-    //handle session slots input
-    
+    //handle session slots input    
     const startHandler = (value,index) =>{
         const name = "startTime";
-        const val = value;
+        const val = value+":00";
         const list = [...inputList];
         list[index][name] = val;
         setInputList(list);
     }
+
     const endHandler = (value,index) =>{
         const name = "endTime";
-        const val = value;
+        const val = value+":00";
         const list = [...inputList];
         list[index][name] = val;
         setInputList(list);
     }
-   
+
+    const handleInputChange = (e,index) =>{
+        var val = e.target.value;
+        if(val == "true"){
+            const name = e.target.name;
+            const value = false;
+            const list = [...inputList];
+            list[index][name] = value;
+            setInputList(list);
+        }
+        else{
+            const name = e.target.name;
+            const value = true;
+            const list = [...inputList];
+            list[index][name] = value;
+            setInputList(list);
+        }
+    }
+
+    const handleDateChange = (e) =>{
+        setEndDate(e.target.value)
+    }
+
     //remove a full slot of session
     // const removeSessionHandler = (index) =>{
     //     const list = [...inputList];
@@ -321,25 +410,29 @@ export default function DoctorSetup() {
         })
         .catch((error)=>console.log("error while logout"+error))
     }
+    
     useEffect(()=>{
         for(var i = 0;i<CountryCode.length;i++){
             setCountryCodeList(CountryCode)
         }
+
         var requestOptions = {
             method: 'GET',
             redirect: 'follow'
         };
+
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}service/specializations`, requestOptions)
         .then(response => response.text())
         .then(result => {
             var parsedResult = JSON.parse(result)
             setSpecialization(parsedResult.specialization)
         }) 
+
         .catch(error => console.log('error', error));
         if(JWTToken){
             function parseJwt() {
                 if(!JWTToken){
-                return
+                    return
                 }
                 const base64Url = JWTToken.split('.')[1];
                 const base64 = base64Url.replace('-', '+').replace('_', '/');
@@ -347,12 +440,11 @@ export default function DoctorSetup() {
             }
             var user = parseJwt();
             if(user.exp*1000<Date.now()){
-                logoutHandler()
+                logoutHandler();
             }else{
                 getProfile();
             }
         }
-        
     },[])
 
     //get profile Handler
@@ -377,13 +469,18 @@ export default function DoctorSetup() {
             if(parsedResult.docter.medicalRegistrationDetails[0].councilName){
                setTab(3)
             }
-            console.log(parsedResult.docter.education[0].degree)
             if(parsedResult.docter.education[0].degree){
                 setTab(4)
             }
             if(parsedResult.docter.establishment[0].establishmentName){
                 setTab(6)
                 setEstId(parsedResult.docter.establishment[0]._id)
+            }
+            if(parsedResult.docter.isDocumentUploaded){
+                setTab(10)
+            }
+            if(parsedResult.docter.isDocumentUploaded == false){
+                getDocument(parsedResult.docter._id)
             }
             if(parsedResult.docter.establishment[0].contactNumber){
                 setTab(12)
@@ -394,8 +491,6 @@ export default function DoctorSetup() {
             if(parsedResult.docter.establishment[0].consultationFee){
                 setTab(14)
             }
-            if(parsedResult.docter.isDocumentUploaded == false)
-                getDocument(parsedResult.docter._id)
         })
         .catch(error => console.log('error', error));
     }
@@ -513,8 +608,16 @@ export default function DoctorSetup() {
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}registration`, requestOptions)
         .then(response => response.text())
         .then(result => {
-            setTab(3)
-            getProfile()
+            const parsedResult = JSON.parse(result)
+            if(parsedResult.message == "registrationNumber already exists."){
+                toast.warning("Registration number already exists",{
+                    toastId:"1"
+                });
+            }
+            else{
+                setTab(3)
+                getProfile()
+            }
         })
         .catch(error => console.log('error', error));
     }
@@ -572,6 +675,7 @@ export default function DoctorSetup() {
                 "coordinates":[0,0]
             }
         });
+
         var requestOptions = {
             method: 'POST',
             headers: myHeaders,
@@ -672,7 +776,6 @@ export default function DoctorSetup() {
     //Location and Timing
     const locationForm = (e) =>{
         e.preventDefault();
-        // setModal(prev => prev+1)
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
         myHeaders.append("Content-Type", "application/json");
@@ -707,6 +810,8 @@ export default function DoctorSetup() {
     //session form
     const sessionForm = (e) =>{
         e.preventDefault();
+        console.log(dayArray)
+        
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
         myHeaders.append("Content-Type", "application/json");
@@ -715,28 +820,60 @@ export default function DoctorSetup() {
             "consultationDay":dayArray
         });
 
-        var requestOptions1 = {
+        var requestOptions = {
             method: 'PATCH',
             headers: myHeaders,
             body: raw,
             redirect: 'follow'
         };
 
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}establishment/update/${estId}`, requestOptions1)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}establishment/update/${estId}`, requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => addSlot())
         .catch(error => console.log('error', error));
-      
-        var raw2 = JSON.stringify(inputList);
+    }
 
+    const addSlot = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var timingSlot = [];       
+        for(var i = 0;i<inputList.length;i++){
+            var timing = {
+                "startTime":inputList[i].startTime,
+                "endTime":inputList[i].endTime,
+                "appointmentNum":i+1,
+                "sessionType":[
+                    inputList[i].clinic && inputList[i].video?
+                        {
+                            0:"in-clinic",
+                            1:"video"
+                        }
+                    :
+                    (inputList[i].clinic?"in-clinic":"video")
+                ]
+            }
+            timingSlot.push(timing)
+        }
+        var date = new Date().toISOString().slice(0,10);
+        
+        var slotBody = JSON.stringify({
+            "startDate":date,
+            "endDate":endDate,
+            "days":dayArray,
+            "timings":timingSlot
+        })
+     
+        console.log(slotBody)
         var requestOptions2 = {
             method: 'POST',
             headers: myHeaders,
-            body: raw2,
+            body: slotBody,
             redirect: 'follow'
         };
 
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}slot`, requestOptions2)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}slot/docter-panel`, requestOptions2)
         .then(response => response.text())
         .then(result => { 
             setTab(13)
@@ -747,7 +884,6 @@ export default function DoctorSetup() {
     //consult form
     const consultForm = (e) =>{
         e.preventDefault()
-        console.log(fees,hour)
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
         myHeaders.append("Content-Type", "application/json");
@@ -868,6 +1004,7 @@ export default function DoctorSetup() {
                                             <div className={`${styles["city-suggestion-list"]}`}>
                                                 {loading ?<h6 className='f-400'>...loading</h6>: null}
                                                 {suggestions.map((suggestion,index) => {
+                                                    
                                                     return (
                                                         <div key={index}
                                                         {...getSuggestionItemProps(suggestion)}
@@ -893,6 +1030,7 @@ export default function DoctorSetup() {
                             <Stepper title="5" active="1"></Stepper>
                             <h1 className='f-600 mt-60 l-40 text-secondary col-12 mb-7'>Medical Registration</h1>
                             <form onSubmit={medicalFormHandler}>
+
                                 <label className='d-flex'>Registration number</label>
                                 <input value={regNumber} onChange={RegNumberHandler} type="text" placeholder="Enter your registration number"/>
 
@@ -941,10 +1079,12 @@ export default function DoctorSetup() {
                                     <input onClick={establishmentHandler} type="radio" id="own" name="connect" value="own"/>
                                     <h5 className='f-500  text-secondary ml-3 mb-0' htmlFor="own">I own an establishment</h5>
                                 </div>
+
                                 <div className={`${styles["background-wrapper"]} d-flex mt-4`}>
                                     <input onClick={establishmentHandler} type="radio" id="visit" name="connect" value="visit"/>
                                     <h5 className='f-500  text-secondary ml-3 mb-0' htmlFor="visit">I visit an establishment</h5>
                                 </div>
+
                                 <div className='d-flex mt-7 gap-2'>
                                     {/* <button className='col-6 btn btn-outline-grey' onClick={prevHandler}>Previous</button> */}
                                     <button className='col-6 btn btn-primary'>Next</button>
@@ -993,7 +1133,7 @@ export default function DoctorSetup() {
                                 <h3 className='f-500 l-28 text-dark-blue'>Step A: Profile details</h3>
                                 <h4 className='f-400 mt-2 l-22 text-grey-2'>Doctors basic details, medical registration, education qualification, establishment details etc.</h4>
                                 <div className='d-flex d-align-center mt-4'>
-                                    <span className='btn btn-light-green d-flex d-align-center d-justify-center' >
+                                    <span className='btn btn-light-green d-flex d-align-center d-justify-center'>
                                         <h4 className='f-400 l-26 text-green-4'>Completed</h4>
                                         <svg className='ml-3' width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M10.5 0.25C8.57164 0.25 6.68657 0.821828 5.08319 1.89317C3.47982 2.96451 2.23013 4.48726 1.49218 6.26884C0.754225 8.05042 0.561142 10.0108 0.937348 11.9021C1.31355 13.7934 2.24215 15.5307 3.60571 16.8943C4.96928 18.2579 6.70656 19.1865 8.59787 19.5627C10.4892 19.9389 12.4496 19.7458 14.2312 19.0078C16.0127 18.2699 17.5355 17.0202 18.6068 15.4168C19.6782 13.8134 20.25 11.9284 20.25 10C20.245 7.41566 19.2162 4.93859 17.3888 3.11118C15.5614 1.28378 13.0843 0.254956 10.5 0.25ZM15.1406 8.29375L9.64688 13.5438C9.50485 13.6774 9.31687 13.7512 9.12188 13.75C9.02657 13.7514 8.93194 13.7338 8.84344 13.6984C8.75494 13.663 8.67433 13.6105 8.60625 13.5438L5.85938 10.9188C5.78319 10.8523 5.72123 10.7711 5.67722 10.6801C5.63321 10.589 5.60806 10.49 5.60328 10.389C5.5985 10.2881 5.61419 10.1871 5.64941 10.0924C5.68463 9.99758 5.73865 9.9109 5.80822 9.83754C5.8778 9.76417 5.96149 9.70563 6.05426 9.66543C6.14703 9.62523 6.24698 9.6042 6.34809 9.60362C6.44919 9.60303 6.54938 9.62289 6.64261 9.66201C6.73585 9.70113 6.82021 9.7587 6.89063 9.83125L9.12188 11.9594L14.1094 7.20625C14.2552 7.07902 14.4446 7.01309 14.6379 7.02223C14.8312 7.03138 15.0135 7.1149 15.1467 7.25533C15.2798 7.39576 15.3536 7.58222 15.3524 7.77575C15.3513 7.96928 15.2754 8.15488 15.1406 8.29375Z" fill="#19B46E"/>
@@ -1093,6 +1233,7 @@ export default function DoctorSetup() {
                                     <input onClick={estProofHandler} type="radio" id="practice" name="establishment" value="practice"/>
                                     <h4 className='f-400 l-26 text-secondary ml-4' htmlFor="practice">Practising at home</h4>
                                 </div>
+                                
                                 <h5 className='f-400 l-22  text-secondary mt-4 col-12'>Accepted Proof</h5>
                                 <h6 className='f-500 l-20 text-grey-3 mt-2'>Clinic registration, proof Waste disposal proof, Tax receipt</h6>
                                 <div className={`p-relative col-12 mt-2 d-flex d-justify-center d-align-center ${styles["file-uploader-wrapper"]}`}>
@@ -1144,7 +1285,6 @@ export default function DoctorSetup() {
                                             {/* <h5 className='f-600 l-22 text-dark-blue ml-6 cursor-pointer' onClick={verificationSkipHandler}>Skip</h5> */}
                                         </div>
                                     </>
-                                    
                                     :
                                     <>
                                         <h3 className='col-12 f-500 l-28 text-secondary'>Step B: Profile verification</h3>
@@ -1155,7 +1295,6 @@ export default function DoctorSetup() {
                                                 <svg className='ml-3' width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M10.5 0.25C8.57164 0.25 6.68657 0.821828 5.08319 1.89317C3.47982 2.96451 2.23013 4.48726 1.49218 6.26884C0.754225 8.05042 0.561142 10.0108 0.937348 11.9021C1.31355 13.7934 2.24215 15.5307 3.60571 16.8943C4.96928 18.2579 6.70656 19.1865 8.59787 19.5627C10.4892 19.9389 12.4496 19.7458 14.2312 19.0078C16.0127 18.2699 17.5355 17.0202 18.6068 15.4168C19.6782 13.8134 20.25 11.9284 20.25 10C20.245 7.41566 19.2162 4.93859 17.3888 3.11118C15.5614 1.28378 13.0843 0.254956 10.5 0.25ZM15.1406 8.29375L9.64688 13.5438C9.50485 13.6774 9.31687 13.7512 9.12188 13.75C9.02657 13.7514 8.93194 13.7338 8.84344 13.6984C8.75494 13.663 8.67433 13.6105 8.60625 13.5438L5.85938 10.9188C5.78319 10.8523 5.72123 10.7711 5.67722 10.6801C5.63321 10.589 5.60806 10.49 5.60328 10.389C5.5985 10.2881 5.61419 10.1871 5.64941 10.0924C5.68463 9.99758 5.73865 9.9109 5.80822 9.83754C5.8778 9.76417 5.96149 9.70563 6.05426 9.66543C6.14703 9.62523 6.24698 9.6042 6.34809 9.60362C6.44919 9.60303 6.54938 9.62289 6.64261 9.66201C6.73585 9.70113 6.82021 9.7587 6.89063 9.83125L9.12188 11.9594L14.1094 7.20625C14.2552 7.07902 14.4446 7.01309 14.6379 7.02223C14.8312 7.03138 15.0135 7.1149 15.1467 7.25533C15.2798 7.39576 15.3536 7.58222 15.3524 7.77575C15.3513 7.96928 15.2754 8.15488 15.1406 8.29375Z" fill="#19B46E"/>
                                                 </svg>
-
                                             </span>
                                             {/* <h5 className='f-600 l-22 text-green-4 ml-6 cursor-pointer' onClick={verificationChangeHandler}>CHANGE</h5> */}
                                         </div>
@@ -1167,7 +1306,7 @@ export default function DoctorSetup() {
                                 <h4 className='col-12 pl-5 f-400 mt-2 l-22 text-grey-2'>Location, Timings, Fees</h4>
                                 <div className='d-flex d-align-center mt-4'>
                                     <button className='btn btn-primary' onClick={nextHandler}>Continue</button>
-                                    <h5 className='f-600 l-22 text-dark-blue ml-6 cursor-pointer' onClick={getPatientSkipHandler}>Skip</h5>
+                                    <h5 className='f-600 l-22 text-dark-blue ml-6 cursor-pointer' onClick={continueHandler}>Skip</h5>
                                 </div>
                             </div>
                         </>}
@@ -1222,20 +1361,24 @@ export default function DoctorSetup() {
                                 {inputList.map((item,index)=>(
                                     <>
                                         <label className='d-flex'>Session {index+1}</label>
-                                        <div className={`${styles["timing"]} mt-1 d-flex d-align-center gap-3`}>
-                                            <DropDownDate index={index} handler={startHandler} placeholder="From"/>
-                                        
-                                            <DropDownDate  index={index} handler={endHandler} placeholder="To"/>
+                                        {/* <h6 className='mt-3 f-600 l-20 text-secondary'>Session Type</h6> */}
+                                        <div className='d-flex d-align-center col-12 mt-3'>
+                                            <div className='col-6 d-flex d-align-center gap-1'>
+                                                <input value={item.video} onClick={e => handleInputChange(e,index)} name="video" className={`${styles["slot-checkbox"]}`} type="checkbox"></input>
+                                                <label className={`${styles["slot-label"]}`}>Video Appointment</label>
+                                            </div>
+
+                                            <div className='col-6 d-flex d-align-center gap-1'>
+                                                <input value={item.clinic} onClick={e => handleInputChange(e,index)} name="clinic" className={`${styles["slot-checkbox"]}`} type="checkbox"></input>
+                                                <label className={`${styles["slot-label"]}`}>In-clinic Appointment</label>
+                                            </div>
                                         </div>
-                               
-                                        {/* <label className='d-flex'>Session {index+1}</label>
-                                        <div className={`${styles["timing"]} mt-1 d-flex d-align-center gap-3`}>
-                                            <DropDownDate placeholder="From"/>
-                                            
-                                            <DropDownDate placeholder="To"/>
-                                        </div>  */}
-                                    
-                                
+
+                                        <div className={`${styles["timing"]} mt-3 d-flex d-align-center gap-3`}>
+                                            <DropDownDate index={index} handler={startHandler} placeholder="From"/>
+                                            <DropDownDate index={index} handler={endHandler} placeholder="To"/>
+                                        </div> 
+                                        
                                         {inputList.length - 1 === index &&
                                             <div onClick={addSessionHandler} className='cursor-pointer d-flex d-align-center mt-6'>
                                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1246,6 +1389,10 @@ export default function DoctorSetup() {
                                         }
                                     </>
                                 ))}
+                                <div className='gap-1 d-flex d-flex-column'>
+                                    <label>End Date</label>
+                                    <input value={endDate} onChange={handleDateChange} name="endDate" type="date"></input>
+                                </div>
                                 <div className='d-flex mt-7 gap-2'>
                                     {/* <button className='col-6 btn btn-outline-grey'>Previous</button> */}
                                     <button className='col-6 btn btn-primary'>Next</button>
@@ -1282,7 +1429,7 @@ export default function DoctorSetup() {
                         {tab == 14 && 
                         <>
                             <h1 className='f-600 l-40 text-secondary col-12'>Profile is under verification</h1>
-                            <h5 className='f-500 l-22 text-grey-3 mt-2 col-12'>Our team is verifying your profile details which you have provided. Kindly give us 7 working days to verify the information</h5>
+                            {!veriSkip && !patientSkip && <h5 className='f-500 l-22 text-grey-3 mt-2 col-12'>Our team is verifying your profile details which you have provided. Kindly give us 7 working days to verify the information</h5>}
                             <div className={`mt-4 ${styles["wrapper-with-bottom-border"]}`}>
                                 <h3 className='f-500 l-28 text-secondary'>Step A: Profile details</h3>
                                 <h4 className='f-400 mt-2 l-22 text-grey-2'>Doctors basic details, medical registration, education qualification, establishment details etc.</h4>
@@ -1300,12 +1447,16 @@ export default function DoctorSetup() {
                                 <h3 className='col-12 f-500 l-28 text-secondary'>Step B: Profile verification</h3>
                                 <h4 className='col-12 f-400 mt-2 l-22 text-grey-2'>Doctor identity proof, registration proof, establishment ownership proof etc.</h4>
                                 <div className='d-flex d-align-center mt-4'>
-                                    <span className='btn btn-light-green d-flex d-align-center d-justify-center'>
-                                        <h4 className='f-400 l-26 text-green-4'>Completed</h4>
-                                        <svg className='ml-3' width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M10.5 0.25C8.57164 0.25 6.68657 0.821828 5.08319 1.89317C3.47982 2.96451 2.23013 4.48726 1.49218 6.26884C0.754225 8.05042 0.561142 10.0108 0.937348 11.9021C1.31355 13.7934 2.24215 15.5307 3.60571 16.8943C4.96928 18.2579 6.70656 19.1865 8.59787 19.5627C10.4892 19.9389 12.4496 19.7458 14.2312 19.0078C16.0127 18.2699 17.5355 17.0202 18.6068 15.4168C19.6782 13.8134 20.25 11.9284 20.25 10C20.245 7.41566 19.2162 4.93859 17.3888 3.11118C15.5614 1.28378 13.0843 0.254956 10.5 0.25ZM15.1406 8.29375L9.64688 13.5438C9.50485 13.6774 9.31687 13.7512 9.12188 13.75C9.02657 13.7514 8.93194 13.7338 8.84344 13.6984C8.75494 13.663 8.67433 13.6105 8.60625 13.5438L5.85938 10.9188C5.78319 10.8523 5.72123 10.7711 5.67722 10.6801C5.63321 10.589 5.60806 10.49 5.60328 10.389C5.5985 10.2881 5.61419 10.1871 5.64941 10.0924C5.68463 9.99758 5.73865 9.9109 5.80822 9.83754C5.8778 9.76417 5.96149 9.70563 6.05426 9.66543C6.14703 9.62523 6.24698 9.6042 6.34809 9.60362C6.44919 9.60303 6.54938 9.62289 6.64261 9.66201C6.73585 9.70113 6.82021 9.7587 6.89063 9.83125L9.12188 11.9594L14.1094 7.20625C14.2552 7.07902 14.4446 7.01309 14.6379 7.02223C14.8312 7.03138 15.0135 7.1149 15.1467 7.25533C15.2798 7.39576 15.3536 7.58222 15.3524 7.77575C15.3513 7.96928 15.2754 8.15488 15.1406 8.29375Z" fill="#19B46E"/>
-                                        </svg>
-                                    </span>
+                                    {veriSkip?
+                                        <button className='btn btn-primary' onClick={nextHandler}>Continue</button>
+                                        :
+                                        <span className='btn btn-light-green d-flex d-align-center d-justify-center'>
+                                            <h4 className='f-400 l-26 text-green-4'>Completed</h4>
+                                            <svg className='ml-3' width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M10.5 0.25C8.57164 0.25 6.68657 0.821828 5.08319 1.89317C3.47982 2.96451 2.23013 4.48726 1.49218 6.26884C0.754225 8.05042 0.561142 10.0108 0.937348 11.9021C1.31355 13.7934 2.24215 15.5307 3.60571 16.8943C4.96928 18.2579 6.70656 19.1865 8.59787 19.5627C10.4892 19.9389 12.4496 19.7458 14.2312 19.0078C16.0127 18.2699 17.5355 17.0202 18.6068 15.4168C19.6782 13.8134 20.25 11.9284 20.25 10C20.245 7.41566 19.2162 4.93859 17.3888 3.11118C15.5614 1.28378 13.0843 0.254956 10.5 0.25ZM15.1406 8.29375L9.64688 13.5438C9.50485 13.6774 9.31687 13.7512 9.12188 13.75C9.02657 13.7514 8.93194 13.7338 8.84344 13.6984C8.75494 13.663 8.67433 13.6105 8.60625 13.5438L5.85938 10.9188C5.78319 10.8523 5.72123 10.7711 5.67722 10.6801C5.63321 10.589 5.60806 10.49 5.60328 10.389C5.5985 10.2881 5.61419 10.1871 5.64941 10.0924C5.68463 9.99758 5.73865 9.9109 5.80822 9.83754C5.8778 9.76417 5.96149 9.70563 6.05426 9.66543C6.14703 9.62523 6.24698 9.6042 6.34809 9.60362C6.44919 9.60303 6.54938 9.62289 6.64261 9.66201C6.73585 9.70113 6.82021 9.7587 6.89063 9.83125L9.12188 11.9594L14.1094 7.20625C14.2552 7.07902 14.4446 7.01309 14.6379 7.02223C14.8312 7.03138 15.0135 7.1149 15.1467 7.25533C15.2798 7.39576 15.3536 7.58222 15.3524 7.77575C15.3513 7.96928 15.2754 8.15488 15.1406 8.29375Z" fill="#19B46E"/>
+                                            </svg>
+                                        </span>
+                                    }
                                     {/* <h5 className='f-600 l-22 text-green-4 ml-6 cursor-pointer' onClick={verificationChangeHandler}>CHANGE</h5> */}
                                 </div>
                             </div>
@@ -1319,7 +1470,6 @@ export default function DoctorSetup() {
                                             <path d="M10.5 0.25C8.57164 0.25 6.68657 0.821828 5.08319 1.89317C3.47982 2.96451 2.23013 4.48726 1.49218 6.26884C0.754225 8.05042 0.561142 10.0108 0.937348 11.9021C1.31355 13.7934 2.24215 15.5307 3.60571 16.8943C4.96928 18.2579 6.70656 19.1865 8.59787 19.5627C10.4892 19.9389 12.4496 19.7458 14.2312 19.0078C16.0127 18.2699 17.5355 17.0202 18.6068 15.4168C19.6782 13.8134 20.25 11.9284 20.25 10C20.245 7.41566 19.2162 4.93859 17.3888 3.11118C15.5614 1.28378 13.0843 0.254956 10.5 0.25ZM15.1406 8.29375L9.64688 13.5438C9.50485 13.6774 9.31687 13.7512 9.12188 13.75C9.02657 13.7514 8.93194 13.7338 8.84344 13.6984C8.75494 13.663 8.67433 13.6105 8.60625 13.5438L5.85938 10.9188C5.78319 10.8523 5.72123 10.7711 5.67722 10.6801C5.63321 10.589 5.60806 10.49 5.60328 10.389C5.5985 10.2881 5.61419 10.1871 5.64941 10.0924C5.68463 9.99758 5.73865 9.9109 5.80822 9.83754C5.8778 9.76417 5.96149 9.70563 6.05426 9.66543C6.14703 9.62523 6.24698 9.6042 6.34809 9.60362C6.44919 9.60303 6.54938 9.62289 6.64261 9.66201C6.73585 9.70113 6.82021 9.7587 6.89063 9.83125L9.12188 11.9594L14.1094 7.20625C14.2552 7.07902 14.4446 7.01309 14.6379 7.02223C14.8312 7.03138 15.0135 7.1149 15.1467 7.25533C15.2798 7.39576 15.3536 7.58222 15.3524 7.77575C15.3513 7.96928 15.2754 8.15488 15.1406 8.29375Z" fill="#19B46E"/>
                                         </svg>
                                     </span>
-                                    {/* <h5 className='f-600 l-22 text-green-4 ml-6 cursor-pointer' onClick={getPatientsChangeHandler}>CHANGE</h5> */}
                                 </div>
                             </div>
                             <button onClick={continueHandler} className='btn btn-primary mt-5'>Continue</button>
@@ -1333,6 +1483,7 @@ export default function DoctorSetup() {
                 <Verify code={countryCode} number={contact} handler={modalHandler}></Verify>
             </Modal>
         } */}
+        <ToastContainer />
     </>
    
   )
