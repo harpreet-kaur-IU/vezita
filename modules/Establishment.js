@@ -276,6 +276,7 @@ const Establishment = () => {
     const durationHandler = (e) =>{
         setDuration(e.target.value)
     }
+    
     const dayCheckboxHandler = (day,val) =>{
         if(val){       
             dayArray1.push(day)
@@ -288,6 +289,7 @@ const Establishment = () => {
             }
         }
     }
+
     const handleDateChange = (e) =>{
         setEndDate(e.target.value)
     }
@@ -306,15 +308,7 @@ const Establishment = () => {
                 "startTime":inputList[i].startTime,
                 "endTime":inputList[i].endTime,
                 "appointmentNum":i+1,
-                "sessionType":[
-                    inputList[i].clinic && inputList[i].video?
-                        {
-                            0:"in-clinic",
-                            1:"video"
-                        }
-                    :
-                    (inputList[i].clinic?"in-clinic":"video")
-                ]
+                "sessionType":[inputList[i].clinic?"in-clinic":"video"]
             }
             timingSlot.push(timing)
         }
