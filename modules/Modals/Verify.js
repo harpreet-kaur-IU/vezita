@@ -63,7 +63,7 @@ const Verify = (props) => {
             <input className=' mt-1' type="text" name="otp" value={otp} onChange={otpHandler}></input>
             <h5 className='mt-3 f-400 l-22'>
                 Didn't receive OTP? 
-                <label onClick={resendOTP} className='f-600 text-primary'>RESEND OTP</label>
+                <label onClick={resendOTP} className='f-600 text-primary'> RESEND OTP</label>
             </h5>
             <button className=' mt-5 btn-primary'>Verify</button>
         </form>

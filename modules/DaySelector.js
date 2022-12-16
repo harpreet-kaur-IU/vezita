@@ -2,13 +2,9 @@ import React,{useEffect, useState} from 'react'
 import styles from './css/doctorSignup.module.css';
 export default function DaySelector(props) {
     const [active, setActive] = useState();
-    const [select,setSelect] = useState(false)
     const handler = (e) => {
-        
         setActive(prev => !prev);
         const val = !active;
-    
-        // console.log(e.currentTarget.id)
         props.handler(e.currentTarget.id,val)
     }
     useEffect(()=>{

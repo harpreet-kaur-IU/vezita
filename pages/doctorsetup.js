@@ -97,7 +97,6 @@ export default function DoctorSetup() {
     const [address,setAddress] = useState()
     const[countryCode,setCountryCode] = useState("+91")
     const [countryCodeList,setCountryCodeList] = useState([])
-    const[modal,setModal] = useState(false)
 
     //tab12
     const [dayArray,setDayArray] = useState([])
@@ -297,41 +296,9 @@ export default function DoctorSetup() {
     const contactHandler = (e) =>{
         setContact(e.target.value)
     }
-    const modalHandler = () =>{
-        setModal(!modal)
-        var myHeaders = new Headers();
-        myHeaders.append("token",JWTToken);
-        myHeaders.append("Content-Type", "application/json");
 
-        var raw = JSON.stringify({
-            "contactNumber": contact,
-            "location": {
-                "type": "Point",
-                "coordinates": [
-                    long,
-                    lat
-                ],
-                "address":address
-            },
-        });
-
-        var requestOptions = {
-            method: 'PATCH',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-        };
-
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}establishment/update/${estId}`, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-            setTab(12)
-        })
-        .catch(error => console.log('error', error));
-    }
     //Tab 12 Handler
     const dayHandler = (day,val) =>{
-        console.log(val,day)
         if(val){       
             dayArray.push(day)
         }
@@ -342,7 +309,6 @@ export default function DoctorSetup() {
                 }
             }
         }
-        console.log(dayArray)
     }
     //add session slot
     const addSessionHandler = () =>{
@@ -1350,13 +1316,13 @@ export default function DoctorSetup() {
                             <label className='d-flex'>Days</label>
                             <form onSubmit={sessionForm}>
                                 <div className={`${styles["days-wrapper"]} col-12`}>
-                                    <DaySelector isActive={false} handler={dayHandler} title="Mon"/>
-                                    <DaySelector isActive={false} handler={dayHandler} title="Tue"/>
-                                    <DaySelector isActive={false} handler={dayHandler} title="Wed"/>
-                                    <DaySelector isActive={false} handler={dayHandler} title="Thu"/>
-                                    <DaySelector isActive={false} handler={dayHandler} title="Fri"/>
-                                    <DaySelector isActive={false} handler={dayHandler} title="Sat"/>
-                                    <DaySelector isActive={false} handler={dayHandler} title="Sun"/>
+                                    <DaySelector isActive={false} handler={dayHandler} title="mon"/>
+                                    <DaySelector isActive={false} handler={dayHandler} title="tue"/>
+                                    <DaySelector isActive={false} handler={dayHandler} title="wed"/>
+                                    <DaySelector isActive={false} handler={dayHandler} title="thu"/>
+                                    <DaySelector isActive={false} handler={dayHandler} title="fri"/>
+                                    <DaySelector isActive={false} handler={dayHandler} title="sat"/>
+                                    <DaySelector isActive={false} handler={dayHandler} title="sun"/>
                                 </div>
                                 {inputList.map((item,index)=>(
                                     <>
@@ -1367,7 +1333,6 @@ export default function DoctorSetup() {
                                                 <input value={item.video} onClick={e => handleInputChange(e,index)} name="video" className={`${styles["slot-checkbox"]}`} type="checkbox"></input>
                                                 <label className={`${styles["slot-label"]}`}>Video Appointment</label>
                                             </div>
-
                                             <div className='col-6 d-flex d-align-center gap-1'>
                                                 <input value={item.clinic} onClick={e => handleInputChange(e,index)} name="clinic" className={`${styles["slot-checkbox"]}`} type="checkbox"></input>
                                                 <label className={`${styles["slot-label"]}`}>In-clinic Appointment</label>
@@ -1415,7 +1380,7 @@ export default function DoctorSetup() {
                                     <input onClick={hourHandler} type="radio" id="same" name="hours" value="same"/>
                                     <h5 className='f-500  text-secondary ml-3 mb-0' htmlFor="same">Same as establishment hours</h5>
                                 </div>
-                                <div className={`${styles["background-wrapper"]} d-flex mt-4`}>
+                                <div className={`${styles["background-wrapper"]} d-flex mt-4`}> 
                                     <input onClick={hourHandler} type="radio" id="differ" name="hours" value="differ"/>
                                     <h5 className='f-500  text-secondary ml-3 mb-0' htmlFor="differ">Different hours</h5>
                                 </div>
@@ -1478,11 +1443,6 @@ export default function DoctorSetup() {
                 </div>
             </div>
         </div>
-        {/* {modal && 
-            <Modal modalClass="modal-verify">
-                <Verify code={countryCode} number={contact} handler={modalHandler}></Verify>
-            </Modal>
-        } */}
         <ToastContainer />
     </>
    
