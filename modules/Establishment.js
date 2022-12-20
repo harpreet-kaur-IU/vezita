@@ -412,8 +412,8 @@ const Establishment = () => {
                         </div>
                         <label className='d-flex'>Establishment photos</label>
                         <div className='col-12 d-flex d-flex-wrap'>
-                            <img src="build.png" />
-                            <img src="build.png" className='ml-2' />
+                            <img src="build.png"/>
+                            <img src="build.png" className='ml-2'/>
                         </div>
                     </div>
                     {/* <div className='col-12 mt-7 d-flex d-flex-wrap'>
@@ -529,16 +529,15 @@ const Establishment = () => {
                                     <label className='d-flex'>Session {index+1}</label>
                                     <h6 className='f-400 l-20 text-secondary mt-2'>Session type</h6>
                                     <div className='d-flex col-12 mt-3'>
-                                        <div className={` d-flex d-align-center`}>
+                                        <div className={`d-flex d-align-center`}>
                                             <input value={item.video} onClick={e => handleInputChange(e,index)} name="video" type="checkbox" style={{width:"auto"}}></input>
                                             <h5 className='f-500 text-secondary ml-2 mb-0' htmlFor="video">Video Appointment</h5>
                                         </div>
-                                        <div className={` d-flex d-align-center ml-4`}>
+                                        <div className={`d-flex d-align-center ml-4`}>
                                             <input value={item.clinic} onClick={e => handleInputChange(e,index)} name="clinic" type="checkbox" style={{width:"auto"}}></input>
                                             <h5 className='f-500 text-secondary ml-2 mb-0' htmlFor="inclinic">In-clinic appointment</h5>
                                         </div>
                                     </div>
-
                                     <div className='mt-5 d-flex gap-2 col-12'>
                                         <div className='d-flex d-flex-column col-12'>
                                             <div className={`mt-2 d-flex d-align-center gap-3 col-12 ${styles["timing"]}`}>

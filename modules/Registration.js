@@ -150,7 +150,7 @@ const Registration = () => {
             var raw = JSON.stringify({
                 "registrationNumber":inputList[i].registrationNumber,
                 "councilName":inputList[i].councilName,
-                "year":inputList[i].year,
+                "year":inputList[i].year
             });
 
             var addBody = JSON.stringify({
@@ -177,14 +177,12 @@ const Registration = () => {
             if(inputList[i]._id){
                 fetch(`${process.env.NEXT_PUBLIC_BASE_URL}registration/update/${inputList[i]._id}`, requestOptions)
                 .then(response => response.text())
-                .then(result => {
-                    console.log(result)
-                })
+                .then(result => result)
                 .catch(error => console.log('error', error));
             }else{
                 fetch(`${process.env.NEXT_PUBLIC_BASE_URL}registration`, requestOptionsAdd)
                 .then(response => response.text())
-                .then(result => console.log(result))
+                .then(result => result)
                 .catch(error => console.log('error', error));
             }
             
@@ -213,7 +211,7 @@ const Registration = () => {
 
                 fetch(`${process.env.NEXT_PUBLIC_BASE_URL}document`, requestOptions)
                 .then(response => response.text())
-                .then(result => console.log(result))
+                .then(result => result)
                 .catch(error => console.log('error', error));
             }
         }

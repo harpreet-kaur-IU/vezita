@@ -831,7 +831,6 @@ export default function DoctorSetup() {
             "timings":timingSlot
         })
      
-        console.log(slotBody)
         var requestOptions2 = {
             method: 'POST',
             headers: myHeaders,

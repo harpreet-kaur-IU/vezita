@@ -118,7 +118,7 @@ const BasicDetails = (props) => {
         };
 
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/update/${docterId}`, requestOptions)
-        .then(response => response.text())
+        // .then(response => response.text())
         .then(result => {
             sendOTP();
             modalHandler();

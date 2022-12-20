@@ -10,7 +10,7 @@ const BookingTable = (props) => {
     const[loading,setLoading] = useState(false)
     const[docterID,setDocterID] = useState("")
     //status handler 
-    const statusHandler = (value) =>{
+    const statusHandler = (value,bookingID) =>{
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
         myHeaders.append("Content-Type", "application/json");
@@ -27,10 +27,10 @@ const BookingTable = (props) => {
         };
 
         setLoading(true)
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}booking/confirm-cancel/${docterID}`, requestOptions)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}booking/confirm-cancel/${bookingID}`, requestOptions)
         .then(response => response.text())
         .then(result => {
-            getAllBooking()
+            getAllBooking(docterID)
             setLoading(false)
         })
         .catch(error => console.log('error', error));
@@ -123,7 +123,7 @@ const BookingTable = (props) => {
                             <img src={item.patient.avatar}></img>
                             <h5 className='l-22 f-400'>{item.patient.name}</h5>
                         </span>
-                        <span className='d-flex '>
+                        <span className='d-flex'>
                             <h5 className='l-22 f-400'>
                                 <Moment format="D MMM YYYY" withTitle>
                                     {item.slotId.sessionDate}
