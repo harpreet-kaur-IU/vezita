@@ -400,3 +400,22 @@
     left:0;
     opacity:0;
 }
+.add-photos-box{
+    width: 108px;
+    height: 108px;
+    background: var(--grey6);
+    border-radius: 8px;
+}
+.add-photos-box input{
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+}
+.uploaded-photos{
+    width: 144px;
+    height: 108px;
+    border-radius: 4px;
+}

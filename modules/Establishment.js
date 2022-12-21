@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react'
+import React, { useEffect,useRef,useState } from 'react'
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies';
 import styles from './css/profile.module.css'
 import DropDown from './DropDown';
@@ -65,12 +65,13 @@ const Establishment = () => {
     const [countryCodeList,setCountryCodeList] = useState([])
     const[inputList,setInputList] = useState([{startTime:"",endTime:"",video:false,clinic:false}])  
     const[estId,setEstId] = useState("")
-
+    const[estImages,setEstImages] = useState("")
     //tab2 
     const[fees,setFees] = useState("")
     const[duration,setDuration] = useState("")
     const[dayArray1,setDayArray1] = useState([])
     const[endDate,setEndDate] = useState("");
+    const idRef = useRef()
 
     useEffect(()=>{
         if(JWTToken){
@@ -152,6 +153,7 @@ const Establishment = () => {
                 setLat(parsedResult.docter.establishment[0].location.coordinates[0])
                 setContactNumber(parsedResult.docter.establishment[0].contactNumber)
                 setEstId(parsedResult.docter.establishment[0]._id)
+                setEstImages(parsedResult.docter.establishment[0].images)
             }
         })
         .catch(error => console.log('error', error));
@@ -300,7 +302,7 @@ const Establishment = () => {
         addConsultation();
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
-        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Content-Type","application/json");
 
         var timingSlot = [];       
         for(var i = 0;i<inputList.length;i++){
@@ -308,7 +310,15 @@ const Establishment = () => {
                 "startTime":inputList[i].startTime,
                 "endTime":inputList[i].endTime,
                 "appointmentNum":i+1,
-                "sessionType":[inputList[i].clinic?"in-clinic":"video"]
+                "sessionType":[
+                    inputList[i].clinic && inputList[i].video?
+                        {
+                            0:"in-clinic",
+                            1:"video"
+                        }
+                    :
+                    (inputList[i].clinic?"in-clinic":"video")
+                ]
             }
             timingSlot.push(timing)
         }
@@ -358,6 +368,11 @@ const Establishment = () => {
         .then(result =>console.log(result))
         .catch(error => console.log('error', error));
     }
+
+    //add establishment photos
+    const establishmentPhotos = (e) =>{
+        console.log(e.target.files[0])
+    }
   return (
     <>
         {loading && <Loader></Loader>}
@@ -368,7 +383,7 @@ const Establishment = () => {
                     <div className={`d-flex d-flex-wrap border-box ${styles["personal"]} col-12`}>
                         <h4 className='f-600 l-26 col-12 text-black mt-5'>Establishment address</h4>
                         <div className='d-flex d-flex-wrap col-12'>
-                            
+
                             <div className='col-5'>
                                 <label className='d-flex'>Establishment name</label>
                                 <input type="text" placeholder='Select or add title' onChange={estHandler} value={estName}/>
@@ -411,9 +426,26 @@ const Establishment = () => {
                             </div>
                         </div>
                         <label className='d-flex'>Establishment photos</label>
-                        <div className='col-12 d-flex d-flex-wrap'>
-                            <img src="build.png"/>
-                            <img src="build.png" className='ml-2'/>
+                        <div className='col-12 d-flex d-flex-wrap mt-3'>
+                            {estImages && estImages.map((images)=>(
+                                <div className={`${styles["uploaded-photos"]}`}>
+                                    <img src='' alt='establishment photos'></img>
+                                </div>
+                            ))}
+                            <div className={`p-relative d-flex d-flex-column d-align-center d-justify-center gap-1 ${styles["add-photos-box"]}`}>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M17.8125 10C17.8125 10.2486 17.7137 10.4871 17.5379 10.6629C17.3621 10.8387 17.1236 10.9375 16.875 10.9375H10.9375V16.875C10.9375 17.1236 10.8387 17.3621 10.6629 17.5379C10.4871 17.7137 10.2486 17.8125 10 17.8125C9.75136 17.8125 9.5129 17.7137 9.33709 17.5379C9.16127 17.3621 9.0625 17.1236 9.0625 16.875V10.9375H3.125C2.87636 10.9375 2.6379 10.8387 2.46209 10.6629C2.28627 10.4871 2.1875 10.2486 2.1875 10C2.1875 9.75136 2.28627 9.5129 2.46209 9.33709C2.6379 9.16127 2.87636 9.0625 3.125 9.0625H9.0625V3.125C9.0625 2.87636 9.16127 2.6379 9.33709 2.46209C9.5129 2.28627 9.75136 2.1875 10 2.1875C10.2486 2.1875 10.4871 2.28627 10.6629 2.46209C10.8387 2.6379 10.9375 2.87636 10.9375 3.125V9.0625H16.875C17.1236 9.0625 17.3621 9.16127 17.5379 9.33709C17.7137 9.5129 17.8125 9.75136 17.8125 10Z" fill="#60606C"/>
+                                </svg>
+                                <h6 className='l-14 f-500 text-secondary'>Add Photos</h6>
+                                <input
+                                    id="file-input-field-establishment"
+                                    type='file'
+                                    ref={idRef}
+                                    multiple={false}
+                                    onChange={establishmentPhotos}
+                                >
+                                </input>
+                            </div>
                         </div>
                     </div>
                     {/* <div className='col-12 mt-7 d-flex d-flex-wrap'>

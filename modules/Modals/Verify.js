@@ -13,6 +13,7 @@ const Verify = (props) => {
         e.preventDefault()
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type","application/json");
 
         var raw = JSON.stringify({
             "otp":otp
@@ -28,10 +29,8 @@ const Verify = (props) => {
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/verify-phone-otp`, requestOptions)
         .then(response => response.text())
         .then(result => {
-            const parsedResult = JSON.parse(result)
-            if(parsedResult.message == "correct otp"){
-                props.handler()
-            }
+            // const parsedResult = JSON.parse(result)
+            props.handler()
         })
         .catch(error => console.log('error', error));
     }
@@ -41,6 +40,7 @@ const Verify = (props) => {
         setOtp("")
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type","application/json");
 
         var requestOptions = {
             method: 'POST',

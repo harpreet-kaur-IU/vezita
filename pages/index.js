@@ -32,10 +32,12 @@ export default function Login() {
                 var myHeaders = new Headers();
                 myHeaders.append("token",authUser.user.multiFactor.user.accessToken);
                 myHeaders.append("Content-Type","application/json");
+                
                 var raw = JSON.stringify({
                     "email": email,
                     "password": password
                 });
+
                 var requestOptions = {
                     method: 'POST',
                     headers: myHeaders,
@@ -65,21 +67,11 @@ export default function Login() {
         })
         .catch(error => {
             setLoading(false)
-            if(error.message == 'Firebase: The email address is already in use by another account. (auth/email-already-in-use).'){
-                toast.error("Email Already Exists",{
-                    toastId:"2"
-                });
-            }
-            else if(error.message == "Firebase: There is no user record corresponding to this identifier. The user may have been deleted. (auth/user-not-found)."){
-                toast.error("Invalid Email",{
-                    toastId:"2"
-                });
-            }
-            else if(error.message == "Firebase: The password is invalid or the user does not have a password. (auth/wrong-password)."){
-                toast.error("Incorrect Password",{
-                    toastId:"2"
-                });
-            }
+            var code = error.code.substring(error.code.lastIndexOf('/')+1);
+            var newcode = code.replaceAll('-',' ');
+            toast.error(newcode,{
+                toastId:"2"
+            });
         })
     }
     const validator3 = () =>{
@@ -90,7 +82,6 @@ export default function Login() {
             setEmailError(false);
             return true;
         }
-        
     }
     //forgot password handler
     const forgetPasswordHandler = () =>{
@@ -123,7 +114,13 @@ export default function Login() {
                         toastId:"1"
                     });
                 }
-                console.log(error)
+                else{
+                    var code = error.code.substring(error.code.lastIndexOf('/')+1);
+                    var newcode = code.replaceAll('-',' ');
+                    toast.error(newcode,{
+                        toastId:"2"
+                    });
+                }
             })
         }
     }

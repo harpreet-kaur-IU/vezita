@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Header from './Header'
 import styles from './css/BookingDetails.module.css'
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import Moment from 'react-moment';
 import Loader from './Loader';
@@ -18,6 +17,10 @@ const BookingDetailsChoose = () => {
     const [appointment,setAppointment] = useState("")
     const [doctorReports,setDoctorReports] = useState("")
     const [patientReports,setPatientReports] = useState("")
+
+    const [ageYear,setAgeYear] = useState("")
+    const [ageMonth,setAgeMonth] = useState("")
+
     const handleClick = (e) =>{
         setActiveTab(e.target.id);
     }
@@ -41,6 +44,8 @@ const BookingDetailsChoose = () => {
                 setLoading(false)
                 var parsedResult = JSON.parse(result)
                 setBookingData(parsedResult.booking)
+                //get age of patient
+                getAge(parsedResult.booking.patient.dob)
 
                 patientId = parsedResult.booking.patient._id;
                 docterId = parsedResult.booking.docter._id;
@@ -88,10 +93,22 @@ const BookingDetailsChoose = () => {
                 })
                 .catch(error => console.log('error', error));
             })
-            .catch(error => console.log('error', error));
+            .catch(error => console.log('error', error));            
         }
         
     },[bookingId])
+
+    const getAge = (patientAge) =>{
+        var today = new Date();
+        var birthDate = new Date(patientAge);
+        var age = today.getFullYear()-birthDate.getFullYear();
+        var m = today.getMonth()-birthDate.getMonth();
+        setAgeMonth(m)
+        if(m<0 || (m === 0 && today.getDate()<birthDate.getDate())){
+            age--;
+        }
+        setAgeYear(age);
+    }
 
     const bookingStatus = (status) =>{
         var myHeaders = new Headers();
@@ -135,7 +152,7 @@ const BookingDetailsChoose = () => {
                     </div>
                 }
                 <div className={`bg-grey7 ${styles["left-col-1"]}`}>
-                    {bookingData.status == "confirmed" &&
+                    {bookingData.status == "pending" &&
                         <div className={`d-flex d-align-center d-justify-space-between ${styles["status-wrapper"]}`}>
                             <h3 className='text-secondary l-28 f-500'>Do you want to accept the booking?</h3>
                             <div className='d-flex'>
@@ -143,9 +160,20 @@ const BookingDetailsChoose = () => {
                                     <img src='cross.png'></img>
                                     DECLINE
                                 </button>
-                                <button onClick={()=>bookingStatus("confirmed")} className={`cursor-pointer d-flex d-justify-center ${styles["status-button-accept"]}`}>
+                                <button className={`cursor-pointer d-flex d-justify-center ${styles["status-button-accept"]}`}>
                                     <img src='tick.png'></img>
-                                    ACCEPT
+                                    ACCEPTED
+                                </button>
+                            </div>
+                        </div>
+                    }
+                    {bookingData.status == "confirmed" &&
+                        <div className={`d-flex d-align-center d-justify-space-between ${styles["status-wrapper"]}`}>
+                            <h3 className='text-secondary l-28 f-500'>Do you want to accept the booking?</h3>
+                            <div className='d-flex'>
+                                <button className={`cursor-pointer d-flex d-justify-center ${styles["status-button-accept"]}`}>
+                                    <img src='tick.png'></img>
+                                    ACCEPTED
                                 </button>
                             </div>
                         </div>
@@ -156,11 +184,22 @@ const BookingDetailsChoose = () => {
                             <div className='d-flex'>
                                 <button className={`cursor-pointer d-flex d-justify-center ${styles["status-button-accept"]}`}>
                                     <img src='tick.png'></img>
-                                    ACCEPT
+                                    COMPLETED
                                 </button>
                             </div>
                         </div>
                     }    
+                    {bookingData.status == "cancelled" &&
+                        <div className={`d-flex d-align-center d-justify-space-between ${styles["status-wrapper"]}`}>
+                            <h3 className='text-secondary l-28 f-500'>Do you want to accept the booking?</h3>
+                            <div className='d-flex'>
+                                <button className={`cursor-pointer d-flex d-justify-center ${styles["status-button-decline"]}`}>
+                                    <img src='cross.png'></img>
+                                    CANCELLED
+                                </button>
+                            </div>
+                        </div>
+                    } 
                     
                     <div className={`d-flex d-flex-column ${styles['booking-details']}`}>
                         <div className='d-flex col-12'>
@@ -180,7 +219,7 @@ const BookingDetailsChoose = () => {
                     </div>
 
                     <div className={`text-dark-blue ${styles["note-wrapper"]}`}>
-                        <h5 className='f-400 l-22'><span className='f-600'>Note:</span> If you decline or cancel the booked appointment, the user will get a refund on the payment mode he chose.</h5>
+                        <h5 className='f-400 l-22'><span className='f-600'>Note:</span> If you decline or cancel the booked appointment, the user will get a refund on the payment mode they choose.</h5>
                     </div>
                 </div>
                 <div className={`bg-grey7 ${styles["left-col-2"]}`}>
@@ -208,7 +247,7 @@ const BookingDetailsChoose = () => {
                     <div className={`d-flex ${styles["patient-age-details"]}`}>
                         <div className={`col-4 d-flex d-flex-column d-align-center ${styles["patient-age-details-col"]}`}>
                             <h6 className='text-secondary l-20 f-500'>Age</h6>
-                            <h5 className='text-grey-2 l-22 f-400'>28</h5>
+                            <h5 className='text-grey-2 l-22 f-400'>{ageYear?ageYear+" years":ageMonth+" months"}</h5>
                         </div>
                         <div className={`col-4 d-flex d-flex-column d-align-center ${styles["patient-age-details-col"]}`}>
                             <h6 className='text-secondary l-20 f-500'>Gender</h6>
@@ -230,40 +269,40 @@ const BookingDetailsChoose = () => {
                         <div className={`d-flex col-12 ${styles["more-details-row"]}`}>
                             <h5 className='text-secondary col-6 f-400 l-22'>Chronic Disease</h5>
                             <h5 className='text-secondary col-6 f-400 l-22'>
-                                {medicalData && medicalData.chronicDisease.map(index=>(
-                                    <span>{index},</span>
+                                {medicalData && medicalData.chronicDisease.map((index,item)=>(
+                                    <span>{item>0 && ","}{index}</span>
                                 ))}
                             </h5>
                         </div>
                         <div className={`d-flex col-12 ${styles["more-details-row"]}`}>
                             <h5 className='text-secondary col-6 f-400 l-22'>Allergies</h5>
                             <h5 className='text-secondary col-6 f-400 l-22'>
-                                {medicalData && medicalData.allergies.map(index=>(
-                                    <span>{index},</span>
+                                {medicalData && medicalData.allergies.map((index,item)=>(
+                                    <span>{item>0 && ","}{index}</span>
                                 ))}
                             </h5>
                         </div>
                         <div className={`d-flex col-12 ${styles["more-details-row"]}`}>
                             <h5 className='text-secondary col-6 f-400 l-22'>Current Medications</h5>
                             <h5 className='text-secondary col-6 f-400 l-22'>
-                                {medicalData && medicalData.medications.map(index=>(
-                                    <span>{index},</span>
+                                {medicalData && medicalData.medications.map((index,item)=>(
+                                    <span>{item>0 && ","}{index}</span>
                                 ))}
                             </h5>
                         </div>
                         <div className={`d-flex col-12 ${styles["more-details-row"]}`}>
                             <h5 className='text-secondary col-6 f-400 l-22'>Past Medications</h5>
                             <h5 className='text-secondary col-6 f-400 l-22'>
-                                {medicalData && medicalData.pastMedications.map(index=>(
-                                    <span>{index},</span>
+                                {medicalData && medicalData.pastMedications.map((index,item)=>(
+                                    <span>{item>0 && ","}{index}</span>
                                 ))}
                             </h5>
                         </div>
                         <div className={`d-flex col-12 ${styles["more-details-row"]}`}>
                             <h5 className='text-secondary col-6 f-400 l-22'>Surgeries</h5>
                             <h5 className='text-secondary col-6 f-400 l-22'>
-                                {medicalData && medicalData.surgeries.map(index=>(
-                                    <span>{index},</span>
+                                {medicalData && medicalData.surgeries.map((index,item)=>(
+                                    <span>{item>0 && ","}{index}</span>
                                 ))}
                             </h5>
                         </div>
