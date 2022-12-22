@@ -103,31 +103,31 @@ function DoctorsChat() {
  
     //save media API
     const mediaHandler = (e) =>{
-        if(e.target.files){
-            const str = e.target.files[0].type;
-            setMediaType(str.substring(str.lastIndexOf('/')+1))
-        }
-        // var myHeaders = new Headers();
-        // myHeaders.append("token",JWTToken);
+        // if(e.target.files){
+        //     const str = e.target.files[0].type;
+        //     setMediaType(str.substring(str.lastIndexOf('/')+1))
+        // }
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
 
-        // var formdata = new FormData();
-        // formdata.append("type","chatMedia");
-        // formdata.append("file", e.target.files[0]);
+        var formdata = new FormData();
+        formdata.append("type","chatMedia");
+        formdata.append("file", e.target.files[0]);
 
-        // var requestOptions = {
-        //     method: 'POST',
-        //     headers: myHeaders,
-        //     body: formdata
-        // };
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata
+        };
 
-        // fetch(`${process.env.NEXT_PUBLIC_BASE_URL}file-upload`, requestOptions)
-        // .then(response => response.text())
-        // .then(result => {
-        //     var parsedResult = JSON.parse(result)
-        //     setMedia(parsedResult.urls[0])
-        //     setIsSend(true)
-        // })
-        // .catch(error => console.log('error', error));
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}file-upload`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var parsedResult = JSON.parse(result)
+            setMedia(parsedResult.urls[0])
+            setIsSend(true)
+        })
+        .catch(error => console.log('error', error));
     } 
 
     //send Message API
@@ -166,7 +166,6 @@ function DoctorsChat() {
         .then(response => response.text())
         .then(result => {
             var parseMessage = JSON.parse(result)
-            console.log(parseMessage)
             setMessage("")
             startChatHandler(channelId,activeUser,activeUserImg,receiverId)
             setIsSend(true)
@@ -234,11 +233,18 @@ function DoctorsChat() {
                                         </div>
                                     </div>
                                     :
-                                    <div key={index} className='d-flex d-justify-start'>
-                                        <div className={`${styles["chat-popup-r"]} bg-grey-6 mt-10`}>
-                                            <h4 className='f-500 l-26 text-secondary'>What is the progress of the task that is allocated to you?What is the progress of the task that is allocated to you?What is the progress of the task that is allocated to you?</h4>
+                                    item.mediaType == "image"?
+                                        <div key={index} className='d-flex d-justify-start'>
+                                            <div className={`${styles["chat-popup-r-image"]} bg-grey-6 mt-10`}>
+                                                <img src={item.media} alt="message chat image"></img>
+                                            </div>
                                         </div>
-                                    </div>
+                                    :
+                                        <div key={index} className='d-flex d-justify-start'>
+                                            <div className={`${styles["chat-popup-r"]} bg-grey-6 mt-10`}>
+                                                <h4 className='f-500 l-26 text-secondary'>{item.message}</h4>
+                                            </div>
+                                        </div>
                                 }
                             </>
                         ))} 

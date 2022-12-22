@@ -85,7 +85,6 @@ const Registration = () => {
 
     //identity proof Handler
     const idHandler = (e,type) =>{
-        console.log(type)
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
 

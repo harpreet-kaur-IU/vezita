@@ -143,10 +143,12 @@ const EducationDetails = () => {
             setDoctorId(parsedResult.docter._id)
             getSpecialization(parsedResult.docter._id)
             setLoading(false)
+
             if(parsedResult.docter.education[0]){
                 setInputList(parsedResult.docter.education)
                 setQualificationId(parsedResult.docter.education[0]._id)
             }
+
             if(parsedResult.docter.specialization.length>0){
                 setList(parsedResult.docter.specialization)
             }
@@ -169,7 +171,6 @@ const EducationDetails = () => {
             .then(result => {
                 var parsedResult = JSON.parse(result)
                 setSuggestion(parsedResult.specialization)
-                console.log(parsedResult.specialization)
                 if(parsedResult.specialization.length>0){
                     setDropdown(true)
                 }else{

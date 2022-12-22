@@ -85,9 +85,9 @@
     outline: none;
 }
 .chat-area{
-    min-height: 500px;
+    height: 500px;
+    overflow-y: scroll;
 }
-
 .media-img input{
     position: absolute;
     top:0;
@@ -117,4 +117,9 @@
 }
 .chat-popup-s h4{
     word-break: break-word;
+}
+.chat-popup-r-image img{
+    max-height: 150px;
+    max-width: 246px;
+    object-fit: contain;
 }

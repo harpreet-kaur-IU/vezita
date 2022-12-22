@@ -311,6 +311,9 @@ body {
   justify-content: space-between;
 }
 
+.d-justify-space-around{
+  justify-content: space-around;
+}
 /* Display Ends */
 
 /* Positions Starts */
