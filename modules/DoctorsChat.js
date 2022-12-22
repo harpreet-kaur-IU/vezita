@@ -182,6 +182,19 @@ function DoctorsChat() {
             setIsSend(false)
         }
     }
+
+    //scroll to bottom
+    useEffect(()=>{
+        scrollBottom();
+    },[chatUser])
+    
+    const messageRef = useRef(null) 
+
+    const scrollBottom = () => {
+        messageRef.current?.scrollIntoView({behavior:"smooth"});
+    }
+
+
   return (
     <>
         <Header title="Message"></Header>
@@ -227,20 +240,20 @@ function DoctorsChat() {
                         {chatUser && chatUser.map((item,index)=>(
                             <>
                                 {item.sender == senderId?
-                                    <div key={index} className='d-flex d-justify-end'>
+                                    <div key={index} className='d-flex d-justify-end' ref={messageRef}>
                                         <div className={`${styles["chat-popup-s"]} bg-primary mt-10`}>
                                             <h4 className='f-500 l-26 text-white'>{item.message}</h4>
                                         </div>
                                     </div>
                                     :
                                     item.mediaType == "image"?
-                                        <div key={index} className='d-flex d-justify-start'>
+                                        <div key={index} className='d-flex d-justify-start' ref={messageRef}>
                                             <div className={`${styles["chat-popup-r-image"]} bg-grey-6 mt-10`}>
                                                 <img src={item.media} alt="message chat image"></img>
                                             </div>
                                         </div>
                                     :
-                                        <div key={index} className='d-flex d-justify-start'>
+                                        <div key={index} className='d-flex d-justify-start' ref={messageRef}>
                                             <div className={`${styles["chat-popup-r"]} bg-grey-6 mt-10`}>
                                                 <h4 className='f-500 l-26 text-secondary'>{item.message}</h4>
                                             </div>
