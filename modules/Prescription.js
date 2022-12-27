@@ -6,17 +6,18 @@ import DynamicDropdown from './DynamicDropdown'
 import { getVezitaOnBoardFromCookie } from '../auth/userCookies'
 import { useRouter } from 'next/router'
 import Loader from './Loader'
-const Prescription = () => {
+const Prescription = (props) => {
     const router = useRouter();
-    const patientId = router.query["id"];
+    const [patientSlotId,setPatientSlotId] = useState();
     const JWTToken = getVezitaOnBoardFromCookie();
     const[inputList,setInputList] = useState([{_id:"",drug:"",inst:"",duration:"",morningDosae:"",eveningDosae:"",nightDosae:"",durationType:"",instruction:""}]) 
     const[template,setTemplate] = useState("")
     const[tempName,setTempName] = useState("")
     const[tempId,setTempId] = useState("")
     const[drugLength,setDrugLength] = useState("")
-    const[patientData,setPatientData] = useState("")
+    const[patientData,setPatientData] = useState(props.data.patient)
     const[loading,setLoading] = useState(false)
+    const[todayDate,setTodayDate] = useState("")
     const durTypeData = [
         {
             "title":"day"
@@ -31,31 +32,34 @@ const Prescription = () => {
 
     useEffect(()=>{
         if(JWTToken){
+            var date = new Date().toISOString().slice(0,10);
+            setTodayDate(date);
             getAllTemplate();
-            getPatient();
+            // getPatient();
+            setPatientSlotId(router.query["slotId"])
         }
     },[])
 
     //get patient Details
-    const getPatient = () =>{
-        var myHeaders = new Headers();
-        myHeaders.append("token",JWTToken);
+    // const getPatient = () =>{
+    //     var myHeaders = new Headers();
+    //     myHeaders.append("token",JWTToken);
 
-        var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
+    //     var requestOptions = {
+    //         method: 'GET',
+    //         redirect: 'follow'
+    //     };
           
-        setLoading(true)
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}patient/get/${patientId}`, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-            const parsePatient = JSON.parse(result)
-            setPatientData(parsePatient.patient)
-            setLoading(false)
-        })
-        .catch(error => console.log('error', error));
-    }
+    //     setLoading(true)
+    //     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}patient/get/${patientId}`, requestOptions)
+    //     .then(response => response.text())
+    //     .then(result => {
+    //         const parsePatient = JSON.parse(result)
+            
+    //         setLoading(false)
+    //     })
+    //     .catch(error => console.log('error', error));
+    // }
     //all input handlers
     const nameHandler = (e) =>{
         setTempName(e.target.value)
@@ -101,7 +105,6 @@ const Prescription = () => {
                         "nightDosae":inputList[i].nightDosae,
                         "duration":inputList[i].duration,
                         "durationType": inputList[i].durationType
-    
                     }
                 }
 
@@ -212,7 +215,6 @@ const Prescription = () => {
 
     //input handler and add data in input list
     const handleInputChange = (e,index) =>{
-        
         const {name,value} = e.target;
         const list = [...inputList];
         list[index][name] = value;
@@ -265,6 +267,56 @@ const Prescription = () => {
         })
         .catch(error => console.log('error', error));
     }
+
+    //add prescription
+    const savePrescription = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var drugArray = [];
+        for(var i=0;i<inputList.length;i++){
+            var drugSingle = {
+                "drug": inputList[i].drug,
+                "inst": inputList[i].inst,
+                "instruction": inputList[i].instruction,
+                "timeAndDosage": [
+                  {
+                    "time": "morning",
+                    "dosage": inputList[i].morningDosae
+                  },
+                  {
+                    "time": "evening",
+                    "dosage": inputList[i].eveningDosae
+                  },
+                  {
+                    "time": "night",
+                    "dosage": inputList[i].nightDosae
+                  }
+                ],
+                "duration": inputList[i].duration,
+                "durationType": inputList[i].durationType
+            }  
+            drugArray.push(drugSingle)
+        }
+        var raw = JSON.stringify({
+            "slotId": patientSlotId,
+            "patientId": patientData._id,
+            "drunInstruction": drugArray
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}drug-instruction-patient/prescribe`, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+    }
   return (
     <>
         {loading && <Loader></Loader>}
@@ -277,11 +329,11 @@ const Prescription = () => {
                             <img className={`${styles["patient-img"]}`} src={patientData.avatar}></img>
                             <div className='d-flex d-flex-column'>
                                 <h5>{patientData.name}</h5>
-                                <h5>ID: {patientData._id}</h5>
+                                <h5>ID:{patientData._id}</h5>
                             </div>
                         </div>
                         <div className={`d-flex ${styles["icons-wrapper"]}`} style={{gap:"28px"}}>
-                            <div className={` cursor-pointer ${styles["call-icon"]}`}>
+                            <div className={`cursor-pointer ${styles["call-icon"]}`}>
                                 <img src='phone.png'></img>
                             </div>
                             <div className={`cursor-pointer ${styles["mail-icon"]}`}>
@@ -302,10 +354,10 @@ const Prescription = () => {
         {/* Appintment Details */}
         <div className={`d-flex d-align-center d-justify-space-between ${styles["wrapper-appointment-details"]}`}>
             <div className={`d-flex d-flex-column ${styles["appointment-details"]}`}>
-                <h3 className='f-500 l-28 text-dark-blue'>Today, 15th Feb, 2022</h3>
-                <h5 className='f-400 l-22'>Appointment ID:<span className='f-500'> 89341908</span></h5>
+                <h3 className='f-500 l-28 text-dark-blue'>Today, {todayDate}</h3>
+                {/* <h5 className='f-400 l-22'>Appointment ID:<span className='f-500'> 89341908</span></h5> */}
             </div>
-            <button className={`d-flex d-align-center ${styles["appointment-send-btn"]}`}>
+            <button onClick={savePrescription} className={`d-flex d-align-center ${styles["appointment-send-btn"]}`}>
                 <h5 className='f-500 l-22 text-dark-blue'>Send</h5>
                 <img src="send-icon.png"></img>
             </button>
@@ -377,16 +429,17 @@ const Prescription = () => {
                                                         <h5 className='l-22 f-400'>Morning</h5>
                                                     </div>
                                                     <div className={`${styles2["doasge-dropdown-wrapper"]}`}>
-                                                        <input type="text" name='morningDosae' value={item.morningDosae} onChange={e => handleInputChange(e,index)} ></input>
+                                                        <input type="text" name='morningDosae' value={item.morningDosae} onChange={e => handleInputChange(e,index)}></input>
                                                     </div>
                                                 </div>
+                                                
                                                 <div className='d-flex d-flex-column'>
                                                     <div className={`d-flex ${styles2["time-and-dosage-check-box"]}`}>
                                                         <input className='m-0' type="checkbox"></input>
                                                         <h5 className='l-22 f-400'>Evening</h5>
                                                     </div>
                                                     <div className={`${styles2["doasge-dropdown-wrapper"]}`}>
-                                                        <input type="text" name='eveningDosae' value={item.eveningDosae} onChange={e => handleInputChange(e,index)} ></input>
+                                                        <input type="text" name='eveningDosae' value={item.eveningDosae} onChange={e => handleInputChange(e,index)}></input>
                                                     </div>
                                                 </div>
                                                 <div className='d-flex d-flex-column'>
@@ -394,8 +447,9 @@ const Prescription = () => {
                                                         <input className='m-0' type="checkbox"></input>
                                                         <h5 className='l-22 f-400'>Night</h5>
                                                     </div>
+            
                                                     <div className={`${styles2["doasge-dropdown-wrapper"]}`}>
-                                                        <input type="text" name='nightDosae' value={item.nightDosae} onChange={e => handleInputChange(e,index)} ></input>
+                                                        <input type="text" name='nightDosae' value={item.nightDosae} onChange={e => handleInputChange(e,index)}></input>
                                                     </div>
                                                 </div>
                                                 {inputList.length>1 &&

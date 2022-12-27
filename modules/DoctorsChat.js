@@ -193,8 +193,6 @@ function DoctorsChat() {
     const scrollBottom = () => {
         messageRef.current?.scrollIntoView({behavior:"smooth"});
     }
-
-
   return (
     <>
         <Header title="Message"></Header>

@@ -85,7 +85,7 @@
     outline: none;
 }
 .chat-area{
-    height: 500px;
+    height: 450px;
     overflow-y: scroll;
 }
 .media-img input{

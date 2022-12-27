@@ -10,30 +10,13 @@ const CreateMedicalReport = () => {
 
     const[patientData,setPatientData] = useState("")
     const router = useRouter();
-    const prescriptionHandler = (id) =>{
-        router.push(`/prescriptiondetails/${id}`)
+    const prescriptionHandler = (id,slotId) =>{
+        router.push(`/prescriptiondetails/${id}?slotId=${slotId}`)
     }
 
     useEffect(()=>{
         if(JWTToken){
-            // var myHeaders = new Headers();
-            // myHeaders.append("token",JWTToken);
-            // myHeaders.append("Content-Type", "application/json");
-            
-            // var requestOptions = {
-            //     method: 'GET',
-            //     headers: myHeaders,
-            //     redirect: 'follow'
-            // };
-            
-            // fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient`, requestOptions)
-            // .then(response => response.text())
-            // .then(result => {
-            //     var parsedResult = JSON.parse(result)
-            //     setPatientData(parsedResult.docterPatient)
-            // })
-            // .catch(error => console.log('error', error));
-            getProfile()
+            getAllBooking()
         }
     },[])
 
@@ -52,28 +35,24 @@ const CreateMedicalReport = () => {
         .then(response => response.text())
         .then(result => {
             const parsedResult = JSON.parse(result)
-            getAllBooking(parsedResult.docter._id)
+           
         })
         .catch(error => console.log('error', error));
     }
 
-    const getAllBooking = (docterID) =>{
+    const getAllBooking = () =>{
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
-        
+
         var requestOptions = {
             method: 'GET',
             headers: myHeaders,
             redirect: 'follow'
         };
-        
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}booking?docter=${docterID}`, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-            const parsedResult = JSON.parse(result)
-            // setBookingData(parsedResult.booking)
-            console.log(parsedResult.booking)
-        })
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient`, requestOptions)
+        .then(response => response.json())
+        .then(result => setPatientData(result.docterPatient))
         .catch(error => console.log('error', error));
     }
   return (
@@ -104,43 +83,46 @@ const CreateMedicalReport = () => {
                         </span>
                     </div>
                     {patientData && patientData.map((item)=>(
-                        <div className={`${styles["booking-table-column"]} d-flex d-align-center`}>
-                            <span className={`d-flex d-align-center ${styles["patient-details-column"]}`}>
-                                <img src={item.patient.avatar}></img>
-                                <h5 className='l-22 f-400'>{item.patient.name}</h5>
-                            </span>
-                            <span className='d-flex'>
-                                <h5 className='l-22 f-400'>{item.apointments.length>0 && item.apointments[0].slot.consultationFor}</h5>
-                            </span>
-                            <span className='d-flex'>
-                                <h5 className='l-22 f-400'>{item.apointments.length>0 && item.apointments[0].slot.sessionType[0]} Consultation</h5>
-                            </span>
-                            <span className='d-flex'>
-                                <h5 className='l-22 f-400'>
-                                    <Moment format="HH:mm" withTitle>
-                                        {item.apointments.length>0 && item.apointments[0].slot.startTime}
-                                    </Moment>
-                                </h5>
-                            </span>
-                            {item.apointments.length>0 && item.apointments[0].isPrescribe?
-                                <span className={`d-flex ${styles['prescription-btn-green']}`}>
-                                    <button onClick={()=>prescriptionHandler(item.patient._id)} className='cursor-pointer d-flex'>
-                                        <h6 className='text-grey-2 l-20 f-600'>Prescribe</h6>
-                                        <img src='prescribe-tick.png'></img>
-                                    </button>
+                        item.apointments.length>0 &&
+                            <div className={`${styles["booking-table-column"]} d-flex d-align-center`}>
+                                <span className={`d-flex d-align-center ${styles["patient-details-column"]}`}>
+                                    <img src={item.patient.avatar}></img>
+                                    <h5 className='l-22 f-400'>{item.patient.name}</h5>
                                 </span>
-                                :
-                                <span className={`d-flex ${styles['prescription-btn']}`}>
-                                    <button onClick={()=>prescriptionHandler(item.patient._id)} className='cursor-pointer d-flex'>
-                                        <h6 className='text-grey-2 l-20 f-600'>Prescribe</h6>
-                                        <img src='prescribe-edit.png'></img>
-                                    </button>
+                                <span className='d-flex'>
+                                    <h5 className='l-22 f-400'>{item.consultaionFor}</h5>
                                 </span>
-                            }
-                            <span className={`cursor-pointer d-flex d-justify-center ${styles["column-arrow"]}`}>
-                                <Link href="/medicalrecord"><img src='arrow.png'></img></Link>
-                            </span>
-                        </div>
+                                <span className='d-flex'>
+                                    <h5 className='l-22 f-400'>{item.apointments[0].slot.sessionType[0]} Consultation</h5>
+                                </span>
+                                <span className='d-flex'>
+                                    <h5 className='l-22 f-400'>
+                                        <Moment format="HH:mm" withTitle>
+                                            {item.apointments[0].slot.startTime}
+                                        </Moment>
+                                    </h5>
+                                </span>
+                                {item.apointments[0].isPrescribe?
+                                    <span className={`d-flex ${styles['prescription-btn-green']}`}>
+                                        <button  className='cursor-pointer d-flex'>
+                                            <h6 className='text-grey-2 l-20 f-600'>Prescribed</h6>
+                                            <img src='prescribe-tick.png'></img>
+                                        </button>
+                                    </span>
+                                    :
+                                    <span className={`d-flex ${styles['prescription-btn']}`}>
+                                        <button onClick={()=>prescriptionHandler(item.patient._id,item.apointments[0].slot._id)} className='cursor-pointer d-flex'>
+                                            <h6 className='text-grey-2 l-20 f-600'>Prescribe</h6>
+                                            <img src='prescribe-edit.png'></img>
+                                        </button>
+                                    </span>
+                                }
+                               
+                                <span className={`cursor-pointer d-flex d-justify-center ${styles["column-arrow"]}`}>
+                                    <Link href={`/medicalrecord/${item.patient._id}?slotId=${item.apointments[0].slot._id}`}><img src='arrow.png'></img></Link>
+                                </span>
+                                
+                            </div>
                     ))}
                 </div>
             </div>

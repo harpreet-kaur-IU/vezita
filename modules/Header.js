@@ -30,7 +30,7 @@ const Header = (props) => {
   
   const sideBarHandler = (e) => {
     e.currentTarget.classList.toggle(styles["open"]);
-    console.log("Sidebar = "+styles["sidebar-wrapper"]);
+    // console.log("Sidebar = "+styles["sidebar-wrapper"]);
     document.querySelector(`#sidebar-wrapper`).classList.toggle(styles["expand"])
     document.querySelector(`#sidebar-wrapper`).classList.toggle(styles["sidebar-wrapper"])
   }
