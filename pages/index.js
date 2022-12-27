@@ -60,6 +60,7 @@ export default function Login() {
                 });
             }else{
                 setLoading(false)
+                authUser.user.sendEmailVerification()
                 toast.warning("Please Check your mail and verify user",{
                     toastId:"1"
                 });
