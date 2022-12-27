@@ -317,6 +317,11 @@ const Prescription = (props) => {
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
     }
+
+    //view patients details
+    const viewPatientDetails = () =>{
+        router.push(`/patientdetails/${patientData._id}`)
+      }
   return (
     <>
         {loading && <Loader></Loader>}
@@ -342,7 +347,7 @@ const Prescription = (props) => {
                             <div className={`cursor-pointer ${styles["message-icon"]}`}>
                                 <img src='chat.png'></img>
                             </div>
-                            <div className={`d-flex d-align-center cursor-pointer ${styles["view-details-btn"]}`}>
+                            <div onClick={viewPatientDetails} className={`d-flex d-align-center cursor-pointer ${styles["view-details-btn"]}`}>
                                 <h5 className='l-22 f-500'>View all details</h5>
                                 <img src='arrow.png'></img>
                             </div>
