@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './css/modal.module.css'
+import styles from './css/Modal.module.css'
 export default function BlockoutModal(props) {
   return (
     <div className={styles["modal-container-2"]}>
