@@ -9,29 +9,51 @@ const AllPatientTable = () => {
     const[patient,setPatient] = useState("")
     const[loading,setLoading] = useState(false)
 
-
     useEffect(()=>{
         if(JWTToken){
-            var myHeaders = new Headers();
-            myHeaders.append("token",JWTToken);
-
-            var requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow'
-            };
-
-            setLoading(true)
-            fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient`, requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                const parsedResult = JSON.parse(result)
-                setPatient(parsedResult.docterPatient)
-                setLoading(false)
-            })
-            .catch(error => console.log('error', error));
+            getDoctorProfile();
         }
     },[])
+
+    //get Doctor Id
+    const getDoctorProfile = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = {
+            headers:myHeaders,
+            method:'GET',
+            redirect:'follow'
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
+        .then(response => response.json())
+        .then(result => getPatientDoctor(result.docter._id))
+        .catch(error => console.log('error', error));
+    }
+
+    //get patient of a doctor 
+    const getPatientDoctor = (id) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        setLoading(true)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient?docter=${id}`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            const parsedResult = JSON.parse(result)
+            setPatient(parsedResult.docterPatient)
+            setLoading(false)
+        })
+        .catch(error => console.log('error', error));
+    }
   return (
     <>
         {loading && <Loader></Loader>}

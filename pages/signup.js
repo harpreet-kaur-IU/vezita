@@ -85,7 +85,7 @@ export default function Signup() {
             createUserWithEmailAndPassword(email,password)
             .then(authUser =>{
                 var myHeaders = new Headers();
-                myHeaders.append("Content-Type", "application/json");
+                myHeaders.append("Content-Type","application/json");
                 
                 var raw = JSON.stringify({
                     "email":email,
@@ -137,6 +137,7 @@ export default function Signup() {
                 <div className='col-10 col-sm-11 col-md-9 col-lg-7 col-xl-7 d-flex d-flex-wrap'>
                     <h1 className='f-600 l-40 text-secondary col-12'>Signup</h1>
                     <form onSubmit={formSubmit} className={`col-12 mt-10 d-flex d-flex-column ${styles["login-setup"]}`}>
+
                         <label>Email</label>
                         <input type="email" placeholder='Enter your email' value={email} onChange={emailHandler} required/>
                         
@@ -148,7 +149,7 @@ export default function Signup() {
                         
                         {passMatch && <span className='mt-1 text-red'>Password and Confirm Password should be same</span>}
                         <div onClick={policyAcceptedHandler} className='d-flex d-align-center mt-5'>
-                            {policyAccepted && <input type="checkbox" ref={policy} checked onChange={e => {}}></input>}
+                            {policyAccepted && <input type="checkbox" ref={policy} onChange={e => {}} checked></input>}
                             {!policyAccepted && <input type='checkbox' ref={policy} onChange={e => {}}></input>}
                             <h6 className='ml-3 f-600 l-20 text-grey-3'>By signing up you agree to our <span className='text-secondary'>Terms of Service</span> and <span className='text-secondary'>Privacy Policy.</span></h6>
                         </div>

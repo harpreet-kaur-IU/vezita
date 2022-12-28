@@ -124,6 +124,9 @@ body {
   color: var(--green5);
 }
 /* background colors */
+.bg-purple{
+  background-color: var(--purple5);
+}
 .bg-red{
   background-color: var(--red);
 }

@@ -321,7 +321,7 @@ const Prescription = (props) => {
     //view patients details
     const viewPatientDetails = () =>{
         router.push(`/patientdetails/${patientData._id}`)
-      }
+    }
   return (
     <>
         {loading && <Loader></Loader>}
@@ -443,6 +443,7 @@ const Prescription = (props) => {
                                                         <input className='m-0' type="checkbox"></input>
                                                         <h5 className='l-22 f-400'>Evening</h5>
                                                     </div>
+
                                                     <div className={`${styles2["doasge-dropdown-wrapper"]}`}>
                                                         <input type="text" name='eveningDosae' value={item.eveningDosae} onChange={e => handleInputChange(e,index)}></input>
                                                     </div>

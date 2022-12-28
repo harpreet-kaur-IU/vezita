@@ -16,7 +16,7 @@ const CreateMedicalReport = () => {
 
     useEffect(()=>{
         if(JWTToken){
-            getAllBooking()
+            getProfile()
         }
     },[])
 
@@ -32,25 +32,22 @@ const CreateMedicalReport = () => {
         };
 
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
-        .then(response => response.text())
-        .then(result => {
-            const parsedResult = JSON.parse(result)
-           
-        })
+        .then(response => response.json())
+        .then(result => getAllBooking(result.docter._id))
         .catch(error => console.log('error', error));
     }
 
-    const getAllBooking = () =>{
+    const getAllBooking = (id) =>{
         var myHeaders = new Headers();
         myHeaders.append("token",JWTToken);
 
         var requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
+            method:'GET',
+            headers:myHeaders,
+            redirect:'follow'
         };
 
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient`, requestOptions)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}doctor-patient?docter=${id}`, requestOptions)
         .then(response => response.json())
         .then(result => setPatientData(result.docterPatient))
         .catch(error => console.log('error', error));
