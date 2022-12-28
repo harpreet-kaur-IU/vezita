@@ -21,17 +21,17 @@ export default function WeekDay(props) {
     if(props.type == 1){
     return (
         <div className='d-flex d-flex-wrap'>
-            <div className={`${styles["week_block_last"]} d-flex d-flex-wrap `}>
+            <div className={`${styles["week_block_last"]} d-flex d-flex-wrap`}>
                 <span className="col-12 font-10 l-12 text-grey f-700">{dayjs(props.day).format("ddd")}</span>
                 <span className="col-12 font-22 l-32">{dayjs(props.day).format("D")}</span>
             </div>
             {arr.map((i,index)=>{ return <div className={`${styles["week_time_block_wrapper_last"]} p-relative col-12`} key={index}>
-                    {props.data.map((item,i) => { return <div key={i}>{index == props.data[i]?<div className='d-flex d-flex-column bg-purple p-absolute oy-hidden' style={{height:height,top:top,left:"0",width:"100%"}}>
+                {props.data.map((item,i) => { return <div key={i}>{index == props.data[i]?<div className='d-flex d-flex-column bg-purple p-absolute oy-hidden' style={{height:height,top:top,left:"0",width:"100%"}}>
                         <span className='col-12 f-500 font-12 l-25'>F50 Raptor Bus</span>
                         <span className='col-12 f-400 font-10 l-16 text-grey'>238, Boston Street, Northern University</span>
                     </div>:""}
                     </div>
-                    })}
+                })}
                 </div>
             })}
         </div>

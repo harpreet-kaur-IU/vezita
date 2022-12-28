@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import { useRouter } from "next/router";
 import { useEffect, useState,useRef } from "react";
-import styles from '../modules/css/Calendar.module.css'
+import styles from '../modules/css/calendar.module.css'
 import Month from '../modules/Month';
 import Week from '../modules/Week';
 import WeekDay from '../modules/WeekDay';
@@ -140,12 +140,12 @@ export default function MyCalendar(){
       const day = dayjs(date)
       const data = day.diff(currentDay, "day");
       if(data > 0){
-          setCurrentDay(getDay(selectedDay+(data+1),dayOfMonth))
-          setSelectedDay(prev => prev + (data+1))
+        setCurrentDay(getDay(selectedDay+(data+1),dayOfMonth))
+        setSelectedDay(prev => prev + (data+1))
       }
       else{
-          setCurrentDay(getDay(selectedDay+data,dayOfMonth))
-          setSelectedDay(prev => prev + data)
+        setCurrentDay(getDay(selectedDay+data,dayOfMonth))
+        setSelectedDay(prev => prev + data)
       }
   }
   const miniCalendarDayHandler = (e) => {
@@ -227,17 +227,17 @@ export default function MyCalendar(){
                                       </MiniCalendar>
                                       <div onClick={nextDay} className="cursor-pointer">
                                           <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                              <path d="M0 0H22C25.3137 0 28 2.68629 28 6V22C28 25.3137 25.3137 28 22 28H0V0Z" fill="#EDEDED"/>
-                                              <path fillRule="evenodd" clipRule="evenodd" d="M11.2928 18.7069C11.1053 18.5194 11 18.2651 11 17.9999C11 17.7348 11.1053 17.4804 11.2928 17.2929L14.5858 13.9999L11.2928 10.7069C11.1106 10.5183 11.0098 10.2657 11.0121 10.0035C11.0144 9.74132 11.1196 9.49051 11.305 9.3051C11.4904 9.11969 11.7412 9.01452 12.0034 9.01224C12.2656 9.00997 12.5182 9.11076 12.7068 9.29292L16.7068 13.2929C16.8943 13.4804 16.9996 13.7348 16.9996 13.9999C16.9996 14.2651 16.8943 14.5194 16.7068 14.7069L12.7068 18.7069C12.5193 18.8944 12.265 18.9997 11.9998 18.9997C11.7346 18.9997 11.4803 18.8944 11.2928 18.7069Z" fill="#18181B"/>
+                                            <path d="M0 0H22C25.3137 0 28 2.68629 28 6V22C28 25.3137 25.3137 28 22 28H0V0Z" fill="#EDEDED"/>
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M11.2928 18.7069C11.1053 18.5194 11 18.2651 11 17.9999C11 17.7348 11.1053 17.4804 11.2928 17.2929L14.5858 13.9999L11.2928 10.7069C11.1106 10.5183 11.0098 10.2657 11.0121 10.0035C11.0144 9.74132 11.1196 9.49051 11.305 9.3051C11.4904 9.11969 11.7412 9.01452 12.0034 9.01224C12.2656 9.00997 12.5182 9.11076 12.7068 9.29292L16.7068 13.2929C16.8943 13.4804 16.9996 13.7348 16.9996 13.9999C16.9996 14.2651 16.8943 14.5194 16.7068 14.7069L12.7068 18.7069C12.5193 18.8944 12.265 18.9997 11.9998 18.9997C11.7346 18.9997 11.4803 18.8944 11.2928 18.7069Z" fill="#18181B"/>
                                           </svg>
                                       </div>
                                   </div>}
                                   {viewTab == "week"  && <div className="d-flex d-align-center">
                                       <div onClick={prevWeek} className="cursor-pointer">
-                                          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                              <path d="M0 6C0 2.68629 2.68629 0 6 0H28V28H6C2.68629 28 0 25.3137 0 22V6Z" fill="#EDEDED"/>
-                                              <path fillRule="evenodd" clipRule="evenodd" d="M16.7068 9.29279C16.8943 9.48031 16.9996 9.73462 16.9996 9.99979C16.9996 10.265 16.8943 10.5193 16.7068 10.7068L13.4138 13.9998L16.7068 17.2928C16.8889 17.4814 16.9897 17.734 16.9875 17.9962C16.9852 18.2584 16.88 18.5092 16.6946 18.6946C16.5092 18.88 16.2584 18.9852 15.9962 18.9875C15.734 18.9897 15.4814 18.8889 15.2928 18.7068L11.2928 14.7068C11.1053 14.5193 11 14.265 11 13.9998C11 13.7346 11.1053 13.4803 11.2928 13.2928L15.2928 9.29279C15.4803 9.10532 15.7346 9 15.9998 9C16.265 9 16.5193 9.10532 16.7068 9.29279Z" fill="#18181B"/>
-                                          </svg>
+                                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M0 6C0 2.68629 2.68629 0 6 0H28V28H6C2.68629 28 0 25.3137 0 22V6Z" fill="#EDEDED"/>
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M16.7068 9.29279C16.8943 9.48031 16.9996 9.73462 16.9996 9.99979C16.9996 10.265 16.8943 10.5193 16.7068 10.7068L13.4138 13.9998L16.7068 17.2928C16.8889 17.4814 16.9897 17.734 16.9875 17.9962C16.9852 18.2584 16.88 18.5092 16.6946 18.6946C16.5092 18.88 16.2584 18.9852 15.9962 18.9875C15.734 18.9897 15.4814 18.8889 15.2928 18.7068L11.2928 14.7068C11.1053 14.5193 11 14.265 11 13.9998C11 13.7346 11.1053 13.4803 11.2928 13.2928L15.2928 9.29279C15.4803 9.10532 15.7346 9 15.9998 9C16.265 9 16.5193 9.10532 16.7068 9.29279Z" fill="#18181B"/>
+                                        </svg>
                                       </div>
                                       <MiniCalendar handler={miniCalendarDayHandler}>        
                                           <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getWeek(selectedWeek)[0]).format("D MMM")} - {dayjs(getWeek(selectedWeek)[6]).format("D MMM")}</h5>
