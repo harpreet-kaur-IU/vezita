@@ -1,7 +1,7 @@
 import Day from "./Day";
 import dayjs from "dayjs"
 import {Fragment} from 'react';
-import styles from "./css/calendar.module.css";
+import styles from "./css/Calendar.module.css";
 import DayInYear from "./DayInYear";
 export default function MonthInYear({ month }) {
   
