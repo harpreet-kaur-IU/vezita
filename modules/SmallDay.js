@@ -1,5 +1,4 @@
 import React from 'react'
-import styles from "./css/calendar.module.css";
 import dayjs from 'dayjs';
 export default function SmallDay(props) {
   return (

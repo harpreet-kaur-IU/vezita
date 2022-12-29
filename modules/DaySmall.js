@@ -1,4 +1,4 @@
-import styles from "./css/calendar.module.css"
+import styles from "./css/Calendar.module.css"
 import dayjs from "dayjs"
 export default function DaySmall(props) {
   const today = dayjs().format("D MMM YYYY");
