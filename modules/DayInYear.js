@@ -1,4 +1,4 @@
-import styles from "./css/calendar.module.css"
+import styles from "./css/Calendar.module.css"
 export default function DayInYear(props) {
   
   if(props.prevDays > 0 && props.index <= props.current){

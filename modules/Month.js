@@ -1,6 +1,6 @@
 import Day from "./Day";
 import {Fragment} from 'react';
-import styles from "./css/calendar.module.css";
+import styles from "./css/Calendar.module.css";
 import { useRef } from "react";
 export default function Month(props) {
   const dayRef = useRef(null)

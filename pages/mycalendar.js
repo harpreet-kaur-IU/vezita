@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import { useRouter } from "next/router";
 import { useEffect, useState,useRef } from "react";
-import styles from '../modules/css/calendar.module.css'
+import styles from '../modules/css/Calendar.module.css';
 import Month from '../modules/Month';
 import Week from '../modules/Week';
 import WeekDay from '../modules/WeekDay';
@@ -138,7 +138,7 @@ export default function MyCalendar(){
       setViewTab("day")
       const date = e.currentTarget.getAttribute("day");
       const day = dayjs(date)
-      const data = day.diff(currentDay, "day");
+      const data = day.diff(currentDay,"day");
       if(data > 0){
         setCurrentDay(getDay(selectedDay+(data+1),dayOfMonth))
         setSelectedDay(prev => prev + (data+1))
@@ -194,75 +194,74 @@ export default function MyCalendar(){
           <div className={styles["top-head"]}>
               <div className="d-flex d-justify-space-between d-align-center">
                   <div className='d-flex d-align-center'>
-                      <div className='d-flex d-flex-wrap d-flex-column'>
-                          <span className={`font-28 f-600  l-42 text-secondary`}>Calendar</span>
-                          <div className="d-flex d-align-center">
-                              <div className={`d-flex d-align-center ${styles["next-prev-button"]}`}>
-                                  {viewTab == "month"  && <div className="d-flex d-align-center">
-                                      <div onClick={prevMonth} className="cursor-pointer">
-                                          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                              <path d="M0 6C0 2.68629 2.68629 0 6 0H28V28H6C2.68629 28 0 25.3137 0 22V6Z" fill="#EDEDED"/>
-                                              <path fillRule="evenodd" clipRule="evenodd" d="M16.7068 9.29279C16.8943 9.48031 16.9996 9.73462 16.9996 9.99979C16.9996 10.265 16.8943 10.5193 16.7068 10.7068L13.4138 13.9998L16.7068 17.2928C16.8889 17.4814 16.9897 17.734 16.9875 17.9962C16.9852 18.2584 16.88 18.5092 16.6946 18.6946C16.5092 18.88 16.2584 18.9852 15.9962 18.9875C15.734 18.9897 15.4814 18.8889 15.2928 18.7068L11.2928 14.7068C11.1053 14.5193 11 14.265 11 13.9998C11 13.7346 11.1053 13.4803 11.2928 13.2928L15.2928 9.29279C15.4803 9.10532 15.7346 9 15.9998 9C16.265 9 16.5193 9.10532 16.7068 9.29279Z" fill="#18181B"/>
-                                          </svg>
-                                      </div>
-                                      <MiniCalendar handler={miniCalendarDayHandler}>        
-                                          <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getMonth(selectedMonth).daysMatrix[1][3].day).format('MMM YYYY')}</h5>
-                                      </MiniCalendar>
-                                      <div onClick={nextMonth} className="cursor-pointer">
-                                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                          <path d="M0 0H22C25.3137 0 28 2.68629 28 6V22C28 25.3137 25.3137 28 22 28H0V0Z" fill="#EDEDED"/>
-                                          <path fillRule="evenodd" clipRule="evenodd" d="M11.2928 18.7069C11.1053 18.5194 11 18.2651 11 17.9999C11 17.7348 11.1053 17.4804 11.2928 17.2929L14.5858 13.9999L11.2928 10.7069C11.1106 10.5183 11.0098 10.2657 11.0121 10.0035C11.0144 9.74132 11.1196 9.49051 11.305 9.3051C11.4904 9.11969 11.7412 9.01452 12.0034 9.01224C12.2656 9.00997 12.5182 9.11076 12.7068 9.29292L16.7068 13.2929C16.8943 13.4804 16.9996 13.7348 16.9996 13.9999C16.9996 14.2651 16.8943 14.5194 16.7068 14.7069L12.7068 18.7069C12.5193 18.8944 12.265 18.9997 11.9998 18.9997C11.7346 18.9997 11.4803 18.8944 11.2928 18.7069Z" fill="#18181B"/>
-                                        </svg>
-                                      </div>
-                                  </div>}
-                                  {viewTab == "day" && <div className="d-flex d-align-center">
-                                      <div onClick={prevDay} className="cursor-pointer">
-                                          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                              <path d="M0 6C0 2.68629 2.68629 0 6 0H28V28H6C2.68629 28 0 25.3137 0 22V6Z" fill="#EDEDED"/>
-                                              <path fillRule="evenodd" clipRule="evenodd" d="M16.7068 9.29279C16.8943 9.48031 16.9996 9.73462 16.9996 9.99979C16.9996 10.265 16.8943 10.5193 16.7068 10.7068L13.4138 13.9998L16.7068 17.2928C16.8889 17.4814 16.9897 17.734 16.9875 17.9962C16.9852 18.2584 16.88 18.5092 16.6946 18.6946C16.5092 18.88 16.2584 18.9852 15.9962 18.9875C15.734 18.9897 15.4814 18.8889 15.2928 18.7068L11.2928 14.7068C11.1053 14.5193 11 14.265 11 13.9998C11 13.7346 11.1053 13.4803 11.2928 13.2928L15.2928 9.29279C15.4803 9.10532 15.7346 9 15.9998 9C16.265 9 16.5193 9.10532 16.7068 9.29279Z" fill="#18181B"/>
-                                          </svg>
-                                      </div>
-                                      <MiniCalendar handler={miniCalendarDayHandler}>        
-                                          <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getDay(selectedDay)).format('D MMM YYYY')}</h5>
-                                      </MiniCalendar>
-                                      <div onClick={nextDay} className="cursor-pointer">
-                                          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M0 0H22C25.3137 0 28 2.68629 28 6V22C28 25.3137 25.3137 28 22 28H0V0Z" fill="#EDEDED"/>
-                                            <path fillRule="evenodd" clipRule="evenodd" d="M11.2928 18.7069C11.1053 18.5194 11 18.2651 11 17.9999C11 17.7348 11.1053 17.4804 11.2928 17.2929L14.5858 13.9999L11.2928 10.7069C11.1106 10.5183 11.0098 10.2657 11.0121 10.0035C11.0144 9.74132 11.1196 9.49051 11.305 9.3051C11.4904 9.11969 11.7412 9.01452 12.0034 9.01224C12.2656 9.00997 12.5182 9.11076 12.7068 9.29292L16.7068 13.2929C16.8943 13.4804 16.9996 13.7348 16.9996 13.9999C16.9996 14.2651 16.8943 14.5194 16.7068 14.7069L12.7068 18.7069C12.5193 18.8944 12.265 18.9997 11.9998 18.9997C11.7346 18.9997 11.4803 18.8944 11.2928 18.7069Z" fill="#18181B"/>
-                                          </svg>
-                                      </div>
-                                  </div>}
-                                  {viewTab == "week"  && <div className="d-flex d-align-center">
-                                      <div onClick={prevWeek} className="cursor-pointer">
-                                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M0 6C0 2.68629 2.68629 0 6 0H28V28H6C2.68629 28 0 25.3137 0 22V6Z" fill="#EDEDED"/>
-                                            <path fillRule="evenodd" clipRule="evenodd" d="M16.7068 9.29279C16.8943 9.48031 16.9996 9.73462 16.9996 9.99979C16.9996 10.265 16.8943 10.5193 16.7068 10.7068L13.4138 13.9998L16.7068 17.2928C16.8889 17.4814 16.9897 17.734 16.9875 17.9962C16.9852 18.2584 16.88 18.5092 16.6946 18.6946C16.5092 18.88 16.2584 18.9852 15.9962 18.9875C15.734 18.9897 15.4814 18.8889 15.2928 18.7068L11.2928 14.7068C11.1053 14.5193 11 14.265 11 13.9998C11 13.7346 11.1053 13.4803 11.2928 13.2928L15.2928 9.29279C15.4803 9.10532 15.7346 9 15.9998 9C16.265 9 16.5193 9.10532 16.7068 9.29279Z" fill="#18181B"/>
-                                        </svg>
-                                      </div>
-                                      <MiniCalendar handler={miniCalendarDayHandler}>        
-                                          <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getWeek(selectedWeek)[0]).format("D MMM")} - {dayjs(getWeek(selectedWeek)[6]).format("D MMM")}</h5>
-                                      </MiniCalendar>
-                                          <div onClick={nextWeek} className="cursor-pointer">
-                                          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                              <path d="M0 0H22C25.3137 0 28 2.68629 28 6V22C28 25.3137 25.3137 28 22 28H0V0Z" fill="#EDEDED"/>
-                                              <path fillRule="evenodd" clipRule="evenodd" d="M11.2928 18.7069C11.1053 18.5194 11 18.2651 11 17.9999C11 17.7348 11.1053 17.4804 11.2928 17.2929L14.5858 13.9999L11.2928 10.7069C11.1106 10.5183 11.0098 10.2657 11.0121 10.0035C11.0144 9.74132 11.1196 9.49051 11.305 9.3051C11.4904 9.11969 11.7412 9.01452 12.0034 9.01224C12.2656 9.00997 12.5182 9.11076 12.7068 9.29292L16.7068 13.2929C16.8943 13.4804 16.9996 13.7348 16.9996 13.9999C16.9996 14.2651 16.8943 14.5194 16.7068 14.7069L12.7068 18.7069C12.5193 18.8944 12.265 18.9997 11.9998 18.9997C11.7346 18.9997 11.4803 18.8944 11.2928 18.7069Z" fill="#18181B"/>
-                                          </svg>
-                                      </div>
-                                  </div>}
+                    <div className='d-flex d-flex-wrap d-flex-column'>
+                      {/* <span className={`font-28 f-600  l-42 text-secondary`}>Calendar</span> */}
+                      <div className="d-flex d-align-center">
+                        <div className={`d-flex d-align-center ${styles["next-prev-button"]}`}>
+                          {viewTab == "month"  && <div className="d-flex d-align-center">
+                              <div onClick={prevMonth} className="cursor-pointer">
+                                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M0 6C0 2.68629 2.68629 0 6 0H28V28H6C2.68629 28 0 25.3137 0 22V6Z" fill="#EDEDED"/>
+                                  <path fillRule="evenodd" clipRule="evenodd" d="M16.7068 9.29279C16.8943 9.48031 16.9996 9.73462 16.9996 9.99979C16.9996 10.265 16.8943 10.5193 16.7068 10.7068L13.4138 13.9998L16.7068 17.2928C16.8889 17.4814 16.9897 17.734 16.9875 17.9962C16.9852 18.2584 16.88 18.5092 16.6946 18.6946C16.5092 18.88 16.2584 18.9852 15.9962 18.9875C15.734 18.9897 15.4814 18.8889 15.2928 18.7068L11.2928 14.7068C11.1053 14.5193 11 14.265 11 13.9998C11 13.7346 11.1053 13.4803 11.2928 13.2928L15.2928 9.29279C15.4803 9.10532 15.7346 9 15.9998 9C16.265 9 16.5193 9.10532 16.7068 9.29279Z" fill="#18181B"/>
+                                </svg>
                               </div>
-                              {viewTab == "day" && <div className={styles["today"]} onClick={todayHandler}>Today</div>}
-                              {viewTab == "month" && <div className={styles["today"]} onClick={todayMonth}>Today</div>}
-                              {viewTab == "week" && <div className={styles["today"]} onClick={todayWeek}>Today</div>}
+                              <MiniCalendar handler={miniCalendarDayHandler}>        
+                                  <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getMonth(selectedMonth).daysMatrix[1][3].day).format('MMM YYYY')}</h5>
+                              </MiniCalendar>
+                              <div onClick={nextMonth} className="cursor-pointer">
+                                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M0 0H22C25.3137 0 28 2.68629 28 6V22C28 25.3137 25.3137 28 22 28H0V0Z" fill="#EDEDED"/>
+                                  <path fillRule="evenodd" clipRule="evenodd" d="M11.2928 18.7069C11.1053 18.5194 11 18.2651 11 17.9999C11 17.7348 11.1053 17.4804 11.2928 17.2929L14.5858 13.9999L11.2928 10.7069C11.1106 10.5183 11.0098 10.2657 11.0121 10.0035C11.0144 9.74132 11.1196 9.49051 11.305 9.3051C11.4904 9.11969 11.7412 9.01452 12.0034 9.01224C12.2656 9.00997 12.5182 9.11076 12.7068 9.29292L16.7068 13.2929C16.8943 13.4804 16.9996 13.7348 16.9996 13.9999C16.9996 14.2651 16.8943 14.5194 16.7068 14.7069L12.7068 18.7069C12.5193 18.8944 12.265 18.9997 11.9998 18.9997C11.7346 18.9997 11.4803 18.8944 11.2928 18.7069Z" fill="#18181B"/>
+                                </svg>
+                              </div>
+                          </div>}
+                          {viewTab == "day" && <div className="d-flex d-align-center">
+                              <div onClick={prevDay} className="cursor-pointer">
+                                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M0 6C0 2.68629 2.68629 0 6 0H28V28H6C2.68629 28 0 25.3137 0 22V6Z" fill="#EDEDED"/>
+                                      <path fillRule="evenodd" clipRule="evenodd" d="M16.7068 9.29279C16.8943 9.48031 16.9996 9.73462 16.9996 9.99979C16.9996 10.265 16.8943 10.5193 16.7068 10.7068L13.4138 13.9998L16.7068 17.2928C16.8889 17.4814 16.9897 17.734 16.9875 17.9962C16.9852 18.2584 16.88 18.5092 16.6946 18.6946C16.5092 18.88 16.2584 18.9852 15.9962 18.9875C15.734 18.9897 15.4814 18.8889 15.2928 18.7068L11.2928 14.7068C11.1053 14.5193 11 14.265 11 13.9998C11 13.7346 11.1053 13.4803 11.2928 13.2928L15.2928 9.29279C15.4803 9.10532 15.7346 9 15.9998 9C16.265 9 16.5193 9.10532 16.7068 9.29279Z" fill="#18181B"/>
+                                  </svg>
+                              </div>
+                              <MiniCalendar handler={miniCalendarDayHandler}>        
+                                  <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getDay(selectedDay)).format('D MMM YYYY')}</h5>
+                              </MiniCalendar>
+                              <div onClick={nextDay} className="cursor-pointer">
+                                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 0H22C25.3137 0 28 2.68629 28 6V22C28 25.3137 25.3137 28 22 28H0V0Z" fill="#EDEDED"/>
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M11.2928 18.7069C11.1053 18.5194 11 18.2651 11 17.9999C11 17.7348 11.1053 17.4804 11.2928 17.2929L14.5858 13.9999L11.2928 10.7069C11.1106 10.5183 11.0098 10.2657 11.0121 10.0035C11.0144 9.74132 11.1196 9.49051 11.305 9.3051C11.4904 9.11969 11.7412 9.01452 12.0034 9.01224C12.2656 9.00997 12.5182 9.11076 12.7068 9.29292L16.7068 13.2929C16.8943 13.4804 16.9996 13.7348 16.9996 13.9999C16.9996 14.2651 16.8943 14.5194 16.7068 14.7069L12.7068 18.7069C12.5193 18.8944 12.265 18.9997 11.9998 18.9997C11.7346 18.9997 11.4803 18.8944 11.2928 18.7069Z" fill="#18181B"/>
+                                  </svg>
+                              </div>
+                          </div>}
+                          {viewTab == "week"  && <div className="d-flex d-align-center">
+                              <div onClick={prevWeek} className="cursor-pointer">
+                                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 6C0 2.68629 2.68629 0 6 0H28V28H6C2.68629 28 0 25.3137 0 22V6Z" fill="#EDEDED"/>
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M16.7068 9.29279C16.8943 9.48031 16.9996 9.73462 16.9996 9.99979C16.9996 10.265 16.8943 10.5193 16.7068 10.7068L13.4138 13.9998L16.7068 17.2928C16.8889 17.4814 16.9897 17.734 16.9875 17.9962C16.9852 18.2584 16.88 18.5092 16.6946 18.6946C16.5092 18.88 16.2584 18.9852 15.9962 18.9875C15.734 18.9897 15.4814 18.8889 15.2928 18.7068L11.2928 14.7068C11.1053 14.5193 11 14.265 11 13.9998C11 13.7346 11.1053 13.4803 11.2928 13.2928L15.2928 9.29279C15.4803 9.10532 15.7346 9 15.9998 9C16.265 9 16.5193 9.10532 16.7068 9.29279Z" fill="#18181B"/>
+                                </svg>
+                              </div>
+                              <MiniCalendar handler={miniCalendarDayHandler}>        
+                                  <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getWeek(selectedWeek)[0]).format("D MMM")} - {dayjs(getWeek(selectedWeek)[6]).format("D MMM")}</h5>
+                              </MiniCalendar>
+                                <div onClick={nextWeek} className="cursor-pointer">
+                                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M0 0H22C25.3137 0 28 2.68629 28 6V22C28 25.3137 25.3137 28 22 28H0V0Z" fill="#EDEDED"/>
+                                      <path fillRule="evenodd" clipRule="evenodd" d="M11.2928 18.7069C11.1053 18.5194 11 18.2651 11 17.9999C11 17.7348 11.1053 17.4804 11.2928 17.2929L14.5858 13.9999L11.2928 10.7069C11.1106 10.5183 11.0098 10.2657 11.0121 10.0035C11.0144 9.74132 11.1196 9.49051 11.305 9.3051C11.4904 9.11969 11.7412 9.01452 12.0034 9.01224C12.2656 9.00997 12.5182 9.11076 12.7068 9.29292L16.7068 13.2929C16.8943 13.4804 16.9996 13.7348 16.9996 13.9999C16.9996 14.2651 16.8943 14.5194 16.7068 14.7069L12.7068 18.7069C12.5193 18.8944 12.265 18.9997 11.9998 18.9997C11.7346 18.9997 11.4803 18.8944 11.2928 18.7069Z" fill="#18181B"/>
+                                  </svg>
+                              </div>
+                          </div>}
+                        </div>
+                        {viewTab == "day" && <div className={styles["today"]} onClick={todayHandler}>Today</div>}
+                        {viewTab == "month" && <div className={styles["today"]} onClick={todayMonth}>Today</div>}
+                        {viewTab == "week" && <div className={styles["today"]} onClick={todayWeek}>Today</div>}
 
-                          </div>
                       </div>
-                      
+                    </div> 
                   </div>
                   
                   <div ref={viewRef} className={`d-flex d-align-center ${styles["picker"]} cursor-pointer`}>
-                      <h6 role="button" value="day" className={` ${viewTab == "day"&& styles["active"]}`} onClick={pickerTabsHandler}>Day</h6>
-                      <h6 role="button" value="week" className={`${viewTab == "week"&& styles["active"]}`} onClick={pickerTabsHandler}>Week</h6>
-                      <h6 role="button" value="month" className={`${viewTab == "month"&& styles["active"]}`} onClick={pickerTabsHandler}>Month</h6>
+                    <h6 role="button" value="day" className={` ${viewTab == "day"&& styles["active"]}`} onClick={pickerTabsHandler}>Day</h6>
+                    <h6 role="button" value="week" className={`${viewTab == "week"&& styles["active"]}`} onClick={pickerTabsHandler}>Week</h6>
+                    <h6 role="button" value="month" className={`${viewTab == "month"&& styles["active"]}`} onClick={pickerTabsHandler}>Month</h6>
                   </div>
                   {/* <div className='d-flex d-align-center gap-2'>
                       {returnTabValue == "blockout" && <div className={` bg-primary rounded-50 text-white p-1 d-flex d-align-center d-justify-center cursor-pointer ${styles["plus-sign"]}`} onClick={blockOutModalHandler}>
@@ -392,106 +391,101 @@ export default function MyCalendar(){
                           <span className={`${styles["mainzone"]} col-12`}>12:00 AM</span>
                       </div>
                       <div className="col-12">
-                          <WeekDay type="1" data={[2,4,5,7,12,17,20]} day={currentDay}></WeekDay>
+                        <WeekDay type="1" data={[1,4,12,17,20]} day={currentDay}></WeekDay>
                       </div>
                   </div>
               </div>}
-              
           </div>
           {/* Calendar on small screen */}
           <div className={`col-12 ${styles["small-screen-calendar-wrapper"]}`}>
               <div className={styles["calendar-bar"]}>
                   <PartnerBar classes="d-none">Calendar</PartnerBar>
               </div>
-              <div className={styles["small-body-wrapper"]}>
-                  <div className="d-flex d-flex-wrap d-justify-space-between pl-3 pr-3">
-                      {smallTab == "week" &&  <div className="d-flex d-align-center">
-                          <span role="button" className="text-primary user-select-none bg-smoke rounded-500 pl-1 pr-1 mr-1 f-600 cursor-pointer" onClick={prevWeek}>
-                            <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fillRule="evenodd" clipRule="evenodd" d="M5.70679 0.292787C5.89426 0.480314 5.99957 0.734622 5.99957 0.999786C5.99957 1.26495 5.89426 1.51926 5.70679 1.70679L2.41379 4.99979L5.70679 8.29279C5.88894 8.48139 5.98974 8.73399 5.98746 8.99619C5.98518 9.25838 5.88001 9.5092 5.6946 9.6946C5.5092 9.88001 5.25838 9.98518 4.99619 9.98746C4.73399 9.98974 4.48139 9.88894 4.29279 9.70679L0.292787 5.70679C0.105316 5.51926 0 5.26495 0 4.99979C0 4.73462 0.105316 4.48031 0.292787 4.29279L4.29279 0.292787C4.48031 0.105316 4.73462 0 4.99979 0C5.26495 0 5.51926 0.105316 5.70679 0.292787V0.292787Z" fill="#18181B"/>
-                            </svg>
-                          </span>
-                          <MiniCalendar handler={miniCalendarDayHandler}>        
-                            <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getWeek(selectedWeek)[0]).format("D MMM")} - {dayjs(getWeek(selectedWeek)[6]).format("D MMM")}</h5>
-                          </MiniCalendar>
-                          <span role="button" className="text-primary user-select-none bg-smoke pl-1 pr-1 ml-1 rounded-500 f-600 cursor-pointer" onClick={nextWeek}>
-                            <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fillRule="evenodd" clipRule="evenodd" d="M0.292787 9.70692C0.105316 9.51939 0 9.26508 0 8.99992C0 8.73475 0.105316 8.48045 0.292787 8.29292L3.58579 4.99992L0.292787 1.70692C0.110629 1.51832 0.00983372 1.26571 0.0121121 1.00352C0.0143906 0.741321 0.11956 0.490509 0.304968 0.305101C0.490376 0.119692 0.741189 0.0145233 1.00339 0.0122448C1.26558 0.00996641 1.51818 0.110761 1.70679 0.292919L5.70679 4.29292C5.89426 4.48045 5.99957 4.73475 5.99957 4.99992C5.99957 5.26508 5.89426 5.51939 5.70679 5.70692L1.70679 9.70692C1.51926 9.89439 1.26495 9.99971 0.999786 9.99971C0.734622 9.99971 0.480314 9.89439 0.292787 9.70692Z" fill="#18181B"/>
-                            </svg>
-                          </span> 
-                      </div>
-                      }
-                      {smallTab == "month" && <div className="d-flex d-align-center">
-                          <span role="button" className="text-primary user-select-none bg-smoke rounded-500 pl-1 pr-1 mr-1 f-600 cursor-pointer" onClick={prevMonth}>
-                              <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path fillRule="evenodd" clipRule="evenodd" d="M5.70679 0.292787C5.89426 0.480314 5.99957 0.734622 5.99957 0.999786C5.99957 1.26495 5.89426 1.51926 5.70679 1.70679L2.41379 4.99979L5.70679 8.29279C5.88894 8.48139 5.98974 8.73399 5.98746 8.99619C5.98518 9.25838 5.88001 9.5092 5.6946 9.6946C5.5092 9.88001 5.25838 9.98518 4.99619 9.98746C4.73399 9.98974 4.48139 9.88894 4.29279 9.70679L0.292787 5.70679C0.105316 5.51926 0 5.26495 0 4.99979C0 4.73462 0.105316 4.48031 0.292787 4.29279L4.29279 0.292787C4.48031 0.105316 4.73462 0 4.99979 0C5.26495 0 5.51926 0.105316 5.70679 0.292787V0.292787Z" fill="#18181B"/>
-                              </svg>
-                          </span>
-                          <MiniCalendar handler={miniCalendarDayHandler}>        
-                              <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getMonth(selectedMonth).daysMatrix[1][3].day).format('MMM YYYY')}</h5>
-                          </MiniCalendar>
-                          <span role="button" className="text-primary user-select-none bg-smoke pl-1 pr-1 ml-1 rounded-500 f-600 cursor-pointer" onClick={nextMonth}>
-                            <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fillRule="evenodd" clipRule="evenodd" d="M0.292787 9.70692C0.105316 9.51939 0 9.26508 0 8.99992C0 8.73475 0.105316 8.48045 0.292787 8.29292L3.58579 4.99992L0.292787 1.70692C0.110629 1.51832 0.00983372 1.26571 0.0121121 1.00352C0.0143906 0.741321 0.11956 0.490509 0.304968 0.305101C0.490376 0.119692 0.741189 0.0145233 1.00339 0.0122448C1.26558 0.00996641 1.51818 0.110761 1.70679 0.292919L5.70679 4.29292C5.89426 4.48045 5.99957 4.73475 5.99957 4.99992C5.99957 5.26508 5.89426 5.51939 5.70679 5.70692L1.70679 9.70692C1.51926 9.89439 1.26495 9.99971 0.999786 9.99971C0.734622 9.99971 0.480314 9.89439 0.292787 9.70692Z" fill="#18181B"/>
-                            </svg>
-                          </span> 
-                      </div>
-                      }
-                      {smallTab == "day" && <div className="d-flex d-align-center">
-                          <span role="button" className="text-primary user-select-none bg-smoke rounded-500 pl-1 pr-1 mr-1 f-600 cursor-pointer" onClick={prevDay}>
-                            <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path fillRule="evenodd" clipRule="evenodd" d="M5.70679 0.292787C5.89426 0.480314 5.99957 0.734622 5.99957 0.999786C5.99957 1.26495 5.89426 1.51926 5.70679 1.70679L2.41379 4.99979L5.70679 8.29279C5.88894 8.48139 5.98974 8.73399 5.98746 8.99619C5.98518 9.25838 5.88001 9.5092 5.6946 9.6946C5.5092 9.88001 5.25838 9.98518 4.99619 9.98746C4.73399 9.98974 4.48139 9.88894 4.29279 9.70679L0.292787 5.70679C0.105316 5.51926 0 5.26495 0 4.99979C0 4.73462 0.105316 4.48031 0.292787 4.29279L4.29279 0.292787C4.48031 0.105316 4.73462 0 4.99979 0C5.26495 0 5.51926 0.105316 5.70679 0.292787V0.292787Z" fill="#18181B"/>
-                            </svg>
-                          </span>
-                          <MiniCalendar handler={miniCalendarDayHandler}>        
-                              <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getDay(selectedDay)).format('D MMM YYYY')}</h5>
-                          </MiniCalendar>
-                          <span role="button" className="text-primary user-select-none bg-smoke pl-1 pr-1 ml-1 rounded-500 f-600 cursor-pointer" onClick={nextDay}>
-                              <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path fillRule="evenodd" clipRule="evenodd" d="M0.292787 9.70692C0.105316 9.51939 0 9.26508 0 8.99992C0 8.73475 0.105316 8.48045 0.292787 8.29292L3.58579 4.99992L0.292787 1.70692C0.110629 1.51832 0.00983372 1.26571 0.0121121 1.00352C0.0143906 0.741321 0.11956 0.490509 0.304968 0.305101C0.490376 0.119692 0.741189 0.0145233 1.00339 0.0122448C1.26558 0.00996641 1.51818 0.110761 1.70679 0.292919L5.70679 4.29292C5.89426 4.48045 5.99957 4.73475 5.99957 4.99992C5.99957 5.26508 5.89426 5.51939 5.70679 5.70692L1.70679 9.70692C1.51926 9.89439 1.26495 9.99971 0.999786 9.99971C0.734622 9.99971 0.480314 9.89439 0.292787 9.70692Z" fill="#18181B"/>
-                              </svg>
-                          </span> 
-                      </div>
-                      }
-                      {smallTab == "year" && <div className="d-flex d-align-center">
-                          <span role="button" className="text-primary user-select-none bg-smoke rounded-500 pl-1 pr-1 mr-1 f-600 cursor-pointer" onClick={prevYear}>
-                              <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path fillRule="evenodd" clipRule="evenodd" d="M5.70679 0.292787C5.89426 0.480314 5.99957 0.734622 5.99957 0.999786C5.99957 1.26495 5.89426 1.51926 5.70679 1.70679L2.41379 4.99979L5.70679 8.29279C5.88894 8.48139 5.98974 8.73399 5.98746 8.99619C5.98518 9.25838 5.88001 9.5092 5.6946 9.6946C5.5092 9.88001 5.25838 9.98518 4.99619 9.98746C4.73399 9.98974 4.48139 9.88894 4.29279 9.70679L0.292787 5.70679C0.105316 5.51926 0 5.26495 0 4.99979C0 4.73462 0.105316 4.48031 0.292787 4.29279L4.29279 0.292787C4.48031 0.105316 4.73462 0 4.99979 0C5.26495 0 5.51926 0.105316 5.70679 0.292787V0.292787Z" fill="#18181B"/>
-                              </svg>
-                          </span>
-                          <div className="p-relative">
-                              <h3 className="f-600 l-30 text-secondary">{dayjs(getYear(selectedYear)[0][1][1].day).format("YYYY")}</h3>
-                          </div>
-                          <span role="button" className="text-primary user-select-none bg-smoke pl-1 pr-1 ml-1 rounded-500 f-600 cursor-pointer" onClick={nextYear}>
-                              <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path fillRule="evenodd" clipRule="evenodd" d="M0.292787 9.70692C0.105316 9.51939 0 9.26508 0 8.99992C0 8.73475 0.105316 8.48045 0.292787 8.29292L3.58579 4.99992L0.292787 1.70692C0.110629 1.51832 0.00983372 1.26571 0.0121121 1.00352C0.0143906 0.741321 0.11956 0.490509 0.304968 0.305101C0.490376 0.119692 0.741189 0.0145233 1.00339 0.0122448C1.26558 0.00996641 1.51818 0.110761 1.70679 0.292919L5.70679 4.29292C5.89426 4.48045 5.99957 4.73475 5.99957 4.99992C5.99957 5.26508 5.89426 5.51939 5.70679 5.70692L1.70679 9.70692C1.51926 9.89439 1.26495 9.99971 0.999786 9.99971C0.734622 9.99971 0.480314 9.89439 0.292787 9.70692Z" fill="#18181B"/>
-                              </svg>
-                          </span> 
-                      </div>
-                      }
-                      <div>
-                          {smallTab == "day" && <div className={styles["today"]} onClick={todayHandler}>Today</div>}
-                          {smallTab == "month" && <div className={styles["today"]} onClick={todayMonth}>Today</div>}
-                          {smallTab == "week" && <div className={styles["today"]} onClick={todayWeek}>Today</div>}
-                      </div>
-                      <div className="d-flex d-align-center">
-                          <div className="mr-2" onClick={smallTabViewHandler}>
-                              <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M1 8H19V10H1V8Z" fill="#002C4B"/>
-                                  <path fillRule="evenodd" clipRule="evenodd" d="M5 0C5.55228 0 6 0.447715 6 1V2H4V1C4 0.447715 4.44772 0 5 0ZM5 4C5.55228 4 6 3.55228 6 3V2H14V3C14 3.55228 14.4477 4 15 4H5ZM5 4H3C2.44772 4 2 4.44772 2 5V19C2 19.5523 2.44772 20 3 20H17C17.5523 20 18 19.5523 18 19V5C18 4.44772 17.5523 4 17 4H15C15.5523 4 16 3.55228 16 3V2H17C18.6569 2 20 3.34315 20 5V19C20 20.6569 18.6569 22 17 22H3C1.34315 22 0 20.6569 0 19V5C0 3.34315 1.34315 2 3 2H4V3C4 3.55228 4.44772 4 5 4ZM16 2H14V1C14 0.447715 14.4477 0 15 0C15.5523 0 16 0.447715 16 1V2Z" fill="#002C4B"/>
-                                  <path d="M4 13C4 12.4477 4.44772 12 5 12C5.55228 12 6 12.4477 6 13C6 13.5523 5.55228 14 5 14C4.44772 14 4 13.5523 4 13Z" fill="#002C4B"/>
-                                  <path d="M8 13C8 12.4477 8.44772 12 9 12H15C15.5523 12 16 12.4477 16 13C16 13.5523 15.5523 14 15 14H9C8.44772 14 8 13.5523 8 13Z" fill="#002C4B"/>
-                                  <path d="M4 17C4 16.4477 4.44772 16 5 16C5.55228 16 6 16.4477 6 17C6 17.5523 5.55228 18 5 18C4.44772 18 4 17.5523 4 17Z" fill="#002C4B"/>
-                                  <path d="M8 17C8 16.4477 8.44772 16 9 16H15C15.5523 16 16 16.4477 16 17C16 17.5523 15.5523 18 15 18H9C8.44772 18 8 17.5523 8 17Z" fill="#002C4B"/>
-                              </svg>
-                          </div>
-                          <div onClick={searchHandler}>
-                              <svg width="21" height="22" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M9 0.842773C13.968 0.842773 18 4.87477 18 9.84277C18 14.8108 13.968 18.8428 9 18.8428C4.032 18.8428 0 14.8108 0 9.84277C0 4.87477 4.032 0.842773 9 0.842773ZM9 16.8428C12.867 16.8428 16 13.7098 16 9.84277C16 5.97477 12.867 2.84277 9 2.84277C5.132 2.84277 2 5.97477 2 9.84277C2 13.7098 5.132 16.8428 9 16.8428ZM17.485 16.9138L20.314 19.7418L18.899 21.1568L16.071 18.3278L17.485 16.9138Z" fill="#003D41"/>
-                              </svg>
-                          </div>
-                      </div>
-                  </div>
+                <div className={styles["small-body-wrapper"]}>
+                    <div className="d-flex d-flex-wrap d-justify-space-between pl-3 pr-3">
+                        {smallTab == "week" &&  <div className="d-flex d-align-center">
+                            <span role="button" className="text-primary user-select-none bg-smoke rounded-500 pl-1 pr-1 mr-1 f-600 cursor-pointer" onClick={prevWeek}>
+                                <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M5.70679 0.292787C5.89426 0.480314 5.99957 0.734622 5.99957 0.999786C5.99957 1.26495 5.89426 1.51926 5.70679 1.70679L2.41379 4.99979L5.70679 8.29279C5.88894 8.48139 5.98974 8.73399 5.98746 8.99619C5.98518 9.25838 5.88001 9.5092 5.6946 9.6946C5.5092 9.88001 5.25838 9.98518 4.99619 9.98746C4.73399 9.98974 4.48139 9.88894 4.29279 9.70679L0.292787 5.70679C0.105316 5.51926 0 5.26495 0 4.99979C0 4.73462 0.105316 4.48031 0.292787 4.29279L4.29279 0.292787C4.48031 0.105316 4.73462 0 4.99979 0C5.26495 0 5.51926 0.105316 5.70679 0.292787V0.292787Z" fill="#18181B"/>
+                                </svg>
+                            </span>
+                            <MiniCalendar handler={miniCalendarDayHandler}>        
+                                <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getWeek(selectedWeek)[0]).format("D MMM")} - {dayjs(getWeek(selectedWeek)[6]).format("D MMM")}</h5>
+                            </MiniCalendar>
+                            <span role="button" className="text-primary user-select-none bg-smoke pl-1 pr-1 ml-1 rounded-500 f-600 cursor-pointer" onClick={nextWeek}>
+                                <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M0.292787 9.70692C0.105316 9.51939 0 9.26508 0 8.99992C0 8.73475 0.105316 8.48045 0.292787 8.29292L3.58579 4.99992L0.292787 1.70692C0.110629 1.51832 0.00983372 1.26571 0.0121121 1.00352C0.0143906 0.741321 0.11956 0.490509 0.304968 0.305101C0.490376 0.119692 0.741189 0.0145233 1.00339 0.0122448C1.26558 0.00996641 1.51818 0.110761 1.70679 0.292919L5.70679 4.29292C5.89426 4.48045 5.99957 4.73475 5.99957 4.99992C5.99957 5.26508 5.89426 5.51939 5.70679 5.70692L1.70679 9.70692C1.51926 9.89439 1.26495 9.99971 0.999786 9.99971C0.734622 9.99971 0.480314 9.89439 0.292787 9.70692Z" fill="#18181B"/>
+                                </svg>
+                            </span> 
+                        </div>}
+                        {smallTab == "month" && <div className="d-flex d-align-center">
+                            <span role="button" className="text-primary user-select-none bg-smoke rounded-500 pl-1 pr-1 mr-1 f-600 cursor-pointer" onClick={prevMonth}>
+                                <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M5.70679 0.292787C5.89426 0.480314 5.99957 0.734622 5.99957 0.999786C5.99957 1.26495 5.89426 1.51926 5.70679 1.70679L2.41379 4.99979L5.70679 8.29279C5.88894 8.48139 5.98974 8.73399 5.98746 8.99619C5.98518 9.25838 5.88001 9.5092 5.6946 9.6946C5.5092 9.88001 5.25838 9.98518 4.99619 9.98746C4.73399 9.98974 4.48139 9.88894 4.29279 9.70679L0.292787 5.70679C0.105316 5.51926 0 5.26495 0 4.99979C0 4.73462 0.105316 4.48031 0.292787 4.29279L4.29279 0.292787C4.48031 0.105316 4.73462 0 4.99979 0C5.26495 0 5.51926 0.105316 5.70679 0.292787V0.292787Z" fill="#18181B"/>
+                                </svg>
+                            </span>
+                            <MiniCalendar handler={miniCalendarDayHandler}>        
+                                <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getMonth(selectedMonth).daysMatrix[1][3].day).format('MMM YYYY')}</h5>
+                            </MiniCalendar>
+                            <span role="button" className="text-primary user-select-none bg-smoke pl-1 pr-1 ml-1 rounded-500 f-600 cursor-pointer" onClick={nextMonth}>
+                                <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" clipRule="evenodd" d="M0.292787 9.70692C0.105316 9.51939 0 9.26508 0 8.99992C0 8.73475 0.105316 8.48045 0.292787 8.29292L3.58579 4.99992L0.292787 1.70692C0.110629 1.51832 0.00983372 1.26571 0.0121121 1.00352C0.0143906 0.741321 0.11956 0.490509 0.304968 0.305101C0.490376 0.119692 0.741189 0.0145233 1.00339 0.0122448C1.26558 0.00996641 1.51818 0.110761 1.70679 0.292919L5.70679 4.29292C5.89426 4.48045 5.99957 4.73475 5.99957 4.99992C5.99957 5.26508 5.89426 5.51939 5.70679 5.70692L1.70679 9.70692C1.51926 9.89439 1.26495 9.99971 0.999786 9.99971C0.734622 9.99971 0.480314 9.89439 0.292787 9.70692Z" fill="#18181B"/>
+                                </svg>
+                            </span> 
+                        </div>}
+                        {smallTab == "day" && <div className="d-flex d-align-center">
+                            <span role="button" className="text-primary user-select-none bg-smoke rounded-500 pl-1 pr-1 mr-1 f-600 cursor-pointer" onClick={prevDay}>
+                                <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" clipRule="evenodd" d="M5.70679 0.292787C5.89426 0.480314 5.99957 0.734622 5.99957 0.999786C5.99957 1.26495 5.89426 1.51926 5.70679 1.70679L2.41379 4.99979L5.70679 8.29279C5.88894 8.48139 5.98974 8.73399 5.98746 8.99619C5.98518 9.25838 5.88001 9.5092 5.6946 9.6946C5.5092 9.88001 5.25838 9.98518 4.99619 9.98746C4.73399 9.98974 4.48139 9.88894 4.29279 9.70679L0.292787 5.70679C0.105316 5.51926 0 5.26495 0 4.99979C0 4.73462 0.105316 4.48031 0.292787 4.29279L4.29279 0.292787C4.48031 0.105316 4.73462 0 4.99979 0C5.26495 0 5.51926 0.105316 5.70679 0.292787V0.292787Z" fill="#18181B"/>
+                                </svg>
+                            </span>
+                            <MiniCalendar handler={miniCalendarDayHandler}>        
+                                <h5 className={`calendar_button cursor-pointer f-400 l-24 ${styles["date"]}`}>{dayjs(getDay(selectedDay)).format('D MMM YYYY')}</h5>
+                            </MiniCalendar>
+                            <span role="button" className="text-primary user-select-none bg-smoke pl-1 pr-1 ml-1 rounded-500 f-600 cursor-pointer" onClick={nextDay}>
+                                <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M0.292787 9.70692C0.105316 9.51939 0 9.26508 0 8.99992C0 8.73475 0.105316 8.48045 0.292787 8.29292L3.58579 4.99992L0.292787 1.70692C0.110629 1.51832 0.00983372 1.26571 0.0121121 1.00352C0.0143906 0.741321 0.11956 0.490509 0.304968 0.305101C0.490376 0.119692 0.741189 0.0145233 1.00339 0.0122448C1.26558 0.00996641 1.51818 0.110761 1.70679 0.292919L5.70679 4.29292C5.89426 4.48045 5.99957 4.73475 5.99957 4.99992C5.99957 5.26508 5.89426 5.51939 5.70679 5.70692L1.70679 9.70692C1.51926 9.89439 1.26495 9.99971 0.999786 9.99971C0.734622 9.99971 0.480314 9.89439 0.292787 9.70692Z" fill="#18181B"/>
+                                </svg>
+                            </span> 
+                        </div>}
+                        {smallTab == "year" && <div className="d-flex d-align-center">
+                            <span role="button" className="text-primary user-select-none bg-smoke rounded-500 pl-1 pr-1 mr-1 f-600 cursor-pointer" onClick={prevYear}>
+                                <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M5.70679 0.292787C5.89426 0.480314 5.99957 0.734622 5.99957 0.999786C5.99957 1.26495 5.89426 1.51926 5.70679 1.70679L2.41379 4.99979L5.70679 8.29279C5.88894 8.48139 5.98974 8.73399 5.98746 8.99619C5.98518 9.25838 5.88001 9.5092 5.6946 9.6946C5.5092 9.88001 5.25838 9.98518 4.99619 9.98746C4.73399 9.98974 4.48139 9.88894 4.29279 9.70679L0.292787 5.70679C0.105316 5.51926 0 5.26495 0 4.99979C0 4.73462 0.105316 4.48031 0.292787 4.29279L4.29279 0.292787C4.48031 0.105316 4.73462 0 4.99979 0C5.26495 0 5.51926 0.105316 5.70679 0.292787V0.292787Z" fill="#18181B"/>
+                                </svg>
+                            </span>
+                            <div className="p-relative">
+                                <h3 className="f-600 l-30 text-secondary">{dayjs(getYear(selectedYear)[0][1][1].day).format("YYYY")}</h3>
+                            </div>
+                            <span role="button" className="text-primary user-select-none bg-smoke pl-1 pr-1 ml-1 rounded-500 f-600 cursor-pointer" onClick={nextYear}>
+                                <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M0.292787 9.70692C0.105316 9.51939 0 9.26508 0 8.99992C0 8.73475 0.105316 8.48045 0.292787 8.29292L3.58579 4.99992L0.292787 1.70692C0.110629 1.51832 0.00983372 1.26571 0.0121121 1.00352C0.0143906 0.741321 0.11956 0.490509 0.304968 0.305101C0.490376 0.119692 0.741189 0.0145233 1.00339 0.0122448C1.26558 0.00996641 1.51818 0.110761 1.70679 0.292919L5.70679 4.29292C5.89426 4.48045 5.99957 4.73475 5.99957 4.99992C5.99957 5.26508 5.89426 5.51939 5.70679 5.70692L1.70679 9.70692C1.51926 9.89439 1.26495 9.99971 0.999786 9.99971C0.734622 9.99971 0.480314 9.89439 0.292787 9.70692Z" fill="#18181B"/>
+                                </svg>
+                            </span> 
+                        </div>}
+                        <div>
+                            {smallTab == "day" && <div className={styles["today"]} onClick={todayHandler}>Today</div>}
+                            {smallTab == "month" && <div className={styles["today"]} onClick={todayMonth}>Today</div>}
+                            {smallTab == "week" && <div className={styles["today"]} onClick={todayWeek}>Today</div>}
+                        </div>
+                        <div className="d-flex d-align-center">
+                            <div className="mr-2" onClick={smallTabViewHandler}>
+                                <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 8H19V10H1V8Z" fill="#002C4B"/>
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M5 0C5.55228 0 6 0.447715 6 1V2H4V1C4 0.447715 4.44772 0 5 0ZM5 4C5.55228 4 6 3.55228 6 3V2H14V3C14 3.55228 14.4477 4 15 4H5ZM5 4H3C2.44772 4 2 4.44772 2 5V19C2 19.5523 2.44772 20 3 20H17C17.5523 20 18 19.5523 18 19V5C18 4.44772 17.5523 4 17 4H15C15.5523 4 16 3.55228 16 3V2H17C18.6569 2 20 3.34315 20 5V19C20 20.6569 18.6569 22 17 22H3C1.34315 22 0 20.6569 0 19V5C0 3.34315 1.34315 2 3 2H4V3C4 3.55228 4.44772 4 5 4ZM16 2H14V1C14 0.447715 14.4477 0 15 0C15.5523 0 16 0.447715 16 1V2Z" fill="#002C4B"/>
+                                    <path d="M4 13C4 12.4477 4.44772 12 5 12C5.55228 12 6 12.4477 6 13C6 13.5523 5.55228 14 5 14C4.44772 14 4 13.5523 4 13Z" fill="#002C4B"/>
+                                    <path d="M8 13C8 12.4477 8.44772 12 9 12H15C15.5523 12 16 12.4477 16 13C16 13.5523 15.5523 14 15 14H9C8.44772 14 8 13.5523 8 13Z" fill="#002C4B"/>
+                                    <path d="M4 17C4 16.4477 4.44772 16 5 16C5.55228 16 6 16.4477 6 17C6 17.5523 5.55228 18 5 18C4.44772 18 4 17.5523 4 17Z" fill="#002C4B"/>
+                                    <path d="M8 17C8 16.4477 8.44772 16 9 16H15C15.5523 16 16 16.4477 16 17C16 17.5523 15.5523 18 15 18H9C8.44772 18 8 17.5523 8 17Z" fill="#002C4B"/>
+                                </svg>
+                            </div>
+                            <div onClick={searchHandler}>
+                                <svg width="21" height="22" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 0.842773C13.968 0.842773 18 4.87477 18 9.84277C18 14.8108 13.968 18.8428 9 18.8428C4.032 18.8428 0 14.8108 0 9.84277C0 4.87477 4.032 0.842773 9 0.842773ZM9 16.8428C12.867 16.8428 16 13.7098 16 9.84277C16 5.97477 12.867 2.84277 9 2.84277C5.132 2.84277 2 5.97477 2 9.84277C2 13.7098 5.132 16.8428 9 16.8428ZM17.485 16.9138L20.314 19.7418L18.899 21.1568L16.071 18.3278L17.485 16.9138Z" fill="#003D41"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
                   {smallTabView && <div ref={smallTabRef} className="d-flex d-flex-wrap d-justify-center col-sm-8 offset-sm-2 mt-4 pl-3 pr-3">      
                       <div className="col-12 d-flex d-justify-space-between">
                           <div className={`d-flex d-flex-column d-align-center ${styles["small-calendar-tab"]} ${smallTab == "month" && styles["dark"]}`} value="month" onClick={smallTabHandler}>

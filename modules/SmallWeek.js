@@ -1,6 +1,6 @@
 import React from 'react'
 import dayjs from "dayjs";
-import styles from './css/calendar.module.css'
+import styles from './css/Calendar.module.css'
 import { useRef,useState } from 'react';
 export default function SmallWeek(props) {
   const activeRef = useRef(null)

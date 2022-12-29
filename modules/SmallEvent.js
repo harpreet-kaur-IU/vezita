@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import styles from './css/calendar.module.css';
+import styles from './css/Calendar.module.css';
 import { useRouter } from 'next/router';
 export default function SmallEvent() {
     const router = useRouter();
