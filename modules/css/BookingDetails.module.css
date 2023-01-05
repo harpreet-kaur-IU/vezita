@@ -256,3 +256,9 @@
     text-decoration: none;
     color: var(--dark-blue);
 }
+.document-send-btn{
+    padding: 5px 10px;
+    background-color: #ffffff;
+    border: 1px solid #75B1FF;
+    border-radius: 8px;
+}

@@ -315,3 +315,21 @@
         gap:clamp(0.3125rem, -6.0814rem + 7.3074vw, 2.6875rem)
     } */
 /* } */
+
+/* upload medical report of patient */
+.upload-doctor-report{
+    border: 1px solid #DFDFEE;
+    border-radius: 12px;
+}
+.file-uploader-for-report{
+    border: 2px dashed #DFDFEE;
+    border-radius: 8px;
+}
+.file-uploader-for-report input{
+    position: absolute;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+}

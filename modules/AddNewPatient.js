@@ -425,10 +425,9 @@ const saveReport = (patientID,userID,doctorID) =>{
         var raw = JSON.stringify({
             "reportType": reportType[i],
             "diagonsedFor": diseaseName[i],
-            "reportFile": "",
             "patient": patientID,
-            "user": userID,
-            "docter": doctorID
+            "reportFile": reportFile[i],
+            "user":userID
         });
 
         var requestOptions = {
@@ -439,7 +438,7 @@ const saveReport = (patientID,userID,doctorID) =>{
         };
 
         setLoading(true)
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter-report-of-patient`, requestOptions)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}report/patient-report`, requestOptions)
         .then(response => response.text())
         .then(result => setLoading(false))
         .catch(error => console.log('error', error));

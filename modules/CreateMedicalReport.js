@@ -101,7 +101,7 @@ const CreateMedicalReport = () => {
                                 </span>
                                 {item.apointments[0].isPrescribe?
                                     <span className={`d-flex ${styles['prescription-btn-green']}`}>
-                                        <button  className='cursor-pointer d-flex'>
+                                        <button onClick={()=>prescriptionHandler(item.patient._id,item.apointments[0].slot._id)} className='cursor-pointer d-flex'>
                                             <h6 className='text-grey-2 l-20 f-600'>Prescribed</h6>
                                             <img src='prescribe-tick.png'></img>
                                         </button>

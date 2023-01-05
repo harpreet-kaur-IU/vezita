@@ -6,7 +6,7 @@ export default function Home(props){
   return (
     <Fragment>
       <Base>
-        <Prescription data={props.data}></Prescription>/
+        <Prescription data={props.data}></Prescription>
       </Base>
     </Fragment>
   )

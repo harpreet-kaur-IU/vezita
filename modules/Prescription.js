@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Header from './Header'
 import styles from './css/BookingDetails.module.css'
 import styles2 from './css/TableTemplate.module.css'
@@ -18,6 +18,13 @@ const Prescription = (props) => {
     const[patientData,setPatientData] = useState(props.data.patient)
     const[loading,setLoading] = useState(false)
     const[todayDate,setTodayDate] = useState("")
+
+    const[doctorID,setDoctorId] = useState("");
+    const[report,setReport] = useState([])
+    const[reportType,setReportType] = useState([])
+    const[diagnosedFor,setDiagnosedFor] = useState([])
+
+    const fileRef = useRef();
     const durTypeData = [
         {
             "title":"day"
@@ -35,7 +42,7 @@ const Prescription = (props) => {
             var date = new Date().toISOString().slice(0,10);
             setTodayDate(date);
             getAllTemplate();
-            // getPatient();
+            getProfile();
             setPatientSlotId(router.query["slotId"])
         }
     },[])
@@ -314,7 +321,9 @@ const Prescription = (props) => {
 
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}drug-instruction-patient/prescribe`, requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => {
+            
+        })
         .catch(error => console.log('error', error));
     }
 
@@ -322,10 +331,101 @@ const Prescription = (props) => {
     const viewPatientDetails = () =>{
         router.push(`/patientdetails/${patientData._id}`)
     }
+
+    //medical report uploaded by doctor
+    const reportHandler = (e) =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var formdata = new FormData();
+        formdata.append("type","docterReport");
+        for(var i=0;i<e.target.files.length;i++){
+            formdata.append("file", e.target.files[i]);
+        }
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}file-upload`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var parsedResult = JSON.parse(result)
+            // var allUrls = [];
+            // for(var i=0;i<parsedResult.urls.length;i++){
+            //     allUrls.push(parsedResult.urls[i])
+            //     console.log(parsedResult.urls[i])
+            // }
+            setReport(parsedResult.urls[0])
+        })
+        .catch(error => console.log('error', error));
+    }
+    const getProfile = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+    
+        var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+    
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter/profile-me`, requestOptions)
+        .then(response => response.text())
+        .then(result =>{
+          const parsedResult =  JSON.parse(result)
+          setDoctorId(parsedResult.docter._id)
+        })
+        .catch(error => console.log('error', error));
+    }
+    //save medical reports
+    const reportTypeHandler = (e) =>{
+        setReportType(e.target.value)
+    }
+
+    const diagnosedForHandler = (e) =>{
+        setDiagnosedFor(e.target.value)
+    }
+
+    const saveReport = () =>{
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "reportType": reportType,
+            "diagonsedFor": diagnosedFor,
+            "reportFile": report,
+            "patient": patientData._id,
+            "user": patientData.user,
+            "docter": doctorID,
+            "slotId":patientSlotId
+        });
+    
+        console.log(raw)
+        // var requestOptions = {
+        //     method: 'POST',
+        //     headers: myHeaders,
+        //     body: raw,
+        //     redirect: 'follow'
+        // };
+
+        // setLoading(true)
+        // fetch(`${process.env.NEXT_PUBLIC_BASE_URL}docter-report-of-patient`, requestOptions)
+        // .then(response => response.text())
+        // .then(result => setLoading(false))
+        // .catch(error => console.log('error', error));
+        
+    }
+    const doctorId = (val) =>{
+        console.log(val)
+    }
   return (
     <>
         {loading && <Loader></Loader>}
-        <Header title="Prescription"></Header>
+        <Header title="Prescription" DoctorIdHandler={doctorId}></Header>
         <div className={`d-flex ${styles["wrapper"]}`} style={{paddingBottom:"18px"}}>
             <div className={`col-12 ${styles["left-column"]}`} style={{marginRight: "0px"}}>
                 <div className={`bg-grey7 ${styles["left-col-2"]}`} style={{marginTop:"0px"}}>
@@ -489,18 +589,56 @@ const Prescription = (props) => {
                     ))}
                 </div>
             </form>
-            <div className={`bg-grey7 col-4 ${styles2["template-wrapper"]}`}>
-                <h3 className={`f-500 l-28 ${styles2["template-heading"]}`}>Template</h3>
-                <div className={`d-flex d-align-center ${styles2["template-search-input"]}`}>
-                    <img src='search-icon.png'></img>
-                    <input className='col-12' type="text" placeholder='Search'></input>
-                </div>
-                {template && template.map((item)=>(
-                    <div className={`d-flex d-align-center d-justify-space-between ${styles2["template-search-suggestions"]}`}>
-                        <h6 className='l-20 f-500 text-grey-2'>{item.name}</h6>
-                        <img onClick={()=>addExistingTemplateHandler(item,item.id)} src="plus-grey.png"></img>
+            <div className='d-flex d-flex-column gap-5 col-4'>
+                <div className={`bg-grey7 ${styles2["template-wrapper"]}`}>
+                    <h3 className={`f-500 l-28 ${styles2["template-heading"]}`}>Template</h3>
+                    <div className={`d-flex d-align-center ${styles2["template-search-input"]}`}>
+                        <img src='search-icon.png'></img>
+                        <input className='col-12' type="text" placeholder='Search'></input>
                     </div>
-                ))}
+                    {template && template.map((item)=>(
+                        <div className={`d-flex d-align-center d-justify-space-between ${styles2["template-search-suggestions"]}`}>
+                            <h6 className='l-20 f-500 text-grey-2'>{item.name}</h6>
+                            <img onClick={()=>addExistingTemplateHandler(item,item.id)} src="plus-grey.png"></img>
+                        </div>
+                    ))}
+                </div>
+                <div className={`p-5 d-flex d-flex-column gap-2 ${styles2["upload-doctor-report"]}`}>
+                    <div className='d-flex d-align-center d-justify-space-between'>
+                        <h3 className='f-500 l-28'>Add Documents</h3>
+                        <button onClick={saveReport} className={`cursor-pointer d-flex d-align-center gap-1 ${styles["document-send-btn"]}`}>
+                            <h5 className='f-500 l-22 text-dark-blue'>Save</h5>
+                            <img src="send-icon.png"></img>
+                        </button>
+                    </div>
+                    <h5 className='l-22 f-400 text-secondary text-center'>Upload any documents that you want to send along with prescription.</h5>
+                    <div className='d-flex d-flex-column gap-1'>
+                        <label className='h4 l-22 f-600'>Report</label>
+                        <div className={`p-relative d-flex d-align-center d-justify-center d-flex-column gap-1 pt-5 pb-5 pl-4 pr-4 ${styles2["file-uploader-for-report"]}`}>
+                            <img src='file-upload.png'></img>
+                            {report.length>0?<h5 className='l-22 f-400 text-grey-3'>File Uploaded Sucessfully </h5>:<h5 className='l-22 f-400 text-grey-3'>Upload (PDF, JPG, PNG)</h5>}
+                            <input 
+                                type='file'
+                                ref={fileRef}
+                                onChange={reportHandler}
+                                multiple={true}
+                            >
+                            </input>
+                        </div>
+                    </div>
+
+                    <div className={`d-flex d-flex-column gap-1 ${styles2["drug-detail-left"]}`}>
+                        <label className='h4 l-22 f-600'>Report type</label>
+                        <input type="text" value={reportType} onChange={reportTypeHandler} placeholder='Enter Report Type' required></input>
+                    </div>
+                    <div className={`d-flex d-flex-column gap-1 ${styles2["drug-detail-left"]}`}>
+                        <label className='h4 l-22 f-600'>Diagonsed For</label>
+                        <input type="text" value={diagnosedFor} onChange={diagnosedForHandler} placeholder='Enter Diagnosed for Condition/Disease' required></input>
+                    </div>
+                    {/* {report && report.map((item,index)=>(
+                        <h5 className='f-400 l-22 text-grey-3'>File {index}</h5>
+                    ))} */}
+                </div>
             </div>
         </div>
     </>

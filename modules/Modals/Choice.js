@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import styles from '../css/Choice.module.css'
 import styles2 from '../css/AddDetails.module.css'
 import DynamicDropdown from '../DynamicDropdown'
+import { getVezitaOnBoardFromCookie } from '../../auth/userCookies'
 const Choice = (props) => {
+    const JWTToken = getVezitaOnBoardFromCookie();
     const[add,setAdd] = useState(false)
     const[fieldName,setName] = useState(props.name)
     const[data,setData] = useState("")
@@ -41,7 +43,26 @@ const Choice = (props) => {
     }
 
     const reportFileHandler  = (e) =>{
-        setReportFile(e.target.files[0])
+        var myHeaders = new Headers();
+        myHeaders.append("token",JWTToken);
+
+        var formdata = new FormData();
+        formdata.append("type","patientMedical");
+        formdata.append("file", e.target.files[0]);
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata
+        };
+
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}file-upload`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var parsedResult = JSON.parse(result)
+            setReportFile(parsedResult.urls[0])
+        })
+        .catch(error => console.log('error', error));
     }
 
     const inputHandler = (e) =>{

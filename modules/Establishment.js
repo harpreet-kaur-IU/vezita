@@ -191,7 +191,6 @@ const Establishment = () => {
 
                 setTodaySlots([{id:parsedResult.slots[i]._id,startTime:startSliced,endTime:endSliced}])
             }
-            
         })
         .catch(error => console.log('error', error));
     }
@@ -323,15 +322,7 @@ const Establishment = () => {
                 "startTime":inputList[i].startTime,
                 "endTime":inputList[i].endTime,
                 "appointmentNum":i+1,
-                "sessionType":[
-                    inputList[i].clinic && inputList[i].video?
-                        {
-                            0:"in-clinic",
-                            1:"video"
-                        }
-                    :
-                    (inputList[i].clinic?"in-clinic":"video")
-                ]
+                "sessionType":inputList[i].clinic && inputList[i].video?["in-clinic","video"]:(inputList[i].clinic?"in-clinic":"video")
             }
             timingSlot.push(timing)
         }
@@ -573,6 +564,7 @@ const Establishment = () => {
                         </div> */}
                         <label className='d-flex col-12 mt-2'>Consultation timings</label>
                         {/* Todays Slots */}
+                    
                         <div className='col-12 d-flex d-flex-column mb-5'>
                             <label>Today's Slots</label>
                             <div className='mt-5 d-flex gap-2 col-12'>
@@ -593,8 +585,9 @@ const Establishment = () => {
                                 ))}
                             </div>
                         </div>
+                        
                         <div className={`${styles["timing-message"]} mt-1 col-12 `}>
-                            <h6 className='f-500 l-20 text-green-5'>Inclinic timings should be within practice timings Mon-Sun 9:00AM-7:00PM. Video consultation timings can be outside practice timings.</h6>
+                            <h6 className='f-5 t00 l-20 text-green-5'>Inclinic timings should be within practice timings Mon-Sun 9:00AM-7:00PM. Video consultation timings can be outside practice timings.</h6>
                         </div>
                         <div className={`col-12 mt-6 d-flex d-flex-wrap d-align-center d-justify-space-between`}>
                             <DaysCheckBox handler={dayCheckboxHandler} value="mon"></DaysCheckBox>

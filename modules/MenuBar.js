@@ -15,7 +15,7 @@ const MenuBar = () => {
         <MenuItem title="Bookings" path="/allBookings" multipath="0"></MenuItem>
         <MenuItem title="My Patients" path="/newpatient" path1="/patientdetails/[id]" path2="/addnewpatient" multipath="1" haspath1="1" haspath2="1"></MenuItem>
         <MenuItem title="My Calendar" path="/mycalendar" multipath="0"></MenuItem>
-        <MenuItem title="Create Medical Reports" path="/medicalreport" multipath="0"></MenuItem>
+        <MenuItem title="Create Medical Reports" path="/medicalreport" path1="/prescriptiondetails/[id]" multipath="1" haspath1="1"></MenuItem>
         <MenuItem title="Messages" path="/message" multipath="0"></MenuItem>
         <MenuItem title="Finances" path="/finances" multipath="0"></MenuItem>
         {/* <MenuItem title="Banners" path="/banner" multipath="0"></MenuItem> */}
