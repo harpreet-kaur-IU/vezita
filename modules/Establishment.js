@@ -257,7 +257,7 @@ const Establishment = () => {
 
         var raw = JSON.stringify({
             "establishmentName":estName,
-            "city":city,
+            "city": city,
             "contactNumber": contactNumber,
             "location": {
                 "type": "Point",
@@ -394,7 +394,6 @@ const Establishment = () => {
             var parsedResult = JSON.parse(result)
             const value = parsedResult.urls[0];
             estImageList.push(value)
-            console.log(estImageList)
         })
         .catch(error => console.log('error', error));
     }
@@ -416,7 +415,7 @@ const Establishment = () => {
                             <div className='col-3 d-flex d-flex-wrap border-box'>
                                 <div className='ml-5 col-12'>
                                     <label className='d-flex'>City</label>
-                                    <input type="text" placeholder='Enter city' onChange={cityHandler} value={city}/>
+                                    <input type="text" placeholder='Enter city name' onChange={cityHandler} value={city}/>
                                 </div>
                             </div>
 

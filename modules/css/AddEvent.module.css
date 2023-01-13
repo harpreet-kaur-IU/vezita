@@ -1,0 +1,36 @@
+.wrapper{
+    background-color: #fff;
+    width: 530px;
+    height: 448px;
+    box-shadow: 0px -1px 0px #EEEEF6, 0px 0px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+}
+.wrapper-2{
+    background-color: #fff;
+    width: 530px;
+    height: 522px;
+    box-shadow: 0px -1px 0px #EEEEF6, 0px 0px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+}
+.doctor-name-wrapper img{
+    width: 40px;
+    height: 40px;
+    border-radius: 100px;
+}
+.date-input-field{
+    padding: 12px 16px;
+    background: #EEEEF7;
+    border-radius: 8px;
+    border: none;
+}
+.date-input-field:focus{
+    outline: none;
+}
+.timing{
+    background-color: #EEEEF7;
+    border-radius: 8px;
+    height: clamp(1.875rem, 1.6154rem + 1.1538vw, 3rem);
+}
+.divider{
+    border: 1px dashed #B8C3CD;
+}

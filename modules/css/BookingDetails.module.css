@@ -135,6 +135,8 @@
 .previous-appointments-list{
     padding: 0px 0px 0px 20px;
     margin-top: 24px;
+    height: 315px;
+    overflow-y: scroll;
 }
 .appointment-icons-wrapper{
     border-radius: 100px;

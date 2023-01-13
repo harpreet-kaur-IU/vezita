@@ -1,0 +1,25 @@
+.wrapper{
+    width: 530px;
+    height: 324px;
+    background: #FFFFFF;
+    box-shadow: 0px -1px 0px #EEEEF6, 0px 0px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+}
+.user-details img{
+    width: 40px;
+    height: 40px;
+    border-radius: 100px;
+}
+.divider{
+    border: 1px solid #DFDFEE;
+}
+.button{
+    padding: 10px 20px;
+    background: #067A91;
+    border-radius: 100px;
+}
+.button-re{
+    padding: 10px 20px;
+    background: #FF8651;
+    border-radius: 100px;
+}

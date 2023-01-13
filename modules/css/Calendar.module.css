@@ -2527,3 +2527,7 @@
         border-radius: 50%;
       }
     }
+    .add-new-event{
+      border-radius: 100px;
+      padding: 9px 24px 9px 20px;
+    }
